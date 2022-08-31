@@ -1,6 +1,7 @@
-### Libraries
+######### Libraries required #########
+ 
 lista = c('readr','readxl',
-          'rio' , 'arrow'
+          'rio' , 'arrow', 'sqldf'
 )
 
 for (i in 1:length(lista) ) {
@@ -10,6 +11,7 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
 
+######### URL tables #########
 prefix = "https://docs.supersalud.gov.co/PortalWeb/SupervisionInstitucional/IndicadoresCalidadEAPB/"
 ### URL libraries 
 calidad_eps_2015 = "Indicadores%20de%20Calidad%20EPS%20(I%20Semestre%202015).xlsx"
@@ -21,6 +23,35 @@ calidad_eps_2011 = "Indicadores-Calidad-EPS-consolidado-2011.xlsx"
 calidad_eps_2010 = "Indicadores-Calidad-EPS-consolidado-2010.xlsx"
 calidad_eps_2009 = "Indicadores-Calidad-EPS-Consolidado-2009.xlsx"
 
+######### reading table: conditions #########
+lista = data.frame(
+  'tabla' = c("calidad_eps_2009", "calidad_eps_2010",
+  "calidad_eps_2011", "calidad_eps_2012",
+  "calidad_eps_2013", "calidad_eps_2014", 
+  "calidad_eps_2015",  "calidad_eps_2016"
+  ), 
+  'sheet' = c("Hoja de Trabajo", "Hoja de Trabajo",
+              "Hoja de Trabajo", "Hoja de Trabajo",
+              "Hoja de Trabajo", "Hoja de Trabajo", 
+              "Hoja de Trabajo",  "HOJA DE TRABAJO"
+  )
+  
+)
+ 
+######### reading table: tables Calidad EPS from 2009 to 2016 #########
+for (i in 1:nrow(lista) ) {
+  pre_tabla = lista[i, 1]
+  tabla = get(pre_tabla)
+  hoja = lista[i, 2]
+  url = paste0(prefix, tabla)  
+  assign(pre_tabla,rio::import(url,  sheet =hoja) , envir = .GlobalEnv)
+  print(pre_tabla)
+}
 
-calidad_eps_2015 = rio::import(calidad_eps_2015, sheet = "Hoja de Trabajo")
 
+
+
+
+sqldf::sqldf("
+             SELECT VALOR FROM calidad_eps_20
+             ")
