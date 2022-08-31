@@ -1,13 +1,19 @@
 rm(list = ls())
 packageList<-c("olapR", "foreign", "tidyverse","xlsx","haven","beepr")
-#lapply(packageList,install.packages,character.only=TRUE)
-lapply(packageList,require,character.only=TRUE)
-library(xlsx)
+
+
+for (i in 1:length(packageList) ) {
+  if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
+    install.packages(packageList[i])
+  }
+  lapply(packageList[i], library, character.only = TRUE)
+}
+
 
 wd <- "C:/Users/mcard/Dropbox/c_2020_More than a Healing/Data/"
 setwd(wd)
 
-cnnstr<-"Provider=MSOLAP;Password=usuario1;Persist Security Info=True;User ID=sispro\\usuario1;Data Source=cubos3.sispro.gov.co"
+cnnstr<-"Provider=MSOLAP.8;Password=u4_gu41n14;Persist Security Info=True;User ID=sispro.local\UA_Guainia;Data Source=cubos.sispro.gov.co;Update Isolation Level=2;Initial Catalog=SGD_ReportesRIPS"
 
 olapCnn<-OlapConnection(cnnstr)
 qry <- Query(validate = TRUE)
