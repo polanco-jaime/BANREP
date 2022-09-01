@@ -9,15 +9,8 @@ for (i in 1:length(packageList) ) {
 }
 
 
-##################
-EPS_CODE <- read_delim("EPS CODE.csv", ";", 
-                       escape_double = FALSE, trim_ws = TRUE)
-K=150
-TIME_YEAR = c(2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022)
+################## ################## ################## ##################
 
-##################
- 
- 
 
 #### Setting string formatting operator 
 
@@ -28,21 +21,64 @@ cnnstr<-"Provider=MSOLAP;Data Source=cubos.sispro.gov.co;Password=u4_gu41n14;
             Initial Catalog=SGD_ReportesRIPS;
             Data Source=cubos.sispro.gov.co"
 
-# value = '[Measures].[ValorIndicador]'
+#### getting connection
+
 olapCnn<-OlapConnection(cnnstr)
 explore(olapCnn)
 
 
-EPS = EPS_CODE[K,1]
-YEAR = TIME_YEAR[1]
+### SET THE GRADE OF INTEREST 
+CAUSA = c('Condiciones transmisibles y nutricionales'	,
+          'Enfermedades no transmisibles'	,
+          'Lesiones'	,
+          'Signos y sintomas mal definidos'	)
+
+TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,
+                  '2 - SUBSIDIADO'	,
+                  '3 - VINCULADO'	,
+                  '4 - PARTICULAR'	,
+                  '5 - OTRO'	,
+                  '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
+                  '7 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN SUBSIDIADO'	,
+                  '8 - DESPLAZADO NO ASEGURADO O VINCULADO'	)
+
+# taking the list of the entire eps
+
+EPS_CODE <- read_delim("EPS CODE.csv", ";", 
+                       escape_double = FALSE, trim_ws = TRUE)
+
+
+TIME_YEAR = c(2013,2014,2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022)
+
+############################################
+##############                ##############
+##########                        ##########
+#####                                  #####
+#                                          #
+############################################
+
+RESULT = data.frame()
+
+for (k  in 1:nrow(EPS_CODE) ) {
+  print(EPS)
+  EPS = EPS_CODE[K,1]  
+  
+  
+  
+}
+# YEAR = TIME_YEAR[1]
+
+
 #'[Tiempo].[Año - Semestre - Trimestre - Mes].[Año].&[2022]'
 AXIS0 <- '[Measures].[ValorIndicador]'
 AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
 AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
+GRAN_CAUSA = 'Condiciones maternas perinatales'
 from_olap_catalog <- 'CU - Morbilidad_ASIS'
-where_filter <- sprintf( '([Causas de Morbilidad].[Gran Causa].&[Condiciones maternas perinatales]), ([Administradoras].[Codigo de Administradora].&[%s]) ' , EPS )
-                
- 
+where_filter <- sprintf( '([Causas de Morbilidad].[Gran Causa].&[%s] ,
+                         [Administradoras].[Codigo de Administradora].&[%s]) ' ,GRAN_CAUSA, EPS )
+
+
 #, [Tiempo].[Año].&[2015]
 mdx<- "SELECT {%s} ON AXIS(0),
                {%s.MEMBERS} ON AXIS(1), 
@@ -54,6 +90,27 @@ mdx<- sprintf(mdx, AXIS0, AXIS1, AXIS2, from_olap_catalog, where_filter )
 
 olapR::is.Query(mdx)
 result01 <- execute2D(olapCnn, mdx)
+result01[[2]] < - as.numeric(result01[[2]])
+result01 = subset(result01, result01[[2]] >= 2009 &  result01[[2]]  <=2022)
+
+colnames(result01) <- c('CITY', 'YEAR', 'VALUE')
+result01$EPS <- as.character(EPS[1,1])
+result01$IDEX_NAME <- as.character(GRAN_CAUSA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ########################
 mdx1 <- "SELECT {[Measures].[ValorIndicador]} ON AXIS(0),
