@@ -13,68 +13,112 @@ for (i in 1:length(packageList) ) {
 EPS_CODE <- read_delim("EPS CODE.csv", ";", 
                        escape_double = FALSE, trim_ws = TRUE)
 K=150
-TIME_YEAR = c("2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022")
+TIME_YEAR = c(2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022)
+
+##################
+ 
+ 
+
+#### Setting string formatting operator 
+
+
+cnnstr<-"Provider=MSOLAP;Data Source=cubos.sispro.gov.co;Password=u4_gu41n14;
+            Persist Security Info=True;
+            User ID=sispro.local\\UA_Guainia;
+            Initial Catalog=SGD_ReportesRIPS;
+            Data Source=cubos.sispro.gov.co"
+
+# value = '[Measures].[ValorIndicador]'
+olapCnn<-OlapConnection(cnnstr)
+explore(olapCnn)
+
+
 EPS = EPS_CODE[K,1]
 YEAR = TIME_YEAR[1]
-##################
+#'[Tiempo].[Año - Semestre - Trimestre - Mes].[Año].&[2022]'
+AXIS0 <- '[Measures].[ValorIndicador]'
+AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
+AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
+from_olap_catalog <- 'CU - Morbilidad_ASIS'
+where_filter <- sprintf( '([Causas de Morbilidad].[Gran Causa].&[Condiciones maternas perinatales]), ([Administradoras].[Codigo de Administradora].&[%s]) ' , EPS )
+                
+ 
+#, [Tiempo].[Año].&[2015]
+mdx<- "SELECT {%s} ON AXIS(0),
+               {%s.MEMBERS} ON AXIS(1), 
+               {%s.MEMBERS} ON AXIS(2) 
+        FROM [%s]
+        WHERE %s "
 
-value = '[Measures].[ValorIndicador]'
+mdx<- sprintf(mdx, AXIS0, AXIS1, AXIS2, from_olap_catalog, where_filter ) 
 
+olapR::is.Query(mdx)
+result01 <- execute2D(olapCnn, mdx)
 
-qry <- olapR::Query(validate = TRUE)
+########################
+mdx1 <- "SELECT {[Measures].[ValorIndicador]} ON AXIS(0),
+               {[Administradoras].[Codigo de Administradora].[Codigo de Administradora].MEMBERS} ON AXIS(1), 
+               {[Municipio Residencia - RIPS].[Municipio].MEMBERS} ON AXIS(2) 
+        FROM [CU - Morbilidad_ASIS]
+        WHERE [Causas de Morbilidad].[Gran Causa].&[Condiciones maternas perinatales] "
+mdx == mdx1
+mdx
+mdx1
+
+result01 <- execute2D(olapCnn, mdx1)
+# qry <- olapR::Query(validate = TRUE)
 olapR::cube(qry) <- paste0("[" ,source_cubes[2],"]")
 olapR::cube(qry)
-olapR::columns(qry) <- c("[hierarchy].[Causas de Morbilidad].[Gran Causa]") #.MEMBERS [hierarchy]
+olapR::columns(qry) <- c("[Measures].[ValorIndicador]") #.MEMBERS [hierarchy]
 olapR::columns(qry)
-olapR::rows(qry) <- c("[hierarchy].[Municipio Residencia - RIPS].[Municipio]") 
+olapR::rows(qry) <-  c(" [Causas de Morbilidad].[Gran Causa],[Municipio Residencia - RIPS].[Municipio]") 
 olapR::rows(qry)
-olapR::slicers(qry) <- c( paste0("[Administradoras].[Codigo de Administradora].&[",EPS,"]"), paste0("[Tiempo].[Año].&[",YEAR,"]") )
+olapR::slicers(qry) <- c( paste0("[Administradoras].[Codigo de Administradora].[",EPS,"]"), paste0("[Tiempo].[Año].[",YEAR,"]") )
 olapR::slicers(qry)
+olapR::compose(qry)
 result1 <- olapR::executeMD(olapCnn, qry)
-
+olapR::executeMD(olapCnn, qry)
 # wd <- "C:/Users/mcard/Dropbox/c_2020_More than a Healing/Data/"
 # setwd(wd)
 
 # Initial Catalog=SGD_ReportesRIPS
-cnnstr<-"Provider=MSOLAP;Password=u4_gu41n14;Persist Security Info=True;User ID=sispro.local\\UA_Guainia;Data Source=cubos.sispro.gov.co"
+# cnnstr<-"Provider=MSOLAP.7;Password=u4_gu41n14;Persist Security Info=True;User ID=sispro.local\\UA_Guainia;Data Source=cubos.sispro.gov.co"
 ##########################################
 olapCnn<-OlapConnection(cnnstr)
 qry <- olapR::Query(validate = TRUE)
 qry
 explore(olapCnn)
-source_cubes <- c('PER - Registro de Discapacidad', #'SGD_ReportesRIPS CU - Morbilidad_ASIS',
-'PER - Registro Discapacidad - RIPS',
-'PER - Registro Discapacidad - RUAF',
-'PER - Registro Discapacidad PILA',
-'SGD-Discapacidad')
+
 
 df <- c()
 
 
 
 query_cube_gran_causa <- function(source_cubes,value,columna  ) {
-  paste0(" SELECT NON EMPTY { ",value , "} ON COLUMNS ,
+  paste0(" SELECT NON EMPTY {[Measures].[ValorIndicador]} ON COLUMNS ,
                   NON EMPTY {
                         Hierarchize({DrilldownLevel( ",value , ")})
                         }
                         DIMENSION PROPERTIES MEMBER_CAPTION ON 1 
          ")
 }
-# mdx1 <- " SELECT NON EMPTY {[Measures].[ValorIndicador]}  
-# ON COLUMNS ,
-# NON EMPTY { 
-# Hierarchize({DrilldownLevel({[Administradoras].[Codigo de Administradora].CHILDREN},,,INCLUDE_CALC_MEMBERS)}) 
-# *Hierarchize({DrilldownLevel({[Causas de Morbilidad].[Gran Causa].CHILDREN},,,INCLUDE_CALC_MEMBERS)})
-# *Hierarchize({DrilldownLevel({[Tiempo].[Mes].CHILDREN},,,INCLUDE_CALC_MEMBERS)}) 
-# *Hierarchize({DrilldownLevel({[Municipio Residencia - RIPS].[Codigo Municipio].CHILDREN},,,INCLUDE_CALC_MEMBERS)})
-# }
-# 
-# DIMENSION PROPERTIES MEMBER_CAPTION ON 1 
-# FROM [PER - Registro Discapacidad - RIPS]
-# WHERE ([Tiempo].[Año].&[CAMBIAR]) 
-# CELL PROPERTIES VALUE, FORMAT_STRING "
 
-#FROM [CU - Prestación Servicios de Salud_2009_2014]
+
+
+
+
+mdx1 <- " SELECT NON EMPTY {[Measures].[ValorIndicador]}  
+ON COLUMNS ,
+NON EMPTY { 
+Hierarchize({DrilldownLevel({[Administradora].[Administradora].CHILDREN},,,INCLUDE_CALC_MEMBERS)}) 
+*Hierarchize({DrilldownLevel({[Municipio Residencia RIPS].[Municipio].CHILDREN},,,INCLUDE_CALC_MEMBERS)})
+}
+
+DIMENSION PROPERTIES MEMBER_CAPTION ON 1 
+FROM [CU - Prestación Servicios de Salud]
+WHERE ([Fecha de Atención].[Anno].&[CAMBIAR]) 
+CELL PROPERTIES VALUE, FORMAT_STRING "
+
 #Variable containing input for text
 #new <- c("2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022")
 
