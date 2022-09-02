@@ -1,7 +1,24 @@
-getwd()
-source("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R")
+########################################################################
+########################      Version 0.5       ########################
+#######################         Banrep          ########################
+########################################################################
 
-source("functions.R", echo=TRUE)
+########################    Calling libraries    ########################
+packageList<-c("olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools')
+# devtools::install_github("apache/arrow/r")
+
+for (i in 1:length(packageList) ) {
+  if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
+    install.packages(packageList[i])
+  }
+  lapply(packageList[i], library, character.only = TRUE)
+}
+
+
+devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R") ## it deppends of devtools library
+
+########################    Calling libraries    ########################
+
 #################################
 connection_string = "Provider=MSOLAP;Data Source=cubos.sispro.gov.co;Password=u4_gu41n14;
             Persist Security Info=True;

@@ -38,6 +38,7 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
   
 }
 
+
 #Running query and cleaning empty observations
 execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER  ){
   olapCnn<-olapR::OlapConnection(connection_string)
@@ -52,3 +53,9 @@ execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER  
   tempo3$TYPE_USER <- as.character(TYPE_USER)
   return(tempo3)
 }
+
+
+
+#############
+warning("The functions created for Banrep have been loaded")
+print("The functions created for Banrep have been loaded")
