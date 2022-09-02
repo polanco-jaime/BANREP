@@ -3,7 +3,9 @@
 #######################         Banrep          ########################
 ########################################################################
 
+#
 ########################    Calling libraries    ########################
+########################################################################
 packageList<-c("olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools')
 # devtools::install_github("apache/arrow/r")
 
@@ -17,9 +19,12 @@ for (i in 1:length(packageList) ) {
 
 devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R") ## it deppends of devtools library
 
-########################    Calling libraries    ########################
-
-#################################
+########################    Example of runing variable     ########################
+###################################################################################
+catalogos = c("SGD_CUBOS_RIPS","CU_Estadisticas Afiliados a Salud",
+              "CU_Indicadores", "SGD_CUBOS_RIPS", "SGD_Registro_Estadisticas_Vitales" , "SGD_REGISTROS",
+              "SGD_ReportesRIPS", )
+################################# requried data
 connection_string = "Provider=MSOLAP;Data Source=cubos.sispro.gov.co;Password=u4_gu41n14;
             Persist Security Info=True;
             User ID=sispro.local\\UA_Guainia;
@@ -45,10 +50,7 @@ from_olap_catalog = 'CU - Morbilidad_ASIS'
 
 
 
-mdx = query_cube_mdx(AXIS0 = AXIS0, 
-                     AXIS1 = AXIS1,
-                     AXIS2 = AXIS2,
-                     TYPE_USER=TYPE_USER,
+mdx = query_cube_mdx(AXIS0 = AXIS0, AXIS1 = AXIS1, AXIS2 = AXIS2, TYPE_USER=TYPE_USER,
                      SEGREGATION_VAR_INTERES=SEGREGATION_VAR_INTERES ,
                      VAR_INTERES=VAR_INTERES, 
                      SEGREGATION_EPS_CODE=SEGREGATION_EPS_CODE  , 
@@ -56,6 +58,7 @@ mdx = query_cube_mdx(AXIS0 = AXIS0,
                      cube = from_olap_catalog )
 
 
+mdx
 
 tempo = execue_query_mdx(mdx =mdx ,
                          connection_string = connection_string, 
