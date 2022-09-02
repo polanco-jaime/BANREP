@@ -28,7 +28,9 @@ source("credentials.R", echo=TRUE)
 if(1==1){
 
 ### SET THE GRADE OF INTEREST 
-CAUSA = c('Condiciones transmisibles y nutricionales'	, 'Enfermedades no transmisibles'	, 'Lesiones'	,'Signos y sintomas mal definidos'	)
+CAUSA = c('Condiciones transmisibles y nutricionales'
+          #, 'Enfermedades no transmisibles'	, 'Lesiones'	,'Signos y sintomas mal definidos'	
+          )
 
 TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,'2 - SUBSIDIADO'	
                   # , '3 - VINCULADO'	,'4 - PARTICULAR'	,'5 - OTRO'	, '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
@@ -58,11 +60,11 @@ AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
 }
 ######################################################
 ####### Running loop
-
+ 
  
 for (k  in 1:length(eapb_list )  ) {
   # k=1
-  EPS = as.character(eapb_list[k] ) 
+  EPS = as.character(eapb_list[[k]] ) 
   print(sprintf("The information for the EPS with code: %s will be downloaded", EPS))
   for (l in CAUSA) {
     VAR_INTERES <-  l
@@ -78,18 +80,19 @@ for (k  in 1:length(eapb_list )  ) {
                            EPS=EPS,
                            cube = from_olap_catalog )
       
-      print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
-      Sys.sleep(5)
+      print( "The query is ready for been excecuted")
+      Sys.sleep(15)
+      gc()
       tempo = execue_query_mdx(mdx =mdx ,
                                connection_string = connection_string,
                                EPS=EPS,
                                VAR_INTERES=VAR_INTERES,
                                TYPE_USER= TYPE_USER  )
       
-    
+      print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
       csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
       write.csv(tempo, csv_name , row.names = F, sep = '|')
-      
+      Sys.sleep(15)
     }
     
     
