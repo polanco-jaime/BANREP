@@ -61,7 +61,8 @@ warning("The functions created for Banrep have been loaded")
 print("The functions created for Banrep have been loaded")
 
 
-################ Ex: how to run.
+########################    Example of runing variable     ########################
+###################################################################################
 # VAR_INTERES = 'Condiciones transmisibles y nutricionales' ### Looped variable
 # EPS = "RES014"   ### Looped variable
 # 
