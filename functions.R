@@ -42,6 +42,7 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
 execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER  ){
   olapCnn<-olapR::OlapConnection(connection_string)
   tempo3 <- olapR::execute2D(olapCnn, mdx)
+  gc()
   tempo3[[2]] < - as.numeric(tempo3[[2]])
   tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)
   tempo3 = subset(tempo3, is.na(tempo3[[3]]) == F)
