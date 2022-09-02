@@ -1,5 +1,6 @@
 rm(list = ls())
 packageList<-c("olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr')
+# devtools::install_github("apache/arrow/r")
 
 for (i in 1:length(packageList) ) {
   if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
@@ -40,7 +41,7 @@ TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,
                   '5 - OTRO'	,
                   '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
                   '7 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN SUBSIDIADO'	,
-                  '8 - DESPLAZADO NO ASEGURADO O VINCULADO'	)
+                  '8 - DESPLAZADO NO ASEGURADO O VINCULADO'	) # [Tipo Usuario].[Tipo Usuario].&[1 - CONTRIBUTIVO]
 
 # taking the list of the entire eps
 
@@ -57,27 +58,56 @@ TIME_YEAR = c(2013,2014,2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022)
 #                                          #
 ############################################
 
-RESULT = data.frame()
 
-for (k  in 1:nrow(EPS_CODE) ) {
-  print(EPS)
-  EPS = EPS_CODE[K,1]  
+CU_Morbilidad_ASIS <- data.frame()
+eapb_list <- "RES014" #EPS_CODE[['COD_EPS']] 
+from_olap_catalog <- 'CU - Morbilidad_ASIS'
+
+for (k  in 1:length(eapb_list )  ) {
   
-  
+  EPS = as.character(eapb_list[k] ) 
+    for (l in CAUSA) {
+    GRAN_CAUSA <-  l
+     
+    for (m in TIPO_USUARIO) {
+          TYPE_USER <- m
+          AXIS0 <- '[Measures].[ValorIndicador]'
+          AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
+          AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
+          where_filter <- '([Causas de Morbilidad].[Gran Causa].&[%s] ,
+                             [Administradoras].[Codigo de Administradora].&[%s]
+                             , [Tipo Usuario].[Tipo Usuario].&[%s]
+                             ) '
+          where_filter <- sprintf(where_filter   ,GRAN_CAUSA, EPS, TYPE_USER )
+          mdx<- "SELECT {%s} ON AXIS(0),
+                   {%s.MEMBERS} ON AXIS(1), 
+                   {%s.MEMBERS} ON AXIS(2) 
+            FROM [%s]
+            WHERE %s "
+          
+          mdx<- sprintf(mdx, AXIS0, AXIS1, AXIS2, from_olap_catalog, where_filter ) 
+          Sys.sleep(5)
+          tempo3 <- execute2D(olapCnn, mdx)
+          tempo3[[2]] < - as.numeric(tempo3[[2]])
+          tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)
+          colnames(tempo3) <- c('CITY', 'YEAR', 'VALUE')
+          tempo3$EPS <- EPS
+          tempo3$GRAN_CAUSA <- as.character(GRAN_CAUSA)
+          tempo3$TYPE_USER <- as.character(TYPE_USER)
+          # CU_Morbilidad_ASIS <- rbind(CU_Morbilidad_ASIS, tempo3)
+
+          warning(paste0('the eps: ' ,EPS,  " have finished", 'with data of ', GRAN_CAUSA, TYPE_USER) )
+          csv_name = paste0('tables_from_cube/',EPS, '_',GRAN_CAUSA, '_',TYPE_USER,'.csv' )
+          write.csv(tempo3, csv_name , row.names = F, sep = '|')
+           
+    }
+    
+    
+    }
   
 }
-# YEAR = TIME_YEAR[1]
 
-
-#'[Tiempo].[Año - Semestre - Trimestre - Mes].[Año].&[2022]'
-AXIS0 <- '[Measures].[ValorIndicador]'
-AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
-AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
-GRAN_CAUSA = 'Condiciones maternas perinatales'
-from_olap_catalog <- 'CU - Morbilidad_ASIS'
-where_filter <- sprintf( '([Causas de Morbilidad].[Gran Causa].&[%s] ,
-                         [Administradoras].[Codigo de Administradora].&[%s]) ' ,GRAN_CAUSA, EPS )
-
+#write.csv(EPS_CODE, 'tables_from_cube/as.csv')
 
 #, [Tiempo].[Año].&[2015]
 mdx<- "SELECT {%s} ON AXIS(0),
