@@ -4,18 +4,23 @@ connection_string = "Provider=MSOLAP;Data Source=cubos.sispro.gov.co;Password=u4
             User ID=sispro.local\\UA_Guainia;
             Initial Catalog=SGD_ReportesRIPS;
             Data Source=cubos.sispro.gov.co"
-
+#### variables for looping
 VAR_INTERES = 'Condiciones transmisibles y nutricionales' ### Looped variable
 EPS = "RES014"   ### Looped variable
 
+### with the idea reduce the time require for a query I take a smaal segregation with less than 50000 observations.
 SEGREGATION_EPS_CODE = '[Administradoras].[Codigo de Administradora]'
 EPS_CODE = '[Administradoras].[Codigo de Administradora]'
 SEGREGATION_VAR_INTERES = '[Causas de Morbilidad].[Gran Causa]' 
+TYPE_USER = '1 - CONTRIBUTIVO'
+### Mandatory variables to get observations a municipalities's level.
 AXIS0 <- '[Measures].[ValorIndicador]'
 AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
 AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
+
+### the cube used
 from_olap_catalog = 'CU - Morbilidad_ASIS'
-TYPE_USER = '1 - CONTRIBUTIVO'
+
 
 
 
