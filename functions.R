@@ -1,3 +1,4 @@
+#################################
 EPS = "RES014"
 SEGREGATION_EPS_CODE = '[Administradoras].[Codigo de Administradora]'
 EPS_CODE = '[Administradoras].[Codigo de Administradora]'
@@ -24,6 +25,19 @@ mdx = query_cube_mdx(AXIS0 = AXIS0,
                EPS=EPS,  
                cube = from_olap_catalog
 )
+
+execue_query_mdx <- function(mdx, )}{
+  olapCnn<-olapR::OlapConnection(cnnstr)
+  tempo3 <- olapR::execute2D(olapCnn, mdx)
+  tempo3[[2]] < - as.numeric(tempo3[[2]])
+  tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)
+  colnames(tempo3) <- c('CITY', 'YEAR', 'VALUE')
+  tempo3$EPS <- EPS
+  tempo3$GRAN_CAUSA <- as.character(GRAN_CAUSA)
+  tempo3$TYPE_USER <- as.character(TYPE_USER)
+}
+
+
 
 execute2D(olapCnn, mdx)
  
