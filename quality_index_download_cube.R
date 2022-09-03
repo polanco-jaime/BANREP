@@ -73,7 +73,7 @@ for (k  in 1:length(eapb_list )  ) {
       TYPE_USER <- m
        
       mdx = query_cube_mdx(AXIS0 = AXIS0, AXIS1 = AXIS1, AXIS2 = AXIS2, 
-                           TYPE_USER=TYPE_USER,
+                           TYPE_USER=NULL, #TYPE_USER,
                            SEGREGATION_VAR_INTERES=SEGREGATION_VAR_INTERES ,
                            VAR_INTERES=VAR_INTERES,
                            SEGREGATION_EPS_CODE=SEGREGATION_EPS_CODE  ,
@@ -81,13 +81,13 @@ for (k  in 1:length(eapb_list )  ) {
                            cube = from_olap_catalog )
       
       print( "The query is ready for been excecuted")
-      Sys.sleep(15)
+      Sys.sleep(45)
       gc()
       tempo = execue_query_mdx(mdx =mdx ,
                                connection_string = connection_string,
                                EPS=EPS,
                                VAR_INTERES=VAR_INTERES,
-                               TYPE_USER= TYPE_USER  )
+                               TYPE_USER= NULL,  TYPE_USER  )
       
       print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
       csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
