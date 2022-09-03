@@ -18,7 +18,7 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
                               FROM [%s]   
                               "
                 mdx<- sprintf(mdx, AXIS0, AXIS1, AXIS2, from_olap_catalog, AXIS0 )} else{
-          if (is.na(TYPE_USER)) {
+          if (isTRUE(  is.na(TYPE_USER) ) ) {
             where_filter <- '(%s.&[%s] , %s.&[%s]  ) '
             where_filter <- sprintf(where_filter , SEGREGATION_VAR_INTERES, VAR_INTERES, SEGREGATION_EPS_CODE  , EPS )
           } else{

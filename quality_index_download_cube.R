@@ -42,7 +42,7 @@ TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,'2 - SUBSIDIADO'
 EPS_CODE <- read_delim("codigo_entidad_regimen.csv", ",", escape_double = FALSE, trim_ws = TRUE)
 
 connection_string = cnnstr_rips
-eapb_list <- EPS_CODE[['codigo']][1:5]
+eapb_list <- EPS_CODE[['codigo']][2:10]
 from_olap_catalog <- 'CU - Morbilidad_ASIS'
 
 ################################# requried data
