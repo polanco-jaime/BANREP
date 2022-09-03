@@ -25,25 +25,10 @@ devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/func
 source("credentials.R", echo=TRUE)
 ################################# requried data
 
-if(1==1){
 
-### SET THE GRADE OF INTEREST 
-CAUSA = c('Condiciones transmisibles y nutricionales'
-          , 'Enfermedades no transmisibles'	, 'Lesiones'	,'Signos y sintomas mal definidos'
-          )
-
-TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,'2 - SUBSIDIADO'	
-                  , '3 - VINCULADO'	,'4 - PARTICULAR'	,'5 - OTRO'	, '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
-                  '7 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN SUBSIDIADO'	,'8 - DESPLAZADO NO ASEGURADO O VINCULADO'
-                  ) # [Tipo Usuario].[Tipo Usuario].&[1 - CONTRIBUTIVO]
-
-# taking the list of the entire eps
-
-EPS_CODE <- read_delim("codigo_entidad_regimen.csv", ",", escape_double = FALSE, trim_ws = TRUE)
-
-connection_string = cnnstr_rips
-eapb_list <- EPS_CODE[['codigo']] #[2:10]
-from_olap_catalog <- 'CU - Morbilidad_ASIS'
+######################################################
+####### Running loop
+library(readr)
 
 ################################# requried data
 
@@ -58,34 +43,15 @@ AXIS0 <- '[Measures].[ValorIndicador]'
 AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
 AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
 
+from_olap_catalog <- 'CU - Morbilidad_ASIS'
+connection_string = cnnstr_rips
+ITERATIONS <- read_delim("ITERATIONS.csv", 
+                         ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
+                         trim_ws = TRUE)
+ITERATIONS <- subset(ITERATIONS, ITERATIONS$TYPE_OF_USER == '1 - CONTRIBUTIVO' )
 
-
-ITERATIONS = data.frame()
-for (k  in 1:length(eapb_list )  ) {
-  # k=1
-  EPS = as.character(eapb_list[[k]] ) 
-  print(sprintf("The information for the EPS with code: %s will be downloaded", EPS))
-  for (l in CAUSA) {
-    VAR_INTERES <-  l
-    
-    for (m in TIPO_USUARIO) {
-      print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, m ))
-      TEMPO = data.frame('EPS' = EPS, 'VAR_OF_INTEREST' = VAR_INTERES, 'TYPE_OF_USER' = m )
-      
-      ITERATIONS = rbind(TEMPO, ITERATIONS)
-    }
-    
-    
-  }
-  
-}
-
-}
-######################################################
-####### Running loop
-
-for (i in nrow(ITERATIONS)) {
-  i=50
+for (i in 1:nrow(ITERATIONS)) {
+  # i=1000
   EPS = as.character(ITERATIONS[i,1])
   VAR_INTERES = as.character(ITERATIONS[i,2])
   TYPE_USER = as.character(ITERATIONS[i,3])
@@ -98,6 +64,7 @@ for (i in nrow(ITERATIONS)) {
                        cube = from_olap_catalog )
   
   print( "The query is ready!")
+  olapR::is.Query(mdx)
   
   tryCatch( {
     tempo = execue_query_mdx(mdx =mdx , 
@@ -108,9 +75,10 @@ for (i in nrow(ITERATIONS)) {
     print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
     csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
     write.csv(tempo, csv_name , row.names = F, sep = '|')
-  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
+  )
   print( "ok!")
-  Sys.sleep(30)
+  Sys.sleep(1)
   gc()
 }
  
@@ -119,18 +87,6 @@ for (i in nrow(ITERATIONS)) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
- 
 
 
 
