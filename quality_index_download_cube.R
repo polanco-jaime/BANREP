@@ -79,7 +79,7 @@ for (i in 1:nrow(ITERATIONS)) {
                              TYPE_USER=  TYPE_USER ,  olapCnn = olapCnn)
     print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
     csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
-    write_csv2(tempo, csv_name , row.names = F, na = '')
+    write_csv2(tempo, csv_name ,  na = '')
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
   )
   print( "ok!")
@@ -94,6 +94,8 @@ for (i in 1:nrow(ITERATIONS)) {
 
 
 
-
+# git add .
+# git commit -m "loading"
+# git push
 
 
