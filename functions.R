@@ -39,9 +39,15 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
 }
 
 
+
+
+ 
+ 
+
 #Running query and cleaning empty observations
 execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER  ){
   olapCnn<-olapR::OlapConnection(connection_string)
+  
   tempo3 <- olapR::execute2D(olapCnn, mdx)
   gc()
   tempo3[[2]] < - as.numeric(tempo3[[2]])
