@@ -49,15 +49,23 @@ execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER, 
   
   
   tempo3 <- olapR::execute2D(olapCnn, mdx)
-  gc()
-  tempo3[[2]] < - as.numeric(tempo3[[2]])
-  tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)
   tempo3 = subset(tempo3, is.na(tempo3[[3]]) == F)
-  colnames(tempo3) <- c('CITY', 'YEAR', 'VALUE')
-  tempo3$EPS <- EPS
-  tempo3$VAR_INTERES <- as.character(VAR_INTERES)
-  tempo3$TYPE_USER <- as.character(TYPE_USER)
-  return(tempo3)
+  if (nrow(tempo3) == 0) {
+    warning((sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s doesnt have info", EPS, VAR_INTERES, TYPE_USER )))
+  }else{
+    
+    gc()
+    tempo3[[2]] < - as.numeric(tempo3[[2]])
+    tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)
+    tempo3 = subset(tempo3, is.na(tempo3[[3]]) == F)
+    colnames(tempo3) <- c('CITY', 'YEAR', 'VALUE')
+    tempo3$EPS <- EPS
+    tempo3$VAR_INTERES <- as.character(VAR_INTERES)
+    tempo3$TYPE_USER <- as.character(TYPE_USER)
+    return(tempo3)
+  }
+  
+
 }
 
 

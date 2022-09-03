@@ -45,6 +45,8 @@ AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
 
 from_olap_catalog <- 'CU - Morbilidad_ASIS'
 connection_string = cnnstr_rips
+olapCnn<-olapR::OlapConnection(connection_string)
+
 ITERATIONS <- read_delim("ITERATIONS.csv", 
                          ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
                          trim_ws = TRUE)
@@ -52,9 +54,13 @@ ITERATIONS <- subset(ITERATIONS, ITERATIONS$TYPE_OF_USER == '1 - CONTRIBUTIVO' )
 
 for (i in 1:nrow(ITERATIONS)) {
   # i=1000
-  EPS = as.character(ITERATIONS[i,1])
+  #EPS = 'CCF031' 
+  #VAR_INTERES = "Signos y sintomas mal definidos"
+  #TYPE_USER =  "1 - CONTRIBUTIVO"
+  
+  EPS =as.character(ITERATIONS[i,1])
   VAR_INTERES = as.character(ITERATIONS[i,2])
-  TYPE_USER = as.character(ITERATIONS[i,3])
+  TYPE_USER =  as.character(ITERATIONS[i,3])
   mdx = query_cube_mdx(AXIS0 = AXIS0, AXIS1 = AXIS1, AXIS2 = AXIS2, 
                        TYPE_USER= TYPE_USER,
                        SEGREGATION_VAR_INTERES=SEGREGATION_VAR_INTERES ,
@@ -64,17 +70,16 @@ for (i in 1:nrow(ITERATIONS)) {
                        cube = from_olap_catalog )
   
   print( "The query is ready!")
-  olapR::is.Query(mdx)
   
   tryCatch( {
     tempo = execue_query_mdx(mdx =mdx , 
                              connection_string = connection_string,
                              EPS=EPS,
                              VAR_INTERES=VAR_INTERES,
-                             TYPE_USER=  TYPE_USER  )
+                             TYPE_USER=  TYPE_USER ,  olapCnn = olapCnn)
     print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
     csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
-    write.csv(tempo, csv_name , row.names = F, sep = '|')
+    write_csv2(tempo, csv_name , row.names = F, na = '')
   }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
   )
   print( "ok!")
