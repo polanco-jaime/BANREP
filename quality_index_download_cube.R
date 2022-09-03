@@ -29,12 +29,12 @@ if(1==1){
 
 ### SET THE GRADE OF INTEREST 
 CAUSA = c('Condiciones transmisibles y nutricionales'
-          #, 'Enfermedades no transmisibles'	, 'Lesiones'	,'Signos y sintomas mal definidos'	
+          , 'Enfermedades no transmisibles'	, 'Lesiones'	,'Signos y sintomas mal definidos'
           )
 
 TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,'2 - SUBSIDIADO'	
-                  # , '3 - VINCULADO'	,'4 - PARTICULAR'	,'5 - OTRO'	, '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
-                  # '7 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN SUBSIDIADO'	,'8 - DESPLAZADO NO ASEGURADO O VINCULADO'	
+                  , '3 - VINCULADO'	,'4 - PARTICULAR'	,'5 - OTRO'	, '6 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN CONTRIBUTIVO'	,
+                  '7 - DESPLAZADO CON AFILIACIÓN A RÉGIMEN SUBSIDIADO'	,'8 - DESPLAZADO NO ASEGURADO O VINCULADO'
                   ) # [Tipo Usuario].[Tipo Usuario].&[1 - CONTRIBUTIVO]
 
 # taking the list of the entire eps
@@ -42,7 +42,7 @@ TIPO_USUARIO <- c('1 - CONTRIBUTIVO'	,'2 - SUBSIDIADO'
 EPS_CODE <- read_delim("codigo_entidad_regimen.csv", ",", escape_double = FALSE, trim_ws = TRUE)
 
 connection_string = cnnstr_rips
-eapb_list <- EPS_CODE[['codigo']][2:10]
+eapb_list <- EPS_CODE[['codigo']] #[2:10]
 from_olap_catalog <- 'CU - Morbilidad_ASIS'
 
 ################################# requried data
@@ -57,11 +57,10 @@ SEGREGATION_VAR_INTERES = '[Causas de Morbilidad].[Gran Causa]'
 AXIS0 <- '[Measures].[ValorIndicador]'
 AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Año]'
 AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
-}
-######################################################
-####### Running loop
- 
- 
+
+
+
+ITERATIONS = data.frame()
 for (k  in 1:length(eapb_list )  ) {
   # k=1
   EPS = as.character(eapb_list[[k]] ) 
@@ -70,42 +69,59 @@ for (k  in 1:length(eapb_list )  ) {
     VAR_INTERES <-  l
     
     for (m in TIPO_USUARIO) {
-      TYPE_USER <- m
-       
-      mdx = query_cube_mdx(AXIS0 = AXIS0, AXIS1 = AXIS1, AXIS2 = AXIS2, 
-                           TYPE_USER= TYPE_USER,
-                           SEGREGATION_VAR_INTERES=SEGREGATION_VAR_INTERES ,
-                           VAR_INTERES=VAR_INTERES,
-                           SEGREGATION_EPS_CODE=SEGREGATION_EPS_CODE  ,
-                           EPS=EPS,
-                           cube = from_olap_catalog )
+      print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, m ))
+      TEMPO = data.frame('EPS' = EPS, 'VAR_OF_INTEREST' = VAR_INTERES, 'TYPE_OF_USER' = m )
       
-      print( "The query is ready!")
-      
-      tryCatch( {
-        tempo = execue_query_mdx(mdx =mdx , 
-                                 connection_string = connection_string,
-                                 EPS=EPS,
-                                 VAR_INTERES=VAR_INTERES,
-                                 TYPE_USER=  TYPE_USER  )
-        print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
-        csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
-        write.csv(tempo, csv_name , row.names = F, sep = '|')
-      }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
-      
-      
-      print( "ok!")
-      Sys.sleep(30)
-      gc()
-      
-      
-       
+      ITERATIONS = rbind(TEMPO, ITERATIONS)
     }
     
     
   }
   
 }
+
+}
+######################################################
+####### Running loop
+
+for (i in nrow(ITERATIONS)) {
+  i=50
+  EPS = as.character(ITERATIONS[i,1])
+  VAR_INTERES = as.character(ITERATIONS[i,2])
+  TYPE_USER = as.character(ITERATIONS[i,3])
+  mdx = query_cube_mdx(AXIS0 = AXIS0, AXIS1 = AXIS1, AXIS2 = AXIS2, 
+                       TYPE_USER= TYPE_USER,
+                       SEGREGATION_VAR_INTERES=SEGREGATION_VAR_INTERES ,
+                       VAR_INTERES=VAR_INTERES,
+                       SEGREGATION_EPS_CODE=SEGREGATION_EPS_CODE  ,
+                       EPS=EPS,
+                       cube = from_olap_catalog )
+  
+  print( "The query is ready!")
+  
+  tryCatch( {
+    tempo = execue_query_mdx(mdx =mdx , 
+                             connection_string = connection_string,
+                             EPS=EPS,
+                             VAR_INTERES=VAR_INTERES,
+                             TYPE_USER=  TYPE_USER  )
+    print(sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s had beed downloaded", EPS, VAR_INTERES, TYPE_USER ))
+    csv_name = paste0('tables_from_cube/',EPS, '_',VAR_INTERES, '_',TYPE_USER,'.csv' )
+    write.csv(tempo, csv_name , row.names = F, sep = '|')
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+  print( "ok!")
+  Sys.sleep(30)
+  gc()
+}
+ 
+ 
+ 
+
+
+
+
+
+
 
 
 

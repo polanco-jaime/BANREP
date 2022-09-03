@@ -12,7 +12,7 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
                          cube ){
   
       if ( isTRUE( SEGREGATION_VAR_INTERES=='' ) ) {
-                mdx<- "SELECT NON EMPTY {%s} ON AXIS(0),
+                mdx<- "SELECT   {%s} ON AXIS(0),
                                      {%s.MEMBERS} ON AXIS(1),
                                      {%s.MEMBERS} ON AXIS(2)
                               FROM [%s]   
@@ -27,7 +27,7 @@ query_cube_mdx <- function(  AXIS0 ,AXIS1 ,AXIS2 ,
             where_filter <- sprintf(where_filter   ,SEGREGATION_VAR_INTERES, VAR_INTERES,SEGREGATION_EPS_CODE  , EPS, TYPE_USER )
           }
           
-          mdx<- "SELECT NON EMPTY {%s} ON AXIS(0),
+          mdx<- "SELECT  {%s} ON AXIS(0),
                                {%s.MEMBERS} ON AXIS(1), 
                                {%s.MEMBERS} ON AXIS(2) 
                         FROM [%s]
