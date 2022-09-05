@@ -53,7 +53,7 @@ execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER, 
   if (nrow(tempo3) == 0) {
     print((sprintf("The EPS with code: %s, var. of interes: %s, and of type user: %s doesnt have info", EPS, VAR_INTERES, TYPE_USER )))
   }else{
-    
+    print(paste0("the number of observations are" , nrow(tempo3)) )
     gc()
     tempo3[[2]] < - as.numeric(tempo3[[2]])
     tempo3 = subset(tempo3, tempo3[[2]] >= 2009 &  tempo3[[2]]  <=2022)

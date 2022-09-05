@@ -1,0 +1,116 @@
+CITY;YEAR;VALUE;EPS;VAR_INTERES;TYPE_USER
+;2009; 17,427386;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2010; 16,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2011; 10,810811;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2012; 17,741935;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2013; 12,500000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2014; 17,506631;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2015; 20,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2018; 17,602996;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2019; 18,461127;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+;2020; 11,911765;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+05001 - Medellín;2009; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+05001 - Medellín;2015; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+05001 - Medellín;2019; 22,222222;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+05129 - Caldas;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+08001 - Barranquilla;2015; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+08573 - Puerto Colombia;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+08758 - Soledad;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+-1 - No Definido;2018; 17,612524;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+-1 - No Definido;2019; 17,930029;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+-1 - No Definido;2020; 11,699605;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2009; 14,782609;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2010; 14,736842;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2011; 10,344828;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2012; 13,186813;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2013;  5,660377;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2014; 20,270270;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2015; 16,030534;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+11001 - Bogotá, D.C.;2019; 30,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2009; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2010; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2011; 12,500000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2012; 22,222222;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2013; 14,285714;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2014; 12,500000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2015; 30,769231;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13001 - Cartagena;2019;  3,750000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13160 - Cantagallo;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13188 - Cicuco;2019; 12,500000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13430 - Magangué;2019; 20,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+13430 - Magangué;2020; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+15238 - Duitama;2013;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+15572 - Puerto Boyacá;2019; 14,285714;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+17001 - Manizales;2019; 13,636364;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+20001 - Valledupar;2009;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+20238 - El Copey;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25001 - Agua De Dios;2012;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25175 - Chía;2019; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25473 - Mosquera;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25572 - Puerto Salgar;2014; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25572 - Puerto Salgar;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25662 - San Juan De Río Seco;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25754 - Soacha;2018;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+25799 - Tenjo;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2009; 10,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2011; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2012; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2013; 23,076923;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2014; 21,875000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+41001 - Neiva;2015; 26,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+47001 - Santa Marta;2009; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2009; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2012;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2013;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2014; 44,444444;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2015; 75,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50001 - Villavicencio;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50568 - Puerto Gaitán;2018;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+50568 - Puerto Gaitán;2019; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52001 - Pasto;2010; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52001 - Pasto;2011; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52001 - Pasto;2012;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52352 - Iles;2010; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52356 - Ipiales;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52835 - San Andres De Tumaco;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+52835 - San Andres De Tumaco;2020; 52,941176;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+54001 - Cúcuta;2011; 20,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+54498 - Ocaña;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+54660 - Salazar;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+54810 - Tibú;2019; 12,500000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+66001 - Pereira;2019; 30,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68001 - Bucaramanga;2009; 29,268293;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68001 - Bucaramanga;2010; 16,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68001 - Bucaramanga;2011;  7,017544;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68001 - Bucaramanga;2012; 16,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68001 - Bucaramanga;2014;  9,677419;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68081 - Barrancabermeja;2009;  4,761905;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68081 - Barrancabermeja;2013; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68081 - Barrancabermeja;2014;  6,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68276 - Floridablanca;2014; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68276 - Floridablanca;2018; 66,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68276 - Floridablanca;2019; 18,823529;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68276 - Floridablanca;2020; 11,538462;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68307 - Girón;2019; 27,272727;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68307 - Girón;2020; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68547 - Piedecuesta;2009; 25,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68547 - Piedecuesta;2019; 18,181818;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68655 - Sabana De Torres;2019; 66,666667;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68705 - Santa Bárbara;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+68755 - Socorro;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+70001 - Sincelejo;2015; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+70473 - Morroa;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+70820 - Santiago De Tolú;2019; 14,285714;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+73001 - Ibagué;2011;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+73443 - Mariquita;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+76001 - Cali;2014; 20,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+76001 - Cali;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+76109 - Buenaventura;2019; 21,052632;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+76147 - Cartago;2019;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+85001 - Yopal;2013;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+85001 - Yopal;2015; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+85162 - Monterrey;2019; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+86320 - Orito;2012;100,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+86320 - Orito;2019; 19,230769;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+86568 - Puerto Asís;2011; 50,000000;RES002;Signos y sintomas mal definidos;4 - PARTICULAR
+86865 - Valle Del Guamuez;2019; 33,333333;RES002;Signos y sintomas mal definidos;4 - PARTICULAR

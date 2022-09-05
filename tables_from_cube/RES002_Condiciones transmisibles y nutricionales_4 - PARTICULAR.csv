@@ -1,0 +1,131 @@
+CITY;YEAR;VALUE;EPS;VAR_INTERES;TYPE_USER
+;2009; 37,344398;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2010; 31,746032;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2011; 22,072072;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2012; 31,451613;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2013; 17,307692;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2014; 30,503979;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2015; 30,810811;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2018; 22,284644;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2019; 17,445899;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+;2020; 12,279412;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05001 - Medellín;2009; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05001 - Medellín;2013;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05001 - Medellín;2014; 16,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05001 - Medellín;2015; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05001 - Medellín;2019; 11,111111;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+05360 - Itagui;2019; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+08001 - Barranquilla;2009;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+08001 - Barranquilla;2014; 66,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+08001 - Barranquilla;2015; 66,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+08758 - Soledad;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+-1 - No Definido;2015;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+-1 - No Definido;2018; 21,722114;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+-1 - No Definido;2019; 17,084548;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+-1 - No Definido;2020; 12,252964;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2009; 39,130435;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2010; 34,736842;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2011; 25,517241;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2012; 31,868132;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2013; 16,981132;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2014; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2015; 24,427481;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+11001 - Bogotá, D.C.;2018; 37,500000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2009; 12,500000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2010; 16,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2012; 22,222222;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2013; 42,857143;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2014; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2015; 23,076923;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13001 - Cartagena;2019; 31,250000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13188 - Cicuco;2019; 12,500000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13430 - Magangué;2009;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+13430 - Magangué;2020; 66,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+15572 - Puerto Boyacá;2019; 28,571429;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+15696 - Santa Sofía;2012;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+17001 - Manizales;2019;  4,545455;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+17380 - La Dorada;2019; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+20001 - Valledupar;2015;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+20238 - El Copey;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+23586 - Purísima;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25126 - Cajicá;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25175 - Chía;2011;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25269 - Facatativá;2009;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25320 - Guaduas;2019; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25473 - Mosquera;2018;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25473 - Mosquera;2019; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25572 - Puerto Salgar;2009;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25572 - Puerto Salgar;2014; 66,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25572 - Puerto Salgar;2019; 16,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25662 - San Juan De Río Seco;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25754 - Soacha;2018;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+25799 - Tenjo;2019; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2009; 30,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2010; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2011; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2013; 23,076923;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2014; 43,750000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2015; 53,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41001 - Neiva;2019; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+41298 - Garzón;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+47001 - Santa Marta;2009; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+47001 - Santa Marta;2012; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+47001 - Santa Marta;2015;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2010;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2011; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2012;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2014; 11,111111;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2015; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50001 - Villavicencio;2019; 22,222222;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50568 - Puerto Gaitán;2018;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50568 - Puerto Gaitán;2019; 18,750000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+50568 - Puerto Gaitán;2020; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+52001 - Pasto;2011; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+52835 - San Andres De Tumaco;2020; 17,647059;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+54001 - Cúcuta;2009; 20,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+54498 - Ocaña;2020;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+54810 - Tibú;2019; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2009; 34,146341;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2010; 20,833333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2011; 10,526316;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2012; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2013; 12,500000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2014; 19,354839;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68001 - Bucaramanga;2015; 16,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68081 - Barrancabermeja;2009; 52,380952;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68081 - Barrancabermeja;2011; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68081 - Barrancabermeja;2014; 20,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68081 - Barrancabermeja;2015; 75,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2009; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2012;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2013; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2014; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2018; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2019; 15,294118;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68276 - Floridablanca;2020; 11,538462;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68307 - Girón;2019;  9,090909;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68307 - Girón;2020; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68444 - Matanza;2018;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68547 - Piedecuesta;2009; 30,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68547 - Piedecuesta;2019;  9,090909;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+68655 - Sabana De Torres;2019; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70001 - Sincelejo;2015; 50,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70221 - Coveñas;2019; 16,666667;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70742 - San Luis De Sincé;2014;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70742 - San Luis De Sincé;2015;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70742 - San Luis De Sincé;2019; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+70820 - Santiago De Tolú;2019; 14,285714;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+73001 - Ibagué;2014; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+73001 - Ibagué;2015;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+73443 - Mariquita;2019; 25,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+76001 - Cali;2010; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+76109 - Buenaventura;2019;  5,263158;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+85001 - Yopal;2012;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+85001 - Yopal;2014; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+85001 - Yopal;2015; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+85162 - Monterrey;2020;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+86320 - Orito;2012;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+86320 - Orito;2014;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+86320 - Orito;2019; 19,230769;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+86757 - San Miguel;2019;100,000000;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR
+86865 - Valle Del Guamuez;2019; 33,333333;RES002;Condiciones transmisibles y nutricionales;4 - PARTICULAR

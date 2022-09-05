@@ -1,0 +1,247 @@
+CITY;YEAR;VALUE;EPS;VAR_INTERES;TYPE_USER
+;2009; 55,60166;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2010; 77,77778;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2011; 77,02703;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2012; 65,32258;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2013; 71,15385;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2014; 83,55438;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2015; 85,40541;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2018; 88,76404;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2019; 88,77905;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+;2020; 84,63235;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2009; 91,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2011; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2014; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2015; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05001 - Medellín;2019; 44,44444;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05129 - Caldas;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05129 - Caldas;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05212 - Copacabana;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05266 - Envigado;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05266 - Envigado;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05360 - Itagui;2019; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05360 - Itagui;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05376 - La Ceja;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05380 - La Estrella;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05579 - Puerto Berrío;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05579 - Puerto Berrío;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+05686 - Santa Rosa De Osos;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08001 - Barranquilla;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08001 - Barranquilla;2014; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08001 - Barranquilla;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08573 - Puerto Colombia;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08758 - Soledad;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+08758 - Soledad;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+-1 - No Definido;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+-1 - No Definido;2018; 89,04110;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+-1 - No Definido;2019; 88,62974;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+-1 - No Definido;2020; 84,11067;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2009; 53,04348;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2010; 76,84211;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2011; 72,41379;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2012; 63,73626;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2013; 77,35849;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2014; 82,88288;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2015; 84,73282;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2018; 62,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+11001 - Bogotá, D.C.;2019; 80,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2009; 87,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2010; 33,33333;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2011; 87,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2012; 77,77778;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2013; 57,14286;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2014; 87,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2015; 92,30769;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13001 - Cartagena;2019; 76,25000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13160 - Cantagallo;2019; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13160 - Cantagallo;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13188 - Cicuco;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13188 - Cicuco;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13430 - Magangué;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13430 - Magangué;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13430 - Magangué;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+13468 - Mompós;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15001 - Tunja;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15001 - Tunja;2013;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15001 - Tunja;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15104 - Boyacá;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15238 - Duitama;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15455 - Miraflores;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15516 - Paipa;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15572 - Puerto Boyacá;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15696 - Santa Sofía;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15759 - Sogamoso;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+15759 - Sogamoso;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+17001 - Manizales;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+17001 - Manizales;2019; 90,90909;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+17380 - La Dorada;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+17380 - La Dorada;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+19698 - Santander De Quilichao;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+20001 - Valledupar;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+20770 - San Martín;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+23182 - Chinú;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+23586 - Purísima;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25001 - Agua De Dios;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25001 - Agua De Dios;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25175 - Chía;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25175 - Chía;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25175 - Chía;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25214 - Cota;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25290 - Fusagasugá;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25307 - Girardot;2013;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25307 - Girardot;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25320 - Guaduas;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25377 - La Calera;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25430 - Madrid;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25473 - Mosquera;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25473 - Mosquera;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25572 - Puerto Salgar;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25572 - Puerto Salgar;2014; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25572 - Puerto Salgar;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25572 - Puerto Salgar;2019; 83,33333;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25662 - San Juan De Río Seco;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25662 - San Juan De Río Seco;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25754 - Soacha;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25799 - Tenjo;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25875 - Villeta;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+25899 - Zipaquirá;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2009; 80,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2013; 69,23077;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2014; 84,37500;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2015; 86,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41001 - Neiva;2019; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+41206 - Colombia;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+47001 - Santa Marta;2009; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+47707 - Santa Ana;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50001 - Villavicencio;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50001 - Villavicencio;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50001 - Villavicencio;2014; 77,77778;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50001 - Villavicencio;2015; 75,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50001 - Villavicencio;2019; 55,55556;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50318 - Guamal;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50568 - Puerto Gaitán;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50568 - Puerto Gaitán;2019; 87,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50568 - Puerto Gaitán;2020; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+50680 - San Carlos De Guaroa;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52001 - Pasto;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52001 - Pasto;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52001 - Pasto;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52001 - Pasto;2013;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52001 - Pasto;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52352 - Iles;2010; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52352 - Iles;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52356 - Ipiales;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52835 - San Andres De Tumaco;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+52835 - San Andres De Tumaco;2020; 88,23529;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54001 - Cúcuta;2009; 60,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54001 - Cúcuta;2011; 80,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54172 - Chinácota;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54405 - Los Patios;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54405 - Los Patios;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54498 - Ocaña;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54498 - Ocaña;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54810 - Tibú;2019; 87,50000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+54810 - Tibú;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+66001 - Pereira;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+66170 - Dosquebradas;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+66170 - Dosquebradas;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2009; 56,09756;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2010; 83,33333;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2011; 84,21053;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2012; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2013; 75,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2014; 93,54839;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68001 - Bucaramanga;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2009; 28,57143;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2011; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2013; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2014; 86,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68081 - Barrancabermeja;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68101 - Bolívar;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2009; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2013; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2018; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2019; 89,41176;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68276 - Floridablanca;2020; 88,46154;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68307 - Girón;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68307 - Girón;2019; 90,90909;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68307 - Girón;2020; 75,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68327 - Güepsa;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68406 - Lebríja;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68444 - Matanza;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2009; 25,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2019; 90,90909;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68547 - Piedecuesta;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68549 - Pinchote;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68575 - Puerto Wilches;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68575 - Puerto Wilches;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68615 - Rionegro;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68655 - Sabana De Torres;2019; 33,33333;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68679 - San Gil;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68679 - San Gil;2010;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68679 - San Gil;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68679 - San Gil;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68679 - San Gil;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68705 - Santa Bárbara;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68755 - Socorro;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68755 - Socorro;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+68872 - Villanueva;2009;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70001 - Sincelejo;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70001 - Sincelejo;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70215 - Corozal;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70221 - Coveñas;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70473 - Morroa;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70670 - Sampués;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70717 - San Pedro;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70717 - San Pedro;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70717 - San Pedro;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70742 - San Luis De Sincé;2014;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70742 - San Luis De Sincé;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70742 - San Luis De Sincé;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70820 - Santiago De Tolú;2018;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+70820 - Santiago De Tolú;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73001 - Ibagué;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73001 - Ibagué;2013;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73001 - Ibagué;2014; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73001 - Ibagué;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73283 - Fresno;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73283 - Fresno;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73443 - Mariquita;2019; 75,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+73547 - Piedras;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2010; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2013; 80,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2014; 80,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2015;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76001 - Cali;2019; 74,35897;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76109 - Buenaventura;2019; 89,47368;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76109 - Buenaventura;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76147 - Cartago;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76233 - Dagua;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76233 - Dagua;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76364 - Jamundí;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+76520 - Palmira;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+85001 - Yopal;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+85001 - Yopal;2014; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+85001 - Yopal;2015; 66,66667;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+85162 - Monterrey;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+85250 - Paz De Ariporo;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86320 - Orito;2011;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86320 - Orito;2012;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86320 - Orito;2019; 96,15385;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86320 - Orito;2020;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86568 - Puerto Asís;2011; 50,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86757 - San Miguel;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
+86865 - Valle Del Guamuez;2019;100,00000;RES002;Enfermedades no transmisibles;4 - PARTICULAR
