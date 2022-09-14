@@ -1,7 +1,7 @@
 ######### Libraries required #########
  
-lista = c('readr','readxl',
-          'rio' , 'arrow', 'sqldf'
+lista = c('readr','readxl', #'arrow', 
+          'rio' , 'sqldf', 'haven', 'stringdist'
 )
 
 for (i in 1:length(lista) ) {
@@ -55,3 +55,42 @@ for (i in 1:nrow(lista) ) {
 sqldf::sqldf("
              SELECT VALOR FROM calidad_eps_20
              ")
+
+
+
+
+
+
+
+
+#############################################################################
+##### Homogenization EPS
+
+library(readxl)
+EPS_CODE <- read_excel("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/diccionario_codigos_eps.xlsx", 
+                       sheet = "codigo_entidad_regimen")
+
+
+Btutelas_eps <- read_excel("C:/Users/USER/Downloads/Btutelas_eps.xlsx", 
+                           sheet = "Base", col_types = c("numeric", 
+                                                         "text", "skip", "skip", "skip", "text", 
+                                                         "numeric"))
+
+
+Btutelas_eps = homogenizacion_eps(tabla =Btutelas_eps ,
+                   Nombre_eps = 'eps' ,
+                   Regimen_salud = 'regimen_' )
+
+source1 = 'EPS_CODE'
+source2 = 'Btutelas_eps'
+colname_source1 = 'entidad'
+colname_source2='eps'
+
+sql = sprintf("SELECT DISTINCT entidad, eps, codigo  FROM %s
+             LEFT JOIN %s
+             ON 1=1" ,source1,source2  )
+tempo = sqldf::sqldf(sql)
+ 
+tempo$lv_distance = stringdist( toupper(tempo[[colname_source1]]) , toupper(tempo[[colname_source2]])   )
+
+tempo = subset(tempo, tempo$lv_distance <= 5)
