@@ -1,5 +1,17 @@
 ######### Libraries required #########
- 
+
+
+packageList<-c("olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools')
+# devtools::install_github("apache/arrow/r")
+
+for (i in 1:length(packageList) ) {
+  if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
+    install.packages(packageList[i])
+  }
+  lapply(packageList[i], library, character.only = TRUE)
+}
+
+
 lista = c('readr','readxl', #'arrow', 
           'rio' , 'sqldf', 'haven', 'stringdist'
 )
@@ -62,13 +74,12 @@ sqldf::sqldf("
 
 
 
-
 #############################################################################
 ##### Homogenization EPS
 
-library(readxl)
-EPS_CODE <- read_excel("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/diccionario_codigos_eps.xlsx", 
-                       sheet = "codigo_entidad_regimen")
+devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R") ## it deppends of devtools library
+
+ 
 
 
 Btutelas_eps <- read_excel("C:/Users/USER/Downloads/Btutelas_eps.xlsx", 
@@ -81,16 +92,4 @@ Btutelas_eps = homogenizacion_eps(tabla =Btutelas_eps ,
                    Nombre_eps = 'eps' ,
                    Regimen_salud = 'regimen_' )
 
-source1 = 'EPS_CODE'
-source2 = 'Btutelas_eps'
-colname_source1 = 'entidad'
-colname_source2='eps'
-
-sql = sprintf("SELECT DISTINCT entidad, eps, codigo  FROM %s
-             LEFT JOIN %s
-             ON 1=1" ,source1,source2  )
-tempo = sqldf::sqldf(sql)
  
-tempo$lv_distance = stringdist( toupper(tempo[[colname_source1]]) , toupper(tempo[[colname_source2]])   )
-
-tempo = subset(tempo, tempo$lv_distance <= 5)
