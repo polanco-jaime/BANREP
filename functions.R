@@ -430,7 +430,25 @@ library(tidyr)
   filas = nrow(base)
   base <- base %>%
   map_df(function(x) sum(is.na(x))/filas) %>%
-  gather(feature, num_nulls) %>%
-  print(n = 208)
+  gather(feature, num_nulls) #%>%   print(n = 208)
   return(base)
+}
+
+
+
+frac_nulls_eps <- function(df, column_name){
+  Nulos = data.frame()
+  for (i  in unique(df[[column_name]]) ) {
+    temp = subset(df, df[[column_name]] ==i)
+    nulos = na_by_cols(temp)
+    nulos =  as.data.frame(t(nulos))
+    colnames(nulos) = nulos[1,]
+    nulos  = nulos[-1,]
+    nulos$EPS_ =  i
+    # temp = subset(temp, is.na(temp$years) == F  )
+    rownames(nulos) <- NULL
+    Nulos = rbind(nulos, Nulos)
+    
+  }
+  return(Nulos)
 }

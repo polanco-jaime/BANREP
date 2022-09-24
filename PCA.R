@@ -173,13 +173,18 @@ index_table = index_table[-c(22,23)]
 ?prcomp
 # index_table = na.omit(index_table)
 na_by_cols(index_table)
-cols_number = c(4,5,8,9) # c(4:11,18) ,21,22
+
+frac_nulls_eps(df = index_table, column_name = 'EPS_')
+
+cols_number = c(4,5,8,9 ,7,11) # c(4:11,18) ,21,22
 if(1==1){
-  table_ <- subset(index_table, index_table$years==2018 )
+  table_ <- subset(index_table, index_table$years==2020 )
   table_ <- table_wo_na (base = table_, cols_number = cols_number )
   pca_eps <- prcomp(table_ , scale. = T,  rank. =1)
   summary(pca_eps)
-  }
+}
+
+
 
 plot(pca_eps, type = "l")
 biplot(pca_eps)
