@@ -414,3 +414,23 @@ homogenizacion_eps <- function(tabla,Nombre_eps,Regimen_salud  ) {
 #   }
 #   write.csv2(ITERATIONS, "ITERATIONS.csv", row.names = F)
 # }
+
+
+table_wo_na <- function(base , cols_number ){
+  base <- base[ ,cols_number ]
+  base <- na.omit(base)
+  return(base)
+}
+
+
+na_by_cols <- function(base  ){
+library(dplyr)
+library(purrr)
+library(tidyr)
+  filas = nrow(base)
+  base <- base %>%
+  map_df(function(x) sum(is.na(x))/filas) %>%
+  gather(feature, num_nulls) %>%
+  print(n = 208)
+  return(base)
+}
