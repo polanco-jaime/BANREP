@@ -422,7 +422,7 @@ table_wo_na <- function(base , cols_number ){
   return(base)
 }
 
-
+## function
 na_by_cols <- function(base  ){
 library(dplyr)
 library(purrr)
