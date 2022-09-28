@@ -21,7 +21,7 @@ cu_morbilidad_asis <- read_delim( paste0(path_input, "index_cu_morbilidad_asis.c
                                        delim = ";", escape_double = FALSE, col_types = cols(...1 = col_skip()), 
                                        locale = locale(encoding = "WINDOWS-1252"), 
                                        trim_ws = TRUE)
-
+gc()       
 # TABLE HIGH COST DISEASES
 alto_costo_subsidiado <- read_dta( paste0(path_input, "participacion_alto_costo_subsidiado.dta" ) )
 
@@ -33,15 +33,103 @@ tos_ferina <- read_csv(paste0(path_input, "tos_ferina.csv" ) )
 Btutelas_eps <- read_excel(paste0(path_input, "Btutelas_eps.xlsx" ) , sheet = "Base")
 #
 OPOR_MEDICINA_GENERAL <- read_csv(paste0(path_input, "OPOR_MEDICINA_GENERAL.csv") )
+
+OPOR_MEDICINA_GENERAL = sqldf("
+      SELECT  ANO_CORTE,EPS NOMBRE_EPS_,
+      AVG(OPOR_MEDICINA_GENERAL) OPOR_MEDICINA_GENERAL
+      
+      FROM OPOR_MEDICINA_GENERAL
+      left join diccionario_codigos_eps
+      on codigo = cod_eps
+      GROUP BY 1,2 
+      ")
+
+
 #
 OPOR_ODONT_GENERAL <- read_csv(paste0(path_input, "OPOR_ODONT_GENERAL.csv" ) ) 
- 
+
+OPOR_ODONT_GENERAL = sqldf("
+      SELECT  ANO_CORTE,EPS NOMBRE_EPS_,
+      AVG(OPOR_ODONT_GENERAL) OPOR_ODONT_GENERAL
+      
+      FROM OPOR_ODONT_GENERAL
+      left join diccionario_codigos_eps
+      on codigo = cod_eps
+      GROUP BY 1,2 
+      ")
+
+# EPS diccionario
+diccionario_codigos_eps <- read_excel(paste0(path_input, "diccionario_codigos_eps.xlsx" ) )
+gc()                                    
 #################################################
 # Setting tables for pca
 #################################################
 # TABLE AFILIADOS 
 afiliados <-afiliados[,c(1:15)]
 afiliados <- melt(afiliados, id.vars=c("eps"))
+
+afiliados = sqldf::sqldf("
+              SELECT * FROM afiliados
+             INNER JOIN (SELECT  EPS NOM_EPS, CODIGO
+                          FROM diccionario_codigos_eps)  A
+             ON  EPS= CODIGO
+              ")
+afiliados <-afiliados[,c(2:5)]
+ 
+# MORBILIDAD
+a = cu_morbilidad_asis
+cu_morbilidad_asis = a
+colnames(cu_morbilidad_asis)
+cu_morbilidad_asis = sqldf::sqldf("
+             SELECT
+             DIVIPOLA,   B.EPS AS  NOM_EPS, NOM_REGIMEN, YEARS , quebrada ,
+             
+                (Signos_y_sintomas_mal_definidos)  as Signos_y_sintomas_mal_definidos, 
+                (Lesiones)  as Lesiones, 
+                (Enfermedades_no_transmisibles)  as Enfermedades_no_transmisibles, 
+                (Condiciones_transmisibles_y_nutricionales)  as Condiciones_transmisibles_y_nutricionales,
+               (value) as value
+             
+             FROM cu_morbilidad_asis A
+            INNER JOIN diccionario_codigos_eps B
+            ON  epS_=B.codigo 
+            INNER JOIN afiliados C
+            ON B.CODIGO = C.CODIGO AND VARIABLE = YEARS
+             ")
+gc()
+cu_morbilidad_asis = sqldf::sqldf("
+             SELECT
+             DIVIPOLA,   NOM_EPS, NOM_REGIMEN, YEARS , quebrada ,
+             
+               SUM (Signos_y_sintomas_mal_definidos)  as Signos_y_sintomas_mal_definidos, 
+                SUM(Lesiones)  as Lesiones, 
+               SUM (Enfermedades_no_transmisibles)  as Enfermedades_no_transmisibles, 
+               SUM (Condiciones_transmisibles_y_nutricionales)  as Condiciones_transmisibles_y_nutricionales,
+             AVG  (value) as value
+             
+             FROM cu_morbilidad_asis
+             GROUP BY DIVIPOLA,   NOM_EPS, NOM_REGIMEN, YEARS , quebrada
+             ")
+gc()
+ 
+
+colnames(cu_morbilidad_asis)
+columnas = c(  "Signos_y_sintomas_mal_definidos"  ,        
+               "Lesiones"           ,                      
+              "Enfermedades_no_transmisibles"    ,        
+               "Condiciones_transmisibles_y_nutricionales")
+
+correction_morbilidad(TABLA = 'cu_morbilidad_asis' , VARIABLE  =  "Signos_y_sintomas_mal_definidos")
+# for (i in columnas) {
+#   print(i)
+#   summary(cu_morbilidad_asis[[i]])
+#   cu_morbilidad_asis[[i]]= cu_morbilidad_asis[[i]]/ (cu_morbilidad_asis[['value']] / 1000)
+#   summary(cu_morbilidad_asis[[i]])
+# }
+
+cu_morbilidad_asis =  cu_morbilidad_asis[, c(1:9)]
+
+
 
 # TABLE HIGH COST DISEASES
 alto_costo_subsidiado$sub_porc <- alto_costo_subsidiado$sub_porc/100
@@ -59,18 +147,23 @@ alto_costo_subsidiado <- sqldf::sqldf(" SELECT
              ")
 alto_costo_subsidiado <- alto_costo_subsidiado[ , -c(3,4,8) ] 
 # hooping cough
-
+######################################################################################
+###########################################
+######################################################################################
  
+# Aca tengo que seguir dejando todo en terminos del nombre del codigo 
+###########################################
 options(scipen=999)
 index_tos_ferina = sqldf::sqldf("
-              SELECT COD_ASE, ANO ,  TOS_FERINA/(value/1000) AS TOS_FERINA
+              SELECT NOM_EPS, ANO ,  SUM(TOS_FERINA)/( SUM(value) /1000) AS TOS_FERINA
               FROM ( 
                     SELECT COD_ASE, ANO, SUM(TOS_FERINA)  TOS_FERINA
                     FROM tos_ferina
                     GROUP BY 1,2 ) A
               INNER JOIN  afiliados B
               ON ANO = variable 
-              AND eps = COD_ASE
+              AND CODIGO = COD_ASE
+              GROUP BY 1,2 
               ")
 
 
@@ -81,193 +174,346 @@ Btutelas_eps = homogenizacion_eps(tabla =Btutelas_eps ,
                                   Nombre_eps = 'eps' ,
                                   Regimen_salud = 'regimen')
 
+
+ 
+
 index_tutelas_eps = sqldf::sqldf("
-              SELECT EPS_CODE, ANIO ,  TUTELAS/(value/1000) AS TUTELAS
-              FROM ( 
-                    SELECT ANIO, EPS_CODE, SUM(TUTELAS)  TUTELAS
-                    FROM Btutelas_eps
-                    GROUP BY 1,2 ) A
-              INNER JOIN  afiliados B
-              ON ANIO = variable 
-              AND eps = EPS_CODE
+               SELECT EPS_CODE, ANIO , A.EPS,  TUTELAS/(value/1000) AS TUTELAS_INDEX,(value/1000)  afiliados_x_1000, TUTELAS 
+               FROM
+               (SELECT ANIO, K.EPS_CODE,C.EPS  
+                      , SUM(TUTELAS)  TUTELAS
+                    FROM Btutelas_eps K
+                    INNER JOIN diccionario_codigos_eps C
+                    ON  K.EPS_CODE = C.codigo 
+                    GROUP BY ANIO, K.EPS_CODE,C.EPS ) A
+               INNER JOIN  afiliados B
+                ON ANIO = variable 
+               AND B.CODIGO = A.EPS_CODE
               ")
 
-### I NEED AFILIADOS AT MUNICIPALITIES AND EPS LEVEL
-# index_mun_tos_ferina = sqldf::sqldf("
-#               SELECT COD_ASE, ANO , COD_MUN_N, TOS_FERINA/(value/1000) AS TOS_FERINA
-#               FROM ( 
-#                     SELECT COD_ASE, ANO,COD_MUN_N, SUM(TOS_FERINA)  TOS_FERINA
-#                     FROM tos_ferina
-#                     GROUP BY 1,2,3 ) A
-#               INNER JOIN  afiliados B
-#               ON ANO = variable 
-#               AND eps = COD_ASE
-#               and DIVIPOLA =COD_MUN_N
-#               ")
+ 
+#
+OPOR_MEDICINA_GENERAL$OPOR_MEDICINA_GENERAL <- (OPOR_MEDICINA_GENERAL$OPOR_MEDICINA_GENERAL+0.01 )^-1
+#
+OPOR_ODONT_GENERAL$OPOR_ODONT_GENERAL <-  (OPOR_ODONT_GENERAL$OPOR_ODONT_GENERAL+0.01 )^-1
+
+
 #################################################
 # General in level 
 #################################################
 # Tables 
+nrow(sqldf("SELECT years, NOM_EPS,
+             AVG(Signos_y_sintomas_mal_definidos) AS CNT_Signos_y_sintomas_mal_definidos,
+             AVG(Lesiones) AS CNT_Lesiones ,
+             AVG(Condiciones_transmisibles_y_nutricionales ) AS CNT_Condiciones_transmisibles_y_nutricionales ,
+             AVG(Enfermedades_no_transmisibles ) AS CNT_Enfermedades_no_transmisibles
+           FROM cu_morbilidad_asis
+           WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
+           GROUP BY 1,2"))
 
+nrow(sqldf(" SELECT years, NOM_EPS,
+             AVG(Signos_y_sintomas_mal_definidos ) AS SBS_Signos_y_sintomas_mal_definidos,
+             AVG(Lesiones ) AS SBS_Lesiones ,
+             AVG(Condiciones_transmisibles_y_nutricionales ) AS SBS_Condiciones_transmisibles_y_nutricionales ,
+             AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles
+           FROM cu_morbilidad_asis
+           WHERE NOM_REGIMEN != '1 - CONTRIBUTIVO'
+           GROUP BY 1,2"))
+
+A = data.frame("NOMBRE" = unique(cu_morbilidad_asis$NOM_EPS) )
+B = data.frame("ANIOS" = (2009:2022) )
+C = data.frame("REGIMEN" = c('1 - CONTRIBUTIVO' , '2 - SUBSIDIADO') )
+temp = sqldf("
+        SELECT * FROM A INNER JOIN B ON 1=1 --INNER JOIN C ON 1=1
+      ")
+head(temp)
+
+sbs <- sqldf("SELECT * FROM (
+        SELECT 
+        anios as years, NOMBRE  NOM_EPS , SBS_Signos_y_sintomas_mal_definidos,
+        SBS_Lesiones , SBS_Condiciones_transmisibles_y_nutricionales,
+        SBS_Enfermedades_no_transmisibles , SBS
+      FROM temp
+       LEFT JOIN (
+          SELECT years, NOM_EPS,
+             AVG(Signos_y_sintomas_mal_definidos ) AS SBS_Signos_y_sintomas_mal_definidos,
+             AVG(Lesiones ) AS SBS_Lesiones ,
+             AVG(Condiciones_transmisibles_y_nutricionales ) AS SBS_Condiciones_transmisibles_y_nutricionales ,
+             AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles,
+             1 SBS
+           FROM cu_morbilidad_asis
+           WHERE NOM_REGIMEN != '1 - CONTRIBUTIVO'
+           GROUP BY 1,2
+                )
+       ON NOMBRE  = NOM_EPS
+          )
+      WHERE SBS = 1
+      ")
+
+
+unique(index_cu_morbilidad_asis$NOM_EPS)
 if(1==1){
 index_cu_morbilidad_asis <- sqldf::sqldf(" 
+SELECT * FROM (
                                          SELECT A.*, 
-                                         SBS_Signos_y_sintomas_mal_definidos,
-                                         SBS_Lesiones,
-                                         SBS_Condiciones_transmisibles_y_nutricionales,
-                                         SBS_Enfermedades_no_transmisibles
+                                         CNT_Signos_y_sintomas_mal_definidos,
+                                         CNT_Lesiones,
+                                         CNT_Condiciones_transmisibles_y_nutricionales,
+                                         CNT_Enfermedades_no_transmisibles
                                          FROM (
-                                              SELECT years, EPS_, codigo, 
-                                                 AVG(Signos_y_sintomas_mal_definidos) AS CNT_Signos_y_sintomas_mal_definidos,
-                                                 AVG(Lesiones) AS CNT_Lesiones ,
-                                                 AVG(Condiciones_transmisibles_y_nutricionales) AS CNT_Condiciones_transmisibles_y_nutricionales ,
-                                                 AVG(Enfermedades_no_transmisibles) AS CNT_Enfermedades_no_transmisibles
-                                               FROM cu_morbilidad_asis
-                                               WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
-                                               GROUP BY 1,2,3)  A
+              SELECT * FROM (
+                      SELECT 
+                      anios as years, NOMBRE  NOM_EPS , SBS_Signos_y_sintomas_mal_definidos,
+                      SBS_Lesiones , SBS_Condiciones_transmisibles_y_nutricionales,
+                      SBS_Enfermedades_no_transmisibles
+                    FROM temp
+                     LEFT JOIN (
+                        SELECT years, NOM_EPS,
+                           AVG(Signos_y_sintomas_mal_definidos ) AS SBS_Signos_y_sintomas_mal_definidos,
+                           AVG(Lesiones ) AS SBS_Lesiones ,
+                           AVG(Condiciones_transmisibles_y_nutricionales ) AS SBS_Condiciones_transmisibles_y_nutricionales ,
+                           AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles
+                         FROM cu_morbilidad_asis
+                         WHERE NOM_REGIMEN != '1 - CONTRIBUTIVO'
+                         GROUP BY 1,2
+                              )
+                     ON NOMBRE  = NOM_EPS
+                        )
+                                               )  A
                                           LEFT JOIN (
-                                              SELECT years, EPS_, codigo, 
-                                                 AVG(Signos_y_sintomas_mal_definidos) AS SBS_Signos_y_sintomas_mal_definidos,
-                                                 AVG(Lesiones) AS SBS_Lesiones ,
-                                                 AVG(Condiciones_transmisibles_y_nutricionales) AS SBS_Condiciones_transmisibles_y_nutricionales ,
-                                                 AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles
-                                               FROM cu_morbilidad_asis
-                                               WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
-                                               GROUP BY 1,2,3)  B
+           SELECT years, NOM_EPS,
+             AVG(Signos_y_sintomas_mal_definidos) AS CNT_Signos_y_sintomas_mal_definidos,
+             AVG(Lesiones) AS CNT_Lesiones ,
+             AVG(Condiciones_transmisibles_y_nutricionales ) AS CNT_Condiciones_transmisibles_y_nutricionales ,
+             AVG(Enfermedades_no_transmisibles ) AS CNT_Enfermedades_no_transmisibles
+           FROM cu_morbilidad_asis
+           WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
+           GROUP BY 1,2
+                                               )  B
                                           ON A.years = B.years AND 
-                                          A.EPS_ = B.EPS_ AND 
-                                          A.codigo = B.codigo 
+                                          A.NOM_EPS= B.NOM_EPS
+) A
+
+
                                          ")
 
+index_cu_morbilidad_asis = sqldf::sqldf("
+             select * FROM (
+                        SELECT years, NOM_EPS,
+                           AVG(Signos_y_sintomas_mal_definidos ) AS Signos_y_sintomas_mal_definidos,
+                           AVG(Lesiones ) AS Lesiones ,
+                           AVG(Condiciones_transmisibles_y_nutricionales ) AS Condiciones_transmisibles_y_nutricionales ,
+                           AVG(Enfermedades_no_transmisibles) AS Enfermedades_no_transmisibles
+                         FROM cu_morbilidad_asis
+                       --  WHERE NOM_REGIMEN != '1 - CONTRIBUTIVO'
+                         GROUP BY 1,2
+                          
+                              )
+               
+             ")
 
-index_alto_costo_subsidiado <- sqldf("
+
+index_alto_costo_subsidiado <- sqldf("SELECT EPS AS NOMBRE_EPS, YEAR,
+                                      AVG(QUEBRADA) AS QUEBRADA, 
+                                      AVG(SUB_PORC) AS SUB_PORC, 
+                                      AVG(AC_PORC) AS AC_PORC
+                                      FROM (
+                                      SELECT *
+                                      FROM 
+                                      diccionario_codigos_eps
+                                      INNER JOIN
+                                              (
                                      SELECT year, cod_eapb , 
                                      AVG(sub_porc) AS sub_porc, 
                                      AVG(ac_porc) AS ac_porc
                                      FROM alto_costo_subsidiado
-                                     GROUP BY 1 , 2
+                                     GROUP BY 1 , 2 )
+                                     ON CODIGO = COD_EAPB
+                                      )
+                                      GROUP BY 1 , 2
                                      ")
 
-
-index_table = sqldf::sqldf("
+}
+if (1==1){
+index_table_nal = sqldf::sqldf("
                             SELECT * FROM  index_cu_morbilidad_asis A
+                            -----------------------------
                             LEFT JOIN index_alto_costo_subsidiado B
                             ON  year =  years
-                            AND cod_eapb = codigo
-                            -- LEFT JOIN index_tutelas_eps
-                            -- ON  ANIO =  years
-                            -- AND EPS_CODE = codigo
-                           LEFT JOIN  afiliados C
-                           ON years = variable 
-                           AND codigo = c.EPS
-                            LEFT JOIN  OPOR_MEDICINA_GENERAL D
-                           ON years = D.ANO_CORTE 
-                           AND codigo = D.COD_EPS
+                            AND NOMBRE_EPS = NOM_EPS
+                            -----------------------------
+                            LEFT JOIN (
+                            SELECT EPS AS NOM, ANIO AS ANIO_1 ,
+                            SUM(AFILIADOS_X_1000) AS AFILIADOS_X_1000, 
+                            SUM(TUTELAS) AS TUTELAS
+                            FROM index_tutelas_eps
+                            GROUP BY 1,2
+                            ) A
+                             ON NOM_EPS = NOM
+                             AND ANIO_1 =  YEARS
+                          -----------------------------
+                          LEFT JOIN  (
+                            SELECT NOM_EPS NOM_1, VARIABLE ANIO_2,
+                            SUM(VALUE) AS AFILIADOS
+                            FROM afiliados
+                            GROUP BY 1,2
+                          ) C
+                          ON NOM_EPS = NOM_1
+                             AND ANIO_2 =  YEARS
+                         -----------------------------
+                          LEFT JOIN  OPOR_MEDICINA_GENERAL D
+                          ON D.ANO_CORTE =  YEARS
+                          AND NOM_EPS = D.NOMBRE_EPS_
+                          -----------------------------
                           LEFT JOIN  OPOR_ODONT_GENERAL E
-                          ON years = E.ANO_CORTE 
-                           AND codigo = E.COD_EPS
+                          ON E.ANO_CORTE =  YEARS
+                          AND NOM_EPS = E.NOMBRE_EPS_
                            ")
+
+index_table_nal = index_table_nal[,-c(7,8,12,13,16,17,19,20,22,23)]
+
+#  
+index_table_nal$AFILIADOS_X_1000 = index_table_nal$AFILIADOS/1000 
+ 
+na_by_cols(index_table_nal)
+
+# frac_nulls_eps(df = index_table_nal, column_name = 'NOM_EPS')
 }
-colnames(index_table)
-index_table = index_table[-c(22,23)]
-?prcomp
-# index_table = na.omit(index_table)
-na_by_cols(index_table)
+cols_number = c(3:6) #  ,9,10
 
-frac_nulls_eps(df = index_table, column_name = 'EPS_')
-
-cols_number = c(4,5,8,9 ,7,11) # c(4:11,18) ,21,22
+# PCA
 if(1==1){
-  table_ <- subset(index_table, index_table$years==2020 )
-  table_ <- table_wo_na (base = table_, cols_number = cols_number )
-  pca_eps <- prcomp(table_ , scale. = T,  rank. =1)
+  # table_ <- subset(index_table_nal, index_table_nal$years==2022 )
+  # table_ <- table_wo_na (base = table_, cols_number = cols_number )
+  table_ <- table_wo_na (base = index_table_nal, cols_number = cols_number )
+  print('---------------------------------------------')
+  print(  data.frame( colnames(table_ ) )      )
+  print('---------------------------------------------')
+  print( paste0('filas ' , nrow((table_ ) ))  )
+  print('---------------------------------------------')
+  pca_eps <- prcomp(table_ ,center = F,  scale. = T,  rank. =1)
+  
+  print('---------------------------------------------')
   summary(pca_eps)
 }
 
-
-
-plot(pca_eps, type = "l")
-biplot(pca_eps)
-biplot(pca_eps, scale = 0)
-index_table = cbind(index_table , predict(pca_eps, index_table) )
- 
-
-hist(pca_eps$x)
-
-
-hist((pca_eps$x - mean(pca_eps$x)) / sd(pca_eps$x) , 10)
-
-
-#################################################
-# Municipalities Level 
-#################################################
-
-
+index_table_nal = cbind(index_table_nal , predict(pca_eps, index_table_nal) )
+#Logict
 if(1==1){
-index_mun_cu_morbilidad_asis <- sqldf::sqldf(" 
-                                         SELECT A.*, 
-                                         SBS_Signos_y_sintomas_mal_definidos,
-                                         SBS_Lesiones,
-                                         SBS_Condiciones_transmisibles_y_nutricionales,
-                                         SBS_Enfermedades_no_transmisibles
-                                         FROM (
-                                              SELECT DIVIPOLA,  years, EPS_, codigo, 
-                                                 AVG(Signos_y_sintomas_mal_definidos) AS CNT_Signos_y_sintomas_mal_definidos,
-                                                 AVG(Lesiones) AS CNT_Lesiones ,
-                                                 AVG(Condiciones_transmisibles_y_nutricionales) AS CNT_Condiciones_transmisibles_y_nutricionales ,
-                                                 AVG(Enfermedades_no_transmisibles) AS CNT_Enfermedades_no_transmisibles
-                                               FROM cu_morbilidad_asis
-                                               WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
-                                               GROUP BY 1,2,3,4)  A
-                                          INNER JOIN (
-                                              SELECT DIVIPOLA, years, EPS_, codigo, 
-                                                 AVG(Signos_y_sintomas_mal_definidos) AS SBS_Signos_y_sintomas_mal_definidos,
-                                                 AVG(Lesiones) AS SBS_Lesiones ,
-                                                 AVG(Condiciones_transmisibles_y_nutricionales) AS SBS_Condiciones_transmisibles_y_nutricionales ,
-                                                 AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles
-                                               FROM cu_morbilidad_asis
-                                               WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
-                                               GROUP BY 1,2,3,4)  B
-                                          ON A.years = B.years AND 
-                                          A.EPS_ = B.EPS_ AND 
-                                          A.codigo = B.codigo  AND
-                                          A.DIVIPOLA = B.DIVIPOLA
-                                         ")
+table_ <- index_table_nal 
+# table_ <- table_wo_na (base = table_, cols_number =  c(4,5,8,9 ,7,11,21 )  ) 
+print('---------------------------------------------')
+print(summary(glm(QUEBRADA ~ PC1 + I(PC1^2) , data = table_, family = 'binomial'))[["coefficients"]] )
+print('---------------------------------------------')
+print( summary(lm(QUEBRADA ~  (PC1) + I(PC1^2) , data = table_ )  )[["coefficients"]]  )
+} 
+
  
+index_cu_morbilidad_asis   = cbind(index_cu_morbilidad_asis , predict(pca_eps, index_cu_morbilidad_asis) )
+# 
+A = index_cu_morbilidad_asis %>% subset( NOM_EPS == 'EPS  FAMISANAR  LTDA')
 
-index_mun_alto_costo_subsidiado = sqldf::sqldf("
-             SELECT   
-             CASE 
-             WHEN length = '1' THEN cod_dpto||'00'|| cod_mpio
-             WHEN length = '2' THEN cod_dpto||'0'|| cod_mpio
-             WHEN length = '3' THEN  cod_dpto||cod_mpio 
-             ELSE NULL END AS DIVIPOLA, *
-             FROM alto_costo_subsidiado
-             ")
-index_mun_table = sqldf::sqldf("
-                            SELECT * FROM 
-                            index_mun_cu_morbilidad_asis A
-                            LEFT JOIN index_mun_alto_costo_subsidiado B
-                            ON  year =  years
-                            AND cod_eapb = codigo AND
-                            A.DIVIPOLA = B.DIVIPOLA 
-                           ")
-}
-
-# PCA
- ?prcomp
-index_mun_table$PCA1=  predict(pca_eps ,index_mun_table )
-index_mun_table = na.omit(index_mun_table)
-colnames(index_mun_table)
-table_ = index_mun_table[, -c(1:4,16:17,20)]
-pca_eps_mun <- prcomp(table_ , scale. = TRUE,  rank. =1)
-summary(pca_eps)
-plot(pca_eps, type = "l")
-biplot(pca_eps)
-biplot(pca_eps, scale = 0)
-index_table = cbind(index_table , pca_eps$x )
-
-hist(index_table$PC1)
-
-
-hist((index_table$PC1 - mean(index_table$PC1)) / sd(index_table$PC1) , 10)
+# table_$res = model$residuals
+# pca_eps <- prcomp(table_ , scale. = T,  rank. =1)
+# table_ = cbind(table_ , predict(pca_eps, table_) )
+# 
+# cor(table_$res ,  table_$PC1)
+# pca_eps$rotation
+# summary(pca_eps)[["importance"]]
+# a = summary(pca_eps)
+# 
+# plot(pca_eps, type = "l")
+# biplot(pca_eps)
+# biplot(pca_eps, scale = 0)
+# 
+# hist(index_table$PC1)
+# 
+# hist(pca_eps$x)
+# 
+# 
+# hist((pca_eps$x - mean(pca_eps$x)) / sd(pca_eps$x) , 20)
+# 
+# 
+# #################################################
+# # Municipalities Level 
+# #################################################
+# 
+# 
+# if(1==1){
+# index_mun_cu_morbilidad_asis <- sqldf::sqldf(" 
+#                                          SELECT A.*, 
+#                                          SBS_Signos_y_sintomas_mal_definidos,
+#                                          SBS_Lesiones,
+#                                          SBS_Condiciones_transmisibles_y_nutricionales,
+#                                          SBS_Enfermedades_no_transmisibles
+#                                          FROM (
+#                                               SELECT DIVIPOLA,  years, EPS_, codigo, 
+#                                                  AVG(Signos_y_sintomas_mal_definidos) AS CNT_Signos_y_sintomas_mal_definidos,
+#                                                  AVG(Lesiones) AS CNT_Lesiones ,
+#                                                  AVG(Condiciones_transmisibles_y_nutricionales) AS CNT_Condiciones_transmisibles_y_nutricionales ,
+#                                                  AVG(Enfermedades_no_transmisibles) AS CNT_Enfermedades_no_transmisibles
+#                                                FROM cu_morbilidad_asis
+#                                                WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
+#                                                GROUP BY 1,2,3,4)  A
+#                                           INNER JOIN (
+#                                               SELECT DIVIPOLA, years, EPS_, codigo, 
+#                                                  AVG(Signos_y_sintomas_mal_definidos) AS SBS_Signos_y_sintomas_mal_definidos,
+#                                                  AVG(Lesiones) AS SBS_Lesiones ,
+#                                                  AVG(Condiciones_transmisibles_y_nutricionales) AS SBS_Condiciones_transmisibles_y_nutricionales ,
+#                                                  AVG(Enfermedades_no_transmisibles) AS SBS_Enfermedades_no_transmisibles
+#                                                FROM cu_morbilidad_asis
+#                                                WHERE NOM_REGIMEN = '1 - CONTRIBUTIVO'
+#                                                GROUP BY 1,2,3,4)  B
+#                                           ON A.years = B.years AND 
+#                                           A.EPS_ = B.EPS_ AND 
+#                                           A.codigo = B.codigo  AND
+#                                           A.DIVIPOLA = B.DIVIPOLA
+#                                          ")
+# head(alto_costo_subsidiado) 
+# alto_costo_subsidiado$length = length()
+# index_mun_alto_costo_subsidiado =alto_costo_subsidiado
+# 
+# index_mun_table = sqldf::sqldf("
+#                             SELECT * FROM 
+#                             index_mun_cu_morbilidad_asis A
+#                             LEFT JOIN index_mun_alto_costo_subsidiado B
+#                             ON  year =  years
+#                             AND cod_eapb = codigo AND
+#                             A.DIVIPOLA = B.DIVIPOLA 
+#                            ")
+# index_mun_table = index_mun_table[,-c(13,14,15)]
+# index_mun_table = sqldf::sqldf("
+#                                SELECT * FROM index_mun_table A
+#                                INNER JOIN diccionario_codigos_eps B
+#                                ON A.codigo=B.codigo 
+#                                ")
+# 
+# }
+# 
+# 
+# diccionario_codigos_eps
+# # PCA
+#  
+# index_mun_table$PCA1=  predict(pca_eps ,index_mun_table )
+# 
+# index_mun_table = na.omit(index_mun_table)
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# colnames(index_mun_table)
+# table_ = index_mun_table[, -c(1:4,16:17,20)]
+# pca_eps_mun <- prcomp(table_ , scale. = TRUE,  rank. =1)
+# summary(pca_eps)
+# plot(pca_eps, type = "l")
+# biplot(pca_eps)
+# biplot(pca_eps, scale = 0)
+# index_table = cbind(index_table , pca_eps$x )
+# 
+# hist(index_table$PC1)
+# 
+# 
+# hist((index_table$PC1 - mean(index_table$PC1)) / sd(index_table$PC1) , 10)
