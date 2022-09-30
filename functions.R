@@ -320,6 +320,27 @@ homogenizacion_eps <- function(tabla,Nombre_eps,Regimen_salud  ) {
   return(tabla)
 }
 
+query_olap <- function(AXIS0,AXIS1, AXIS2,from_olap_catalog,where_filter   ){
+  
+  mdx<- "SELECT  {%s} ON AXIS(0),
+                               {%s.MEMBERS} ON AXIS(1), 
+                               {%s.MEMBERS} ON AXIS(2) 
+                        FROM [%s]
+                        WHERE (%s) "
+  mdx<- sprintf(mdx, AXIS0, AXIS1, AXIS2, from_olap_catalog, where_filter )
+  
+  return(mdx)
+}
+
+run_query_olap <- function(cnnstr, mdx,var1,  var2 ){
+  olapCnn<-olapR::OlapConnection(cnnstr)
+  temp <- olapR::execute2D(olapCnn, mdx)
+  temp$var1 = var1
+  temp$var2 = var2
+  return(mdx)
+}
+
+
 
 
 correction_morbilidad <- function(TABLA , VARIABLE ){
