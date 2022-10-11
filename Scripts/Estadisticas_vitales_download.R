@@ -1,4 +1,4 @@
-packageList<-c("readxl","olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools', 'sqldf')
+packageList<-c("readxl","olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools', 'sqldf', 'tidyr')
 # devtools::install_github("apache/arrow/r")
 
 for (i in 1:length(packageList) ) {
@@ -7,13 +7,13 @@ for (i in 1:length(packageList) ) {
   }
   lapply(packageList[i], library, character.only = TRUE)
 }
-source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/credentials.R")
+source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/Scripts/credentials.R")
 
 #####################################################################
 #
 #####################################################################
 
-devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R") 
+devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scripts/functions.R") 
 
 
 metadata <-  c('EEVV - Defunciones' , 'EEVV - Nacimientos')
@@ -81,29 +81,29 @@ A = data.frame( 'EPS_CODE' = c('0 - NO DEFINIDO',  '14-1 - COLSEGUROS',       '1
       'RES012 - UCORDOBA', 'RES013 - UNARIÑO',
       'RES014 - UPTC', 'UT-001 - UT-001', 'UT-002 - UT-002', 'UT-003 - UT-003','UT-004 - UT-004')  )
   #data.frame("EPS_CODE" = unique(diccionario_codigos_eps$codigo))
-# B =  data.frame('GBD'= c('A. Accidentes',
-#                          'A. Enfermedades infecciosas y parasitarias',
-#                          'A. Tumores malignos',
-#                          'B. Infecciones respiratorias',
-#                          'B. Lesiones intencionales',
-#                          'B. Otros tumores',
-#                          'C. Causas maternas',
-#                          'C. Diabetes mellitus',
-#                          'D. Ciertas afecciones originadas en el período perinatal',
-#                          'D. Otras enfermedades endocrinas, metabolicas, hematologicas e immunológicas',
-#                          'E. Deficiencias de la nutrición',
-#                          'E. Trastornos mentales y enfermedades del sistema nervioso',
-#                          'Eventos (lesiones) de intención no determinada',
-#                          'F. Enfermedades de los órganos de los sentidos',
-#                          'G. Enfermedades cardiovasculares',
-#                          'H. Enfermedades respiratorias',
-#                          'I. Enfermedades digestivas',
-#                          'J. Enfermedades del sistema genito-urinario',
-#                          'K. Enfermedades de la piel',
-#                          'L. Enfermedades del sistema músculo esquelético',
-#                          'M. Anomalías congénitas',
-#                          'N. Enfermedades dentales',
-#                          'No Definido'))
+B =  data.frame('GBD'= c('A. Accidentes',
+                         'A. Enfermedades infecciosas y parasitarias',
+                         'A. Tumores malignos',
+                         'B. Infecciones respiratorias',
+                         'B. Lesiones intencionales',
+                         'B. Otros tumores',
+                         'C. Causas maternas',
+                         'C. Diabetes mellitus',
+                         'D. Ciertas afecciones originadas en el período perinatal',
+                         'D. Otras enfermedades endocrinas, metabolicas, hematologicas e immunológicas',
+                         'E. Deficiencias de la nutrición',
+                         'E. Trastornos mentales y enfermedades del sistema nervioso',
+                         'Eventos (lesiones) de intención no determinada',
+                         'F. Enfermedades de los órganos de los sentidos',
+                         'G. Enfermedades cardiovasculares',
+                         'H. Enfermedades respiratorias',
+                         'I. Enfermedades digestivas',
+                         'J. Enfermedades del sistema genito-urinario',
+                         'K. Enfermedades de la piel',
+                         'L. Enfermedades del sistema músculo esquelético',
+                         'M. Anomalías congénitas',
+                         'N. Enfermedades dentales',
+                         'No Definido'))
 # 
 # B = data.frame("GBD_3" = c('',
 #                            '01. Accidentes de tráfico /a',
@@ -214,24 +214,28 @@ A = data.frame( 'EPS_CODE' = c('0 - NO DEFINIDO',  '14-1 - COLSEGUROS',       '1
 #                            'Otros trastornos nutricionales',
 #                            'Otros tumores malignos' ))
 
-B= data.frame("Options" = c("1 - SI","2 - NO"))
-}
-
+# B= data.frame("Options" = c("1 - SI","2 - NO"))
 INTERATION = sqldf(" SELECT * FROM A INNER JOIN B ON 1=1  ")
 INTERATION = na.omit(INTERATION)
+}
+
 ### Mandatory variables to get observations a municipalities's level.
 AXIS0 <- '[Measures].[Número de Defunciones]'
 AXIS1 <- "[Fecha de Defunción].[Año]" #  '[Administradora].[Administradora]'
 AXIS2 <- '[Geografía de Defuncion].[Municipio]'
-Defuncion_Materna = data.frame() 
-
+segregacion = '[Lista GBD].[Nivel2].&[%s]'
+tabla = data.frame() 
 for (i in 1:nrow(INTERATION) ) {
   var1 = as.character((INTERATION[[1]][i] )[1])
   var2 = as.character( (INTERATION[[2]][i] )[1] )
+  print("/------------------------------------------/")
+  print("/----------Its a new iteration-------------/")
+  print("/------------------------------------------/")
   print(var1)
   print(var2)
   from_olap_catalog <- metadata[1]
-  Filter = ('[Administradora].[Administradora].&[%s],[Mortalidad Materna].[Defunción Materna 42 días].&[%s]')
+  #
+  Filter = paste0('[Administradora].[Administradora].&[%s],', segregacion)
   where_filter <- sprintf(Filter, var1, var2)
   print(where_filter)
   
@@ -243,14 +247,25 @@ for (i in 1:nrow(INTERATION) ) {
     temp  = run_query_olap(cnnstr  = cnnstr_Estadisticas_Vitales, 
                            mdx  = mdx,var1 = var1,  
                            var2  = var2 )
-    colnames(temp)[3] = 'Defuncion_Materna_42_dias'
-    Defuncion_Materna = rbind(Defuncion_Materna, temp)
-  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")}
+    colnames(temp)[3] = 'value'
+    
+    print("/------------------------------------------/")
+    print(sprintf("the number of rows of the full panel are: %s", nrow(temp) ) )
+    print("/------------------------------------------/")
+    tabla = rbind(tabla, temp)
+    print(sprintf("the number of rows of the full panel are: %s", nrow(tabla) ) )
+  }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}
   )
+  
 }
 path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
-write.csv2(Defuncion_Materna, paste0(path_output, 'Defuncion_Materna_42_dias.csv'), row.names = F)
+write.csv2(tabla, paste0(path_output, 'gbd_level2.csv'), row.names = F)
+tabla= gbd_level2
+
+################################33
+#
+########################################
 
 Defuncion_Materna_1y = data.frame() 
 
@@ -395,3 +410,92 @@ temp = sqldf::sqldf("
 write.csv2(temp, paste0(path_output, 'Defuncion_Materna.csv'), row.names = F)
 ################################################################################################33
 
+
+
+library(readr)
+gbd_level2 <- read_delim("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/gbd_level2.csv", 
+                         ";", escape_double = FALSE, locale = locale(encoding = "ISO-8859-1"), 
+                         trim_ws = TRUE)
+colnames(gbd_level2) = c('Municipio', 'fecha_def',  'value' , 'EPS','gbd_level2')
+
+A = sqldf::sqldf("
+             SELECT MUNICIPIO|| ' - ' ||fecha_def|| ' - ' ||EPS ID, 
+                 gbd_level2,  value FROM gbd_level2") 
+library(tidyr)
+?assign
+#pivot the data frame into a long format
+A = reshape(A,timevar  = 'gbd_level2',
+            idvar = "ID",
+            direction = "wide")  
+
+Variables = c()
+for (i in unique(gbd_level2$gbd_level2)) {
+  assign( drop_characters(i ),
+          subset(gbd_level2, gbd_level2 == i )  ,
+          envir = .GlobalEnv )
+  Variables= append(drop_characters(i ), Variables)
+}
+colnames(Defuncion_Materna)
+#######################################
+library(sqldf)
+
+library(readr)
+Defuncion_Materna <- read_delim("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/Defuncion_Materna.csv", 
+                                delim = ";", escape_double = FALSE, col_types = cols(ANIO_ = col_double()), 
+                                trim_ws = TRUE)
+
+ALL_DIVIPOLA_EPS = sqldf::sqldf("
+              WITH
+             ALL_DIVIPOLA_EPS AS (
+             SELECT DISTINCT substr(Municipio, 0, 6) DIVIPOLA_,  
+             substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE_ , fecha_def AS ANIO_
+             FROM gbd_level2 
+             WHERE   Municipio IS NOT NULL AND fecha_def IS NOT NULL
+             ),
+             all_div as (SELECT * FROM ALL_DIVIPOLA_EPS WHERE  EPS_CODE_ != '0')
+             SELECT A.*, B.def_mat_42d_no, 
+             def_mat_42d_si, def_mat_1y_si, def_mat_1y_no
+             FROM all_div A
+             LEFT JOIN Defuncion_Materna B
+             ON A.ANIO_ = B.ANIO_ 
+              AND A.DIVIPOLA_ = B.DIVIPOLA_   
+              AND A.EPS_CODE_ = B.EPS_CODE_  
+             ") 
+EST_VITALES = ALL_DIVIPOLA_EPS
+for (i  in Variables) {
+  print("-------------------")
+  print( i )
+  sql = "WITH 
+        tabla AS  (
+          SELECT  substr(Municipio, 0, 6) DIVIPOLA, 
+          substr(Municipio, 9, length(Municipio)) Muni  , fecha_def as Anio ,
+          gbd_level2 as %s, EPS ,
+          substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE, VALUE
+          FROM %s 
+          WHERE 
+          Municipio IS NOT NULL 
+          AND fecha_def IS NOT NULL
+          AND EPS != '0 - NO DEFINIDO'
+        )  
+        SELECT A.*, B.value as %s FROM EST_VITALES A
+              LEFT JOIN tabla B
+              ON A.ANIO_ = B.ANIO
+              AND A.DIVIPOLA_ = B.DIVIPOLA  
+              AND EPS_CODE_ = EPS_CODE
+          "
+  sql = sprintf(sql, i, i,i)
+  EST_VITALES= sqldf(sql)
+}
+EST_VITALES = sqldf::sqldf("SELECT DIVIPOLA_||' - '|| EPS_CODE_ as ID,
+                                * FROM EST_VITALES")
+
+
+lista = c(5,6,7,8:31)  
+for (i in lista) {
+  EST_VITALES[[i]] = ifelse(is.na(EST_VITALES[[i]]) == T, 0 , EST_VITALES[[i]] )
+}
+write.csv2(EST_VITALES, paste0(path_output, 'EST_VITALES.csv'), row.names = F)
+
+
+
+ 

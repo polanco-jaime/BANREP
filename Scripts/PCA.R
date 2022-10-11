@@ -13,72 +13,31 @@ for (i in 1:length(packageList) ) {
 # Reading tables used for PCA
 #################################################
 path_input = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/input/"
-# TABLE AFILIADOS 
-afiliados <- read_excel(paste0(path_input, "asegurados.xlsx"))
- 
-# TABLE MORBILITIES
-cu_morbilidad_asis <- read_delim( paste0(path_input, "index_cu_morbilidad_asis.csv" ), 
-                                       delim = ";", escape_double = FALSE, col_types = cols(...1 = col_skip()), 
-                                       locale = locale(encoding = "WINDOWS-1252"), 
-                                       trim_ws = TRUE)
-gc()       
-# TABLE HIGH COST DISEASES
-alto_costo_subsidiado <- read_dta( paste0(path_input, "participacion_alto_costo_subsidiado.dta" ) )
-
-# hooping cough
-tos_ferina <- read_csv(paste0(path_input, "tos_ferina.csv" ) )
-
-# Tutelas eps
-
-Btutelas_eps <- read_excel(paste0(path_input, "Btutelas_eps.xlsx" ) , sheet = "Base")
-#
-OPOR_MEDICINA_GENERAL <- read_csv(paste0(path_input, "OPOR_MEDICINA_GENERAL.csv") )
-
-OPOR_MEDICINA_GENERAL = sqldf("
-      SELECT  ANO_CORTE,EPS NOMBRE_EPS_,
-      AVG(OPOR_MEDICINA_GENERAL) OPOR_MEDICINA_GENERAL
-      
-      FROM OPOR_MEDICINA_GENERAL
-      left join diccionario_codigos_eps
-      on codigo = cod_eps
-      GROUP BY 1,2 
-      ")
-
-
-#
-OPOR_ODONT_GENERAL <- read_csv(paste0(path_input, "OPOR_ODONT_GENERAL.csv" ) ) 
-
-OPOR_ODONT_GENERAL = sqldf("
-      SELECT  ANO_CORTE,EPS NOMBRE_EPS_,
-      AVG(OPOR_ODONT_GENERAL) OPOR_ODONT_GENERAL
-      
-      FROM OPOR_ODONT_GENERAL
-      left join diccionario_codigos_eps
-      on codigo = cod_eps
-      GROUP BY 1,2 
-      ")
+path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
 # EPS diccionario
 diccionario_codigos_eps <- read_excel(paste0(path_input, "diccionario_codigos_eps.xlsx" ) )
-gc()                                    
+ 
+ 
+# TABLE MORBILITIES
+cu_morbilidad_asis <- read_delim( paste0(path_output, "index_cu_morbilidad_asis.csv" ), 
+                                       delim = ";", escape_double = FALSE, col_types = cols(...1 = col_skip()), 
+                                       locale = locale(encoding = "WINDOWS-1252"), 
+                                       trim_ws = TRUE)
+        
+# TABLE HIGH COST DISEASES
+alto_costo_subsidiado <- read_dta( paste0(path_output, "participacion_alto_costo_subsidiado.dta" ) )
+
+# hooping cough
+tos_ferina <- read_csv(paste0(path_output, "tos_ferina.csv" ) )
+
+# Tutelas eps
+                               
 #################################################
 # Setting tables for pca
 #################################################
 # TABLE AFILIADOS 
-afiliados <-afiliados[,c(1:15)]
-afiliados <- melt(afiliados, id.vars=c("eps"))
 
-afiliados = sqldf::sqldf("
-              SELECT * FROM afiliados
-             INNER JOIN (SELECT  EPS NOM_EPS, CODIGO
-                          FROM diccionario_codigos_eps)  A
-             ON  EPS= CODIGO
-              ")
-afiliados <-afiliados[,c(2:5)]
- 
-# MORBILIDAD
-a = cu_morbilidad_asis
-cu_morbilidad_asis = a
 colnames(cu_morbilidad_asis)
 cu_morbilidad_asis = sqldf::sqldf("
              SELECT
@@ -120,12 +79,7 @@ columnas = c(  "Signos_y_sintomas_mal_definidos"  ,
                "Condiciones_transmisibles_y_nutricionales")
 
 correction_morbilidad(TABLA = 'cu_morbilidad_asis' , VARIABLE  =  "Signos_y_sintomas_mal_definidos")
-# for (i in columnas) {
-#   print(i)
-#   summary(cu_morbilidad_asis[[i]])
-#   cu_morbilidad_asis[[i]]= cu_morbilidad_asis[[i]]/ (cu_morbilidad_asis[['value']] / 1000)
-#   summary(cu_morbilidad_asis[[i]])
-# }
+ 
 
 cu_morbilidad_asis =  cu_morbilidad_asis[, c(1:9)]
 

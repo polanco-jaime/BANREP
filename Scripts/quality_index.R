@@ -1,95 +1,31 @@
-######### Libraries required #########
+# Calling libraries
 
-
-packageList<-c("olapR", "foreign", "tidyverse", "haven","beepr", 'dplyr', 'readr', 'devtools')
-# devtools::install_github("apache/arrow/r")
-
+packageList<-c("readxl", "readr", "tidyverse", "sqldf",
+               "beepr", 'dplyr', 'readr', 'devtools', 'haven',
+               'reshape2')
 for (i in 1:length(packageList) ) {
   if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
     install.packages(packageList[i])
   }
   lapply(packageList[i], library, character.only = TRUE)
 }
+#################################################
+# Reading tables used for index
+#################################################
+path_input = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/input/"
+path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
+# EPS diccionario
+diccionario_codigos_eps <- read_excel(paste0(path_input, "diccionario_codigos_eps.xlsx" ) )
 
-lista = c('readr','readxl', #'arrow', 
-          'rio' , 'sqldf', 'haven', 'stringdist'
-)
+a = eps_from_code_to_name_n_status(Tabla = diccionario_codigos_eps, eps_code =  'codigo')
+# TABLE MORBILITIES
+cu_morbilidad_asis <- read_delim( paste0(path_output, "index_cu_morbilidad_asis.csv" ), 
+                                  delim = ";", escape_double = FALSE, col_types = cols(...1 = col_skip()), 
+                                  locale = locale(encoding = "WINDOWS-1252"), 
+                                  trim_ws = TRUE)
 
-for (i in 1:length(lista) ) {
-  if(lista[i] %in% rownames(installed.packages()) == FALSE) {
-    install.packages(lista[i])
-  }
-  lapply(lista[i], library, character.only = TRUE)
-}
-
-######### URL tables #########
-prefix = "https://docs.supersalud.gov.co/PortalWeb/SupervisionInstitucional/IndicadoresCalidadEAPB/"
-### URL libraries 
-calidad_eps_2015 = "Indicadores%20de%20Calidad%20EPS%20(I%20Semestre%202015).xlsx"
-calidad_eps_2016 = "Indicadores%20de%20Calidad%20EPS%20(ISemestre%202016).xlsx"
-calidad_eps_2014 = "Indicadores-Calidad-EPS-Consolidado-2014.xlsx"
-calidad_eps_2013 = "Indicadores-Calidad-EPS-Consolidado-2013.xlsx"
-calidad_eps_2012 = "Indicadores-Calidad-EPS-consolidado-2012.xlsx"
-calidad_eps_2011 = "Indicadores-Calidad-EPS-consolidado-2011.xlsx"
-calidad_eps_2010 = "Indicadores-Calidad-EPS-consolidado-2010.xlsx"
-calidad_eps_2009 = "Indicadores-Calidad-EPS-Consolidado-2009.xlsx"
-
-######### reading table: conditions #########
-lista = data.frame(
-  'tabla' = c("calidad_eps_2009", "calidad_eps_2010",
-  "calidad_eps_2011", "calidad_eps_2012",
-  "calidad_eps_2013", "calidad_eps_2014", 
-  "calidad_eps_2015",  "calidad_eps_2016"
-  ), 
-  'sheet' = c("Hoja de Trabajo", "Hoja de Trabajo",
-              "Hoja de Trabajo", "Hoja de Trabajo",
-              "Hoja de Trabajo", "Hoja de Trabajo", 
-              "Hoja de Trabajo",  "HOJA DE TRABAJO"
-  )
-  
-)
+# Table estadisticas vitales. 
  
-######### reading table: tables Calidad EPS from 2009 to 2016 #########
-for (i in 1:nrow(lista) ) {
-  pre_tabla = lista[i, 1]
-  tabla = get(pre_tabla)
-  hoja = lista[i, 2]
-  url = paste0(prefix, tabla)  
-  assign(pre_tabla,rio::import(url,  sheet =hoja) , envir = .GlobalEnv)
-  print(pre_tabla)
-}
-
-
-
-
-
-sqldf::sqldf("
-             SELECT VALOR FROM calidad_eps_20
-             ")
-
-
-
-
-
-
-
-#############################################################################
-##### Homogenization EPS
-
-devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/functions.R") ## it deppends of devtools library
-
- 
-
-
-Btutelas_eps <- read_excel("C:/Users/USER/Downloads/Btutelas_eps.xlsx", 
-                           sheet = "Base", col_types = c("numeric", 
-                                                         "text", "skip", "skip", "skip", "text", 
-                                                         "numeric"))
-
-
-Btutelas_eps = homogenizacion_eps(tabla =Btutelas_eps ,
-                   Nombre_eps = 'eps' ,
-                   Regimen_salud = 'regimen_' )
-
- 
+EST_VITALES <- read_delim("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/EST_VITALES.csv", 
+                          delim = ";", escape_double = FALSE, trim_ws = TRUE)
