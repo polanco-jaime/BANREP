@@ -16,7 +16,7 @@ devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scri
 #################################################
 path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
-
+if(1==1){
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
 Table_index =  Table_index[ c(3:30, 32:39)]
 
@@ -29,7 +29,7 @@ SELECT * FROM
           SUM(def_mat_42d_no) def_mat_42d_no ,  
           SUM(def_mat_42d_si) def_mat_42d_si ,
           SUM(def_mat_1y_si)  def_mat_1y_si ,
-          SUM(No_Definido) AS No_Definido,
+         -- SUM(No_Definido) AS No_Definido,
           SUM(N_Enfermedades_dentales) AS N_Enfermedades_dentales,
           SUM(M_Anomalias_congenitas) AS M_Anomalias_congenitas,
           SUM(L_Enfermedades_del_sistema_musculo_esqueletico) AS L_Enfermedades_del_sistema_musculo_esqueletico,
@@ -52,8 +52,6 @@ SELECT * FROM
           SUM(A_Tumores_malignos) AS A_Tumores_malignos,
           SUM(A_Enfermedades_infecciosas_y_parasitarias) AS A_Enfermedades_infecciosas_y_parasitarias,
           SUM(A_Accidentes) AS A_Accidentes,
-          SUM(eps_name) AS eps_name,
-          SUM(eps_status) AS eps_status,
           SUM(Signos_y_sintomas_mal_definidos) AS Signos_y_sintomas_mal_definidos,
           SUM(Lesiones) AS Lesiones,
           SUM(Enfermedades_no_transmisibles) AS Enfermedades_no_transmisibles,
@@ -64,12 +62,46 @@ SELECT * FROM
  GROUP BY 1 ,2  , 3  
  ) ")
                            
+library(readxl)
+asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
+                          col_types = c("text", "numeric", "numeric", 
+                                        "numeric", "numeric", "numeric", 
+                                        "numeric", "numeric", "numeric", 
+                                        "numeric", "numeric", "numeric", 
+                                        "numeric", "numeric", "numeric", 
+                                        "skip", "skip", "skip", "skip"))
+asegurados = asegurados %>% pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")                          
+
+Table_index = sqldf::sqldf("
+             SELECT * FROM Table_index
+             LEFT JOIN asegurados
+             ON Years = ANIO_
+             AND TRIM(eps)   = TRIM(EPS_CODE_)
+             ")
+NUMERICAS = c(7:32)
+for (i  in NUMERICAS) {
+   
+  Table_index[[i]]  = Table_index[[i]] / (Table_index[[35]]/10000)
+  
+}
+
+Table_index[[5]]  = 100*Table_index[[5]] / ( Table_index[[5]] + Table_index[[4]]  )
+Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]  )
+
+}                                           
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
 # technical accuracy of the medical diagnoses and procedures, or the conformance to professional specification
 ## maternal mortality 
-cols_number = c(4:29 ) 
-frac_nulls_eps(df = Table_index, column_name = 'EPS_CODE_')
+
+# frac_nulls_eps(df = Table_index, column_name = 'EPS_CODE_')
  
+# Eliminar columna de Nodefinido.
+# Anexar la tabla tipo long de asegurados
+# Dividir desde la col 4 a la 28 todos los valroes por asegruados
+# hacer el PCA
+# Documentar el PCA. 
+# 
+cols_number = c(   16:32 ) 
  #,8:28, 31
  # PCA
  if(1==1){
@@ -85,16 +117,25 @@ frac_nulls_eps(df = Table_index, column_name = 'EPS_CODE_')
    
    print('---------------------------------------------')
    summary(pca_eps)
+   
+   Table_   = cbind(Table_index , predict(pca_eps, Table_index) )
+   # P(EPS_Quiebre = 1| PC1 ) ~ Pvallue < 0.05
+   summary(lm(data = Table_,  eps_status ~ PC1  ))
  }
 hist(pca_eps$x)
+
+summary((pca_eps$x))
 pca_eps$x[1:10,]
-
-
 var_explained <- pca_eps$sdev^2/sum(pca_eps$sdev^2)*100
+
+############### Tiene sentido
+
+
 
 ####### Writing
 
 Table_index   = cbind(Table_index , predict(pca_eps, Table_index) )
+
 write.csv2(Table_index  , paste0(path_output, "Table_index_eps.csv" ) , row.names = F) 
 colnames(Table_index)[36] = 'quality_index'
 final = Table_index[, c(1:3,36) ]

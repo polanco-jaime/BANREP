@@ -260,6 +260,9 @@ if(1==1){
 }
 
 Table_index   = cbind(Table_index , predict(pca_eps, Table_index) )
+
+write.csv2(Table_index  , paste0(path_output, "Table_index_eps.csv" ) , row.names = F) 
+
 colnames(Table_index)[36] = 'quality_index'
 final = Table_index[, c(1:3,36) ]
 write.csv2(final  , paste0(path_output, "Index_eps.csv" ) , row.names = F) 
