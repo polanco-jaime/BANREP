@@ -7,7 +7,7 @@ for (i in 1:length(packageList) ) {
   }
   lapply(packageList[i], library, character.only = TRUE)
 }
-source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/credentials.R")
+source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/Scripts/credentials.R")
 
 #####################################################################
 #

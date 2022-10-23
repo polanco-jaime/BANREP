@@ -728,3 +728,33 @@ eps_from_code_to_name_n_status <- function(Tabla, eps_code ){
   Tabla <- dplyr::select(Tabla, -'CODIGO_de_eps')
   return(Tabla)
 }
+
+
+
+
+rm(backwardElimination)
+backwardElimination <- function(tabla, sl = 0.05) {
+  
+  # x=  (table_[,c(2,4:ncol(table_))])
+  numVars = ncol(tabla)
+  
+  for (i in c(1:numVars)){
+    tryCatch( {
+    tabla_wo_na <- na.omit(tabla)
+    regressor = lm(data = tabla_wo_na, formula = eps_status  ~ .)
+    maxVar = max(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"])
+    if (maxVar > sl){
+      j = names(which(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"] == maxVar))
+      tabla = tabla %>% dplyr::select(-j)
+    }
+    numVars = numVars - 1
+    print(summary(regressor))
+    }, error=function(e){cat("ERROR CATCH: ",conditionMessage(e), "\n")}  )
+  }
+  
+  return(  list('regresion' = summary(regressor) ,  
+                'columnas' = names(regressor$coefficients)[2: length(names(regressor$coefficients))] ))
+}
+
+
+ 

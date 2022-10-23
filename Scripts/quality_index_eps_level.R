@@ -1,6 +1,6 @@
 # Calling libraries
  
-packageList<-c("readxl", "readr", "tidyverse", "sqldf",
+packageList<-c("readxl", "readr", "tidyverse", "sqldf", 'tidyr',
                "beepr", 'dplyr', 'readr', 'devtools', 'haven',
                'reshape2')
 for (i in 1:length(packageList) ) {
@@ -70,14 +70,35 @@ asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ),
                                         "numeric", "numeric", "numeric", 
                                         "numeric", "numeric", "numeric", 
                                         "skip", "skip", "skip", "skip"))
-asegurados = asegurados %>% pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")                          
-
+library(tidyr)
+asegurados = asegurados %>% tidyr::pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")                          
+#####
+colnames(asegurados)
 Table_index = sqldf::sqldf("
-             SELECT * FROM Table_index
-             LEFT JOIN asegurados
+             SELECT A.* , Asegurados FROM Table_index A
+             LEFT JOIN asegurados B
              ON Years = ANIO_
              AND TRIM(eps)   = TRIM(EPS_CODE_)
              ")
+#####
+OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
+colnames(OP_MED_ODO)
+Table_index = sqldf::sqldf("
+             SELECT A.*,OP_MEDI_GENERAL, OP_ODO_GENERAL
+             FROM Table_index A
+             LEFT JOIN OP_MED_ODO B
+             ON ANIO_ = YEAR
+             AND TRIM(EPS_CODE_)   = TRIM(COD_EPS)
+             ")
+########### RIPS Atenciones
+
+RIPS_Att <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+
+
+RIPS <- read_excel("RIPS.xlsx")
+
+###############################################
+
 NUMERICAS = c(7:32)
 for (i  in NUMERICAS) {
    
@@ -88,7 +109,8 @@ for (i  in NUMERICAS) {
 Table_index[[5]]  = 100*Table_index[[5]] / ( Table_index[[5]] + Table_index[[4]]  )
 Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]  )
 
-}                                           
+}  
+Table_index= Table_index[, -33]
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
 # technical accuracy of the medical diagnoses and procedures, or the conformance to professional specification
 ## maternal mortality 
@@ -101,13 +123,14 @@ Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]
 # hacer el PCA
 # Documentar el PCA. 
 # 
-cols_number = c(   16:32 ) 
+cols_number = c(   5:34 ) 
  #,8:28, 31
  # PCA
  if(1==1){
    # table_ <- subset(table_, Table_index$ANIO_==2013 )
    # table_ <- table_wo_na (base = table_, cols_number = cols_number )
    table_ <- table_wo_na (base = Table_index, cols_number = cols_number )
+   table_ <- subset(table_, table_[[3]]!=Inf )
    print('---------------------------------------------')
    print(  data.frame( colnames(table_ ) )      )
    print('---------------------------------------------')
@@ -116,21 +139,54 @@ cols_number = c(   16:32 )
    pca_eps <- prcomp(table_ ,   scale. = T,  rank. =1)
    
    print('---------------------------------------------')
-   summary(pca_eps)
+   print(summary(pca_eps))
    
-   Table_   = cbind(Table_index , predict(pca_eps, Table_index) )
+   Table_1   = cbind(Table_index , predict(pca_eps, Table_index) )
+   Table_1 <- subset(Table_1, Table_1[[29]]!=Inf )
    # P(EPS_Quiebre = 1| PC1 ) ~ Pvallue < 0.05
-   summary(lm(data = Table_,  eps_status ~ PC1  ))
+   A = summary(lm(data = Table_1,  eps_status ~ PC1  ))
+   rm(Table_1)
+   print(A)
+   
  }
+
 hist(pca_eps$x)
+
+
+####################################### backwardElimination
+be = backwardElimination(  tabla=  ,  sl = 0.5 ) 
+be[["columnas"]]
+
+
+
+
+if(1==1){
+  table_ <- Table_index # table_wo_na (base = Table_index, cols_number = c(2, cols_number) )
+  table_ = table_[, c('eps_status', be[["columnas"]] )]
+  
+  table_ <- table_wo_na (base = table_, cols_number = c(1:16) )
+  be = backwardElimination(  tabla= table_ ,  sl = 0.5 ) 
+   
+  
+  table_ = table_[, c(  be[["columnas"]] )]
+  pca=prcomp(table_  ,   scale. = T,  rank. =1)
+  summary(pca)
+  summary(pca$x)
+  hist(pca$x)
+  # A
+  print(A)
+  # print(B)
+  # hist(pca$x,10)
+}
+
 
 summary((pca_eps$x))
 pca_eps$x[1:10,]
 var_explained <- pca_eps$sdev^2/sum(pca_eps$sdev^2)*100
-
+var_explained
 ############### Tiene sentido
 
-
+eps_from_code_to_name_n_status(Tabla = Table_index,eps_code = 'EPS_CODE_' )
 
 ####### Writing
 
