@@ -1,5 +1,5 @@
 # Calling libraries
- 
+options(scipen=999)
 packageList<-c("readxl", "readr", "tidyverse", "sqldf", 'tidyr',
                "beepr", 'dplyr', 'readr', 'devtools', 'haven',
                'reshape2')
@@ -92,11 +92,30 @@ Table_index = sqldf::sqldf("
              ")
 ########### RIPS Atenciones
 
-RIPS_Att <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+#
 
+RIPS <- sqldf::sqldf("
+             SELECT  * , substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE FROM RIPS
+             ")
 
-RIPS <- read_excel("RIPS.xlsx")
+colnames(RIPS)
+Table_index = sqldf::sqldf("
+             SELECT A.*,
+              Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
+              Numero_de_Atenciones , Numero_Dias_Estancia , Valor_Cuota_Moderadora , 
+             Atx_Conteo_de_Prestadores , Costo_Consulta_xAt , Costo_Procedimiento_xAt ,
+             Neto_A_Pagar_Consulta_xAt, -- Numero_de_Atenciones_xAt, 
+             Numero_Dias_Estancia_xAt, Valor_Cuota_Moderadora_xAt
+             
+             FROM Table_index A
+             LEFT JOIN RIPS B
+             ON B.ANIO_ = A.ANIO_
+             AND TRIM(EPS_CODE_)   = TRIM(EPS_CODE)
+            
+             ")
 
+Table_index
 ###############################################
 
 NUMERICAS = c(7:32)
@@ -110,7 +129,36 @@ Table_index[[5]]  = 100*Table_index[[5]] / ( Table_index[[5]] + Table_index[[4]]
 Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]  )
 
 }  
-Table_index= Table_index[, -33]
+###########################################################################
+# Crear de las variables de RIPS la proporcion segun numero de afiliados ( Columna 33 de Table_index)
+#Crear tasas de la informacion de RIPS agregada  (No la que esta con atx)
+# Eliminar la variable 33
+# Usar backward elimination para tomar las variables que sean mas significativas a la hora de que una eps quiebre
+# Crear un pca solo con las variables significativas
+# De cada buen PCA crear una tabla de correlaciones
+
+table_ =  Table_index[ , c(2,4:16,36:48)]
+
+ 
+be = backwardElimination(  tabla= table_ , 
+                           Y = 'eps_status' , 
+                           sl = 0.1 ) 
+be[["columnas"]]
+
+table_ = na.omit(table_[, c(  be[["columnas"]] )])
+pca=prcomp(table_  ,   scale. = T,  rank. =1)
+summary(pca)
+summary(pca$x)
+hist(pca$x)
+
+
+
+
+#################################################################
+
+
+
+# Table_index= Table_index[, -33]
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
 # technical accuracy of the medical diagnoses and procedures, or the conformance to professional specification
 ## maternal mortality 
@@ -156,16 +204,17 @@ hist(pca_eps$x)
 ####################################### backwardElimination
 be = backwardElimination(  tabla=  ,  sl = 0.5 ) 
 be[["columnas"]]
+Y = 'eps_status' 
 
-
-
+table_ = dplyr::select(table_, -Y)
 
 if(1==1){
   table_ <- Table_index # table_wo_na (base = Table_index, cols_number = c(2, cols_number) )
   table_ = table_[, c('eps_status', be[["columnas"]] )]
   
-  table_ <- table_wo_na (base = table_, cols_number = c(1:16) )
-  be = backwardElimination(  tabla= table_ ,  sl = 0.5 ) 
+  table_ <- table_wo_na (base = table_, cols_number = c(1:16,36:49) )
+  
+  be = backwardElimination(  tabla= table_[ , c(2, 4:ncol(table_))] , Y = 'eps_status' ,  sl = 0.5 ) 
    
   
   table_ = table_[, c(  be[["columnas"]] )]

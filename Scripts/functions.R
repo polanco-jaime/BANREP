@@ -733,15 +733,21 @@ eps_from_code_to_name_n_status <- function(Tabla, eps_code ){
 
 
 rm(backwardElimination)
-backwardElimination <- function(tabla, sl = 0.05) {
+
+backwardElimination <- function(tabla, Y = "", sl = 0.05) {
+  # tabla =  Table_index[, c(2,4:16,36:48)]
+  # Y = 'eps_status'
+  var = Y
+  tabla$Y = tabla[[Y]]
+  tabla = dplyr::select(tabla, -var)
+   
   
-  # x=  (table_[,c(2,4:ncol(table_))])
   numVars = ncol(tabla)
   
   for (i in c(1:numVars)){
     tryCatch( {
     tabla_wo_na <- na.omit(tabla)
-    regressor = lm(data = tabla_wo_na, formula = eps_status  ~ .)
+    regressor = lm(data = tabla_wo_na, formula =  Y ~ .)
     maxVar = max(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"])
     if (maxVar > sl){
       j = names(which(coef(summary(regressor))[c(2:numVars), "Pr(>|t|)"] == maxVar))
