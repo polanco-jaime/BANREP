@@ -115,7 +115,7 @@ Table_index = sqldf::sqldf("
             
              ")
 
-Table_index
+ 
 ###############################################
 
 NUMERICAS = c(7:32)
@@ -131,32 +131,108 @@ Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]
 }  
 ###########################################################################
 # Crear de las variables de RIPS la proporcion segun numero de afiliados ( Columna 33 de Table_index)
+
+for(i in c(7:32,37:42)){
+  Table_index[[i]] <- Table_index[[i]]/Table_index$Asegurados
+}
 #Crear tasas de la informacion de RIPS agregada  (No la que esta con atx)
 # Eliminar la variable 33
 # Usar backward elimination para tomar las variables que sean mas significativas a la hora de que una eps quiebre
 # Crear un pca solo con las variables significativas
 # De cada buen PCA crear una tabla de correlaciones
 
-table_ =  Table_index[ , c(2,4:16,36:48)]
-
+# 1-  considerando tasas por asegurados
+table_ =  Table_index[ , c(2,5,6,8,9:15,17,18,19,20,21,22,23,25,26,27,36:42)]
+colnames(Table_index)
  
 be = backwardElimination(  tabla= table_ , 
                            Y = 'eps_status' , 
                            sl = 0.1 ) 
 be[["columnas"]]
 
-table_ = na.omit(table_[, c(  be[["columnas"]] )])
-pca=prcomp(table_  ,   scale. = T,  rank. =1)
-summary(pca)
-summary(pca$x)
-hist(pca$x)
+table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
+pca4=prcomp(table_  ,   scale. = T,  rank. =1)
+summary(pca4)
+summary(pca4$x)
+hist(pca4$x)
+
+# 2-  considerando tasas por atenciones
+table_ =  Table_index[ , c(2,5,6,8,9:15,17,18,19,20,21,22,23,25,26,27,43:48)]
 
 
+be = backwardElimination(  tabla= table_ , 
+                           Y = 'eps_status' , 
+                           sl = 0.1 ) 
+be[["columnas"]]
+
+table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
+pca5=prcomp(table_  ,   scale. = T,  rank. =1)
+summary(pca5)
+summary(pca5$x)
+hist(pca5$x)
+
+# 3-  considerando tasas por mas registros
+colnames(Table_index)
+table_ =  Table_index[ , c(2,8,14,18,22,25,26,43:48)]
+
+be = backwardElimination(  tabla= table_ , 
+                           Y = 'eps_status' , 
+                           sl = 0.15 ) 
+
+
+table_ = na.omit(Table_index[, colnames(table_)])
+# table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
+colnames(table_)
+
+pca6=prcomp(table_  ,   scale. = T,  rank. =1)
+summary(pca6)
+summary(pca6$x)
+hist(pca6$x)
 
 
 #################################################################
 
 
+
+
+# Eliminar columna de Nodefinido.
+# Anexar la tabla tipo long de asegurados
+# Dividir desde la col 4 a la 28 todos los valroes por asegruados
+# hacer el PCA
+# Documentar el PCA. 
+#1- prueba pooled- tasas por afiliado
+cols_number = c(2,5:41)
+#2- prueba pooled tasas por ipc
+cols_number= c(5:34,42:47)
+#3- backward elimination                          (PC4)
+cols_number4= c(17,20,21,26,28,29,30)
+cols_number= c(17,20,21,26,28,29,30)
+#4- backward elimination                          (PC5)
+cols_number5= c(10,13,18,20,21,26,29,30,42)
+cols_number= c(10,13,18,20,21,26,29,30,42)
+#5 - backward elimination                         (pooled-PC6)
+cols_number6= c(17,13,18,20,21,26,29,30,46,38,36,40)
+cols_number= c(17,13,18,20,21,26,29,30,46,38,36,40)
+#,8:28, 31
+# PCA
+
+table_4 <- table_wo_na (base = Table_index, cols_number = cols_number4)
+table_4 <- subset(table_4, table_4[[3]]!=Inf )
+pca_eps4 <- prcomp(table_4,   scale. = T,  rank. =1)
+Table_index  = cbind(Table_index , predict(pca_eps4, Table_index) )
+colnames(Table_index)[ncol(Table_index)] = "PCA4"
+
+table_5 <- table_wo_na (base = Table_index, cols_number = cols_number5)
+table_5 <- subset(table_5, table_5[[3]]!=Inf )
+pca_eps5 <- prcomp(table_5,   scale. = T,  rank. =1)
+Table_index  = cbind(Table_index , predict(pca_eps5, Table_index) )
+colnames(Table_index)[ncol(Table_index)] = "PCA5"
+
+table_6 <- table_wo_na (base = Table_index, cols_number = cols_number6)
+table_6 <- subset(table_6, table_6[[3]]!=Inf )
+pca_eps6 <- prcomp(table_6,   scale. = T,  rank. =1)
+Table_index   = cbind(Table_index , predict(pca_eps5, Table_index))
+colnames(Table_index)[ncol(Table_index)] = "PCA6"
 
 # Table_index= Table_index[, -33]
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
@@ -170,81 +246,81 @@ hist(pca$x)
 # Dividir desde la col 4 a la 28 todos los valroes por asegruados
 # hacer el PCA
 # Documentar el PCA. 
+# # 
+# cols_number = c(   5:34 ) 
+#  #,8:28, 31
+#  # PCA
+#  if(1==1){
+#    # table_ <- subset(table_, Table_index$ANIO_==2013 )
+#    # table_ <- table_wo_na (base = table_, cols_number = cols_number )
+#    table_ <- table_wo_na (base = Table_index, cols_number = cols_number )
+#    table_ <- subset(table_, table_[[3]]!=Inf )
+#    print('---------------------------------------------')
+#    print(  data.frame( colnames(table_ ) )      )
+#    print('---------------------------------------------')
+#    print( paste0('filas ' , nrow((table_ ) ))  )
+#    print('---------------------------------------------')
+#    pca_eps <- prcomp(table_ ,   scale. = T,  rank. =1)
+#    
+#    print('---------------------------------------------')
+#    print(summary(pca_eps))
+#    
+#    Table_1   = cbind(Table_index , predict(pca_eps, Table_index) )
+#    Table_1 <- subset(Table_1, Table_1[[29]]!=Inf )
+#    # P(EPS_Quiebre = 1| PC1 ) ~ Pvallue < 0.05
+#    A = summary(lm(data = Table_1,  eps_status ~ PC1  ))
+#    rm(Table_1)
+#    print(A)
+#    
+#  }
 # 
-cols_number = c(   5:34 ) 
- #,8:28, 31
- # PCA
- if(1==1){
-   # table_ <- subset(table_, Table_index$ANIO_==2013 )
-   # table_ <- table_wo_na (base = table_, cols_number = cols_number )
-   table_ <- table_wo_na (base = Table_index, cols_number = cols_number )
-   table_ <- subset(table_, table_[[3]]!=Inf )
-   print('---------------------------------------------')
-   print(  data.frame( colnames(table_ ) )      )
-   print('---------------------------------------------')
-   print( paste0('filas ' , nrow((table_ ) ))  )
-   print('---------------------------------------------')
-   pca_eps <- prcomp(table_ ,   scale. = T,  rank. =1)
-   
-   print('---------------------------------------------')
-   print(summary(pca_eps))
-   
-   Table_1   = cbind(Table_index , predict(pca_eps, Table_index) )
-   Table_1 <- subset(Table_1, Table_1[[29]]!=Inf )
-   # P(EPS_Quiebre = 1| PC1 ) ~ Pvallue < 0.05
-   A = summary(lm(data = Table_1,  eps_status ~ PC1  ))
-   rm(Table_1)
-   print(A)
-   
- }
-
-hist(pca_eps$x)
-
-
-####################################### backwardElimination
-be = backwardElimination(  tabla=  ,  sl = 0.5 ) 
-be[["columnas"]]
-Y = 'eps_status' 
-
-table_ = dplyr::select(table_, -Y)
-
-if(1==1){
-  table_ <- Table_index # table_wo_na (base = Table_index, cols_number = c(2, cols_number) )
-  table_ = table_[, c('eps_status', be[["columnas"]] )]
-  
-  table_ <- table_wo_na (base = table_, cols_number = c(1:16,36:49) )
-  
-  be = backwardElimination(  tabla= table_[ , c(2, 4:ncol(table_))] , Y = 'eps_status' ,  sl = 0.5 ) 
-   
-  
-  table_ = table_[, c(  be[["columnas"]] )]
-  pca=prcomp(table_  ,   scale. = T,  rank. =1)
-  summary(pca)
-  summary(pca$x)
-  hist(pca$x)
-  # A
-  print(A)
-  # print(B)
-  # hist(pca$x,10)
-}
-
-
-summary((pca_eps$x))
-pca_eps$x[1:10,]
-var_explained <- pca_eps$sdev^2/sum(pca_eps$sdev^2)*100
-var_explained
-############### Tiene sentido
-
-eps_from_code_to_name_n_status(Tabla = Table_index,eps_code = 'EPS_CODE_' )
-
-####### Writing
-
-Table_index   = cbind(Table_index , predict(pca_eps, Table_index) )
-
-write.csv2(Table_index  , paste0(path_output, "Table_index_eps.csv" ) , row.names = F) 
-colnames(Table_index)[36] = 'quality_index'
-final = Table_index[, c(1:3,36) ]
-write.csv2(final  , paste0(path_output, "Index_eps.csv" ) , row.names = F) 
-
-# It may be useful to normalize observations by the number of affiliates, 
-# in itself, each column would show an indicator per capita
+# hist(pca_eps$x)
+# 
+# 
+# ####################################### backwardElimination
+# be = backwardElimination(  tabla=  ,  sl = 0.5 ) 
+# be[["columnas"]]
+# Y = 'eps_status' 
+# 
+# table_ = dplyr::select(table_, -Y)
+# 
+# if(1==1){
+#   table_ <- Table_index # table_wo_na (base = Table_index, cols_number = c(2, cols_number) )
+#   table_ = table_[, c('eps_status', be[["columnas"]] )]
+#   
+#   table_ <- table_wo_na (base = table_, cols_number = c(1:16,36:49) )
+#   
+#   be = backwardElimination(  tabla= table_[ , c(2, 4:ncol(table_))] , Y = 'eps_status' ,  sl = 0.5 ) 
+#    
+#   
+#   table_ = table_[, c(  be[["columnas"]] )]
+#   pca=prcomp(table_  ,   scale. = T,  rank. =1)
+#   summary(pca)
+#   summary(pca$x)
+#   hist(pca$x)
+#   # A
+#   print(A)
+#   # print(B)
+#   # hist(pca$x,10)
+# }
+# 
+# 
+# summary((pca_eps$x))
+# pca_eps$x[1:10,]
+# var_explained <- pca_eps$sdev^2/sum(pca_eps$sdev^2)*100
+# var_explained
+# ############### Tiene sentido
+# 
+# eps_from_code_to_name_n_status(Tabla = Table_index,eps_code = 'EPS_CODE_' )
+# 
+# ####### Writing
+# 
+# Table_index   = cbind(Table_index , predict(pca_eps, Table_index) )
+# 
+# write.csv2(Table_index  , paste0(path_output, "Table_index_eps.csv" ) , row.names = F) 
+# colnames(Table_index)[36] = 'quality_index'
+# final = Table_index[, c(1:3,36) ]
+# write.csv2(final  , paste0(path_output, "Index_eps.csv" ) , row.names = F) 
+# 
+# # It may be useful to normalize observations by the number of affiliates, 
+# # in itself, each column would show an indicator per capita
