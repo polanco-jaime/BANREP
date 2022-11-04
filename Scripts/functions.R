@@ -718,7 +718,8 @@ eps_quiebra <- function(Tabla,CODIGO__EPS ){
 }
 #############################################
 
-rm(backwardElimination)
+
+
 
 backwardElimination <- function(tabla, Y = "", sl = 0.05) {
   # tabla =  Table_index[, c(2,4:16,36:48)]
