@@ -18,13 +18,15 @@ path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 
 
 if(1==1){
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
-Table_index =  Table_index[ c(3:30, 32:39)]
+Table_index =  Table_index[ c(3:30, 32:37)]
+Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 
 # Datawrangling.
 Table_index = sqldf::sqldf("
 SELECT * FROM
 (
- SELECT   EPS_CODE_,  eps_status,   ANIO_,  
+ SELECT   homo_code_eps AS EPS_CODE_,  eps_status,   ANIO_,  
           
           SUM(def_mat_42d_no) def_mat_42d_no ,  
           SUM(def_mat_42d_si) def_mat_42d_si ,
@@ -61,7 +63,7 @@ SELECT * FROM
 --   WHERE ANIO_ >= 2013 AND  ANIO_ <= 2017
  GROUP BY 1 ,2  , 3  
  ) ")
-                           
+##############                           
 library(readxl)
 asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
                           col_types = c("text", "numeric", "numeric", 
