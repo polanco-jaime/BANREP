@@ -70,8 +70,7 @@ execue_query_mdx <- function(mdx,connection_string, EPS,VAR_INTERES, TYPE_USER, 
 
 
 #############
-warning("The functions created for Banrep have been loaded")
-print("The functions created for Banrep have been loaded")
+
 
 
 ########################    Example of runing variable     ########################
@@ -722,7 +721,7 @@ eps_quiebra <- function(Tabla,CODIGO__EPS ){
 
 
 backwardElimination <- function(tabla, Y = "", sl = 0.05) {
-  # tabla =  Table_index[, c(2,4:16,36:48)]
+  
   # Y = 'eps_status'
   var = Y
   tabla$Y = tabla[[Y]]
@@ -783,4 +782,5 @@ aggregate_function = function(Tabla,
 }
 
 ## Last contribution
- 
+warning("The functions created for Banrep have been loaded")
+print("The functions created for Banrep have been loaded")
