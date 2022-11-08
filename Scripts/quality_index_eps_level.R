@@ -16,53 +16,19 @@ devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scri
 #################################################
 path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
-if(1==1){
+# if(1==1){
+  
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
 Table_index =  Table_index[ c(3:30, 32:37)]
 Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 
-# Datawrangling.
-Table_index = sqldf::sqldf("
-SELECT * FROM
-(
- SELECT   homo_code_eps AS EPS_CODE_,  eps_status,   ANIO_,  
-          
-          SUM(def_mat_42d_no) def_mat_42d_no ,  
-          SUM(def_mat_42d_si) def_mat_42d_si ,
-          SUM(def_mat_1y_si)  def_mat_1y_si ,
-         -- SUM(No_Definido) AS No_Definido,
-          SUM(N_Enfermedades_dentales) AS N_Enfermedades_dentales,
-          SUM(M_Anomalias_congenitas) AS M_Anomalias_congenitas,
-          SUM(L_Enfermedades_del_sistema_musculo_esqueletico) AS L_Enfermedades_del_sistema_musculo_esqueletico,
-          SUM(K_Enfermedades_de_la_piel) AS K_Enfermedades_de_la_piel,
-          SUM(J_Enfermedades_del_sistema_genito_urinario) AS J_Enfermedades_del_sistema_genito_urinario,
-          SUM(I_Enfermedades_digestivas) AS I_Enfermedades_digestivas,
-          SUM(H_Enfermedades_respiratorias) AS H_Enfermedades_respiratorias,
-          SUM(G_Enfermedades_cardiovasculares) AS G_Enfermedades_cardiovasculares,
-          SUM(F_Enfermedades_de_los_organos_de_los_sentidos) AS F_Enfermedades_de_los_organos_de_los_sentidos,
-          SUM(Eventos_lesiones_de_intencion_no_determinada) AS Eventos_lesiones_de_intencion_no_determinada,
-          SUM(E_Trastornos_mentales_y_enfermedades_del_sistema_nervioso) AS E_Trastornos_mentales_y_enfermedades_del_sistema_nervioso,
-          SUM(E_Deficiencias_de_la_nutricion) AS E_Deficiencias_de_la_nutricion,
-          SUM(D_Otras_enfermedades_endocrinas_metabolicas_hematologicas_e_immunologicas) AS D_Otras_enfermedades_endocrinas,
-          SUM(D_Ciertas_afecciones_originadas_en_el_periodo_perinatal) AS D_Ciertas_afecciones_originadas_en_el_periodo_perinatal,
-          SUM(C_Diabetes_mellitus) AS C_Diabetes_mellitus,
-          SUM(C_Causas_maternas) AS C_Causas_maternas,
-          SUM(B_Otros_tumores) AS B_Otros_tumores,
-          SUM(B_Lesiones_intencionales) AS B_Lesiones_intencionales,
-          SUM(B_Infecciones_respiratorias) AS B_Infecciones_respiratorias,
-          SUM(A_Tumores_malignos) AS A_Tumores_malignos,
-          SUM(A_Enfermedades_infecciosas_y_parasitarias) AS A_Enfermedades_infecciosas_y_parasitarias,
-          SUM(A_Accidentes) AS A_Accidentes,
-          SUM(Signos_y_sintomas_mal_definidos) AS Signos_y_sintomas_mal_definidos,
-          SUM(Lesiones) AS Lesiones,
-          SUM(Enfermedades_no_transmisibles) AS Enfermedades_no_transmisibles,
-          SUM(Condiciones_transmisibles_y_nutricionales) AS Condiciones_transmisibles_y_nutricionales
- FROM Table_index 
--- WHERE  def_mat_42d_no IS NOT NULL
---   WHERE ANIO_ >= 2013 AND  ANIO_ <= 2017
- GROUP BY 1 ,2  , 3  
- ) ")
+Table_index = aggregate_function(aggregate = 'sum',
+                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
+                   group_by = colnames(Table_index[,c(35,36,1)]) ,
+                   Tabla = Table_index)
+
+ 
 ##############                           
 library(readxl)
 asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
@@ -74,6 +40,9 @@ asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ),
                                         "skip", "skip", "skip", "skip"))
 library(tidyr)
 asegurados = asegurados %>% tidyr::pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")                          
+
+
+
 #####
 colnames(asegurados)
 Table_index = sqldf::sqldf("
@@ -130,7 +99,8 @@ for (i  in NUMERICAS) {
 Table_index[[5]]  = 100*Table_index[[5]] / ( Table_index[[5]] + Table_index[[4]]  )
 Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]  )
 
-}  
+
+# }  
 ###########################################################################
 # Crear de las variables de RIPS la proporcion segun numero de afiliados ( Columna 33 de Table_index)
 

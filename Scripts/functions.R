@@ -574,9 +574,9 @@ eps_quiebra <- function(Tabla,CODIGO__EPS ){
                   WHEN UPPER(CODIGO__EPS) LIKE  '%ESS207%' THEN '0'
                   WHEN UPPER(CODIGO__EPS) LIKE  '%ESSC07%' THEN '0'
                   WHEN UPPER(CODIGO__EPS) LIKE  '%ESS068%' THEN '0'
-                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPSS03%' THEN '1'
-                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPS003%' THEN '1'
-                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPSM03%' THEN '1'
+                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPSS03%' THEN '0'
+                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPS003%' THEN '0'
+                  WHEN UPPER(CODIGO__EPS) LIKE  '%EPSM03%' THEN '0'
                   WHEN UPPER(CODIGO__EPS) LIKE  '%CCF007%' THEN '1'
                   WHEN UPPER(CODIGO__EPS) LIKE  '%CCFC07%' THEN '1'
                   WHEN UPPER(CODIGO__EPS) LIKE  '%CCF018%' THEN '0'
@@ -748,6 +748,44 @@ backwardElimination <- function(tabla, Y = "", sl = 0.05) {
   return(  list('regresion' = summary(regressor) ,  
                 'columnas' = names(regressor$coefficients)[2: length(names(regressor$coefficients))] ))
 }
+######################################################
+####  Aggregate funciton ###
+
+aggregate = 'SUM'
+cols_to_agg = colnames(Table_index[,c(2:32)])
+group_by = colnames(Table_index[,c(35,36,1)])
+Tabla = Table_index
+aggregate_function = function(Tabla, 
+                              aggregate = 'SUM',
+                              cols_to_agg, 
+                              group_by) {
+  
+  BASE = "SELECT "
+  Base = ''
+  for (i in group_by) {
+    Base = paste0(Base,' ' ,i , ', ') 
+  }
+  BASE = paste0(BASE,Base ) 
+  
+  Body = ''
+  for (i in cols_to_agg) {
+    Body =  paste0(Body, aggregate,'(',i, ') as ', i , ' , '  )
+  }
+  Body =  substr(Body,1,  nchar(Body)-2 )
+  
+  TAIL_query = ''
+  for (i in group_by) {
+    TAIL_query = paste0(TAIL_query,' ' ,i , ', ') 
+  }
+  TAIL_query =  substr(TAIL_query,1,  nchar(TAIL_query)-2 )
+  
+  SQL_query = paste0(BASE,Body , ' FROM Tabla GROUP BY ' , TAIL_query)
+  
+  return(sqldf::sqldf(SQL_query) )
 
 
- 
+}
+aggregate_function(aggregate = 'sum',
+                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
+                   group_by = colnames(Table_index[,c(35,36,1)]) ,
+                   Tabla = Table_index)
