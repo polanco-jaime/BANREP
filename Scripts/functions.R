@@ -750,11 +750,7 @@ backwardElimination <- function(tabla, Y = "", sl = 0.05) {
 }
 ######################################################
 ####  Aggregate funciton ###
-
-aggregate = 'SUM'
-cols_to_agg = colnames(Table_index[,c(2:32)])
-group_by = colnames(Table_index[,c(35,36,1)])
-Tabla = Table_index
+ 
 aggregate_function = function(Tabla, 
                               aggregate = 'SUM',
                               cols_to_agg, 
