@@ -17,30 +17,86 @@ devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scri
 path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
 
 # if(1==1){
-  
+#####################################################################
+## CARACTERISTICAS ASEGURADOS
+ 
+##############                           
+library(readxl)
+asegurados_Tipo_regimen <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
+                                         sheet = "Tipo_regimen")
+asegurados_com_indigena <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
+                                         sheet = "com_indigena")
+
+asegurados_genero <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
+                                         sheet = "genero")
+asegurados_etarios <- read_excel(paste0(path_output, "asegurados_etarios.xlsx" ) )  
+                                 
+asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
+                         col_types = c("text", "numeric", "numeric", 
+                                       "numeric", "numeric", "numeric", 
+                                       "numeric", "numeric", "numeric", 
+                                       "numeric", "numeric", "numeric", 
+                                       "numeric", "numeric", "numeric", 
+                                       "skip", "skip", "skip", "skip"))
+library(tidyr)
+
+asegurados = asegurados %>% tidyr::pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")         
+asegurados_Tipo_regimen$year = as.character(asegurados_Tipo_regimen$year)
+asegurados_genero$year = as.character(asegurados_genero$year)
+asegurados_com_indigena$year = as.character(asegurados_com_indigena$year)
+asegurados_etarios$year= as.character(asegurados_etarios$year)
+colnames(asegurados_etarios)
+
+asegurados = sqldf::sqldf("
+             SELECT A.*,B.TOTAL,  CONTRIBUTIVO , EXCEPCION , SUBSIDIADO   ,
+             FEMENINO, MASCULINO , COMUNIDADES_INDIGENAS,
+             De_0_a_9 , De_10_a_19 , De_20_a_29 , De_30_a_39, 
+             De_40_a_49 , De_50_a_59 , De_60_a_69 ,
+             De_70_a_79 , Mayor_De_80
+             FROM asegurados A
+             LEFT JOIN asegurados_Tipo_regimen B 
+             ON TRIM(EPS)  = TRIM(B.COD_EPS)  AND TRIM(YEARS) = TRIM(B.YEAR)
+             LEFT JOIN asegurados_genero C
+             ON TRIM(EPS)  = TRIM(C.COD_ENTI)  AND TRIM(YEARS) = TRIM(C.YEAR)
+             LEFT JOIN asegurados_com_indigena D
+             ON TRIM(EPS)  = TRIM(D.COD_ENT)  AND TRIM(YEARS) = TRIM(D.YEAR)
+             LEFT JOIN asegurados_etarios E
+             ON TRIM(EPS)  = TRIM(E.Cod_entidad)  AND TRIM(YEARS) = TRIM(E.YEAR)
+             ")
+
+asegurados = eps_homog (Tabla = asegurados , CODIGO__EPS = "eps" )
+
+
+ 
+
+asegurados = aggregate_function(aggregate = 'sum',
+                                 cols_to_agg = colnames(asegurados)[4:19]  ,
+                                 group_by = colnames(asegurados[,c(2, 20)]) ,
+                                 Tabla = asegurados)
+
+asegurados = subset(asegurados, asegurados$Years != '2009')
+asegurados = subset(asegurados, asegurados$Years != '2010')
+asegurados = subset(asegurados, asegurados$Years != '2011')
+asegurados = subset(asegurados, asegurados$Years != '2022')
+# segun la informacion suministrada por SISPRO, los missing value entre 2012 a 2021 son 0
+for (i in colnames(asegurados)[3:18] ) {
+  asegurados[[i]] = ifelse(is.na(asegurados[[i]]) ==T,  0 , asegurados[[i]] )
+}
+######################################################################
+
+
+
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
 Table_index =  Table_index[ c(3:30, 32:37)]
 Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-
+for (i in colnames(Table_index[,c(2:32)])) {
+  Table_index[[i]] =  as.numeric(Table_index[[i]])
+}
 Table_index = aggregate_function(aggregate = 'sum',
-                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
-                   group_by = colnames(Table_index[,c(35,36,1)]) ,
-                   Tabla = Table_index)
-
- 
-##############                           
-library(readxl)
-asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
-                          col_types = c("text", "numeric", "numeric", 
-                                        "numeric", "numeric", "numeric", 
-                                        "numeric", "numeric", "numeric", 
-                                        "numeric", "numeric", "numeric", 
-                                        "numeric", "numeric", "numeric", 
-                                        "skip", "skip", "skip", "skip"))
-library(tidyr)
-asegurados = asegurados %>% tidyr::pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")                          
-
+                                 cols_to_agg = colnames(Table_index[,c(2:32)]) ,
+                                 group_by = colnames(Table_index[,c(35,36,1)]) ,
+                                 Tabla = Table_index)
 
 
 #####
