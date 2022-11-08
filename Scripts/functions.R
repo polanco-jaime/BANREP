@@ -507,7 +507,7 @@ eps_homog <- function(Tabla , CODIGO__EPS ){
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'FMS001'	THEN 'FMS001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'POL001'	THEN 'POL001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES002'	THEN 'RES002'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES004'	THEN 'RES004'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES004' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES004'	THEN 'RES004'	 WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'REMG01'	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES004' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES005'	THEN 'RES005'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES006'	THEN 'RES006'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES007'	THEN 'RES007'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 
@@ -749,7 +749,7 @@ backwardElimination <- function(tabla, Y = "", sl = 0.05) {
 }
 ######################################################
 ####  Aggregate funciton ###
- 
+
 aggregate_function = function(Tabla, 
                               aggregate = 'SUM',
                               cols_to_agg, 
@@ -775,7 +775,7 @@ aggregate_function = function(Tabla,
   TAIL_query =  substr(TAIL_query,1,  nchar(TAIL_query)-2 )
   
   SQL_query = paste0(BASE,Body , ' FROM Tabla GROUP BY ' , TAIL_query)
-  
+  print(SQL_query)
   return(sqldf::sqldf(SQL_query) )
 
 
