@@ -359,13 +359,12 @@ table_wo_na <- function(base , cols_number ){
 
 ## function
 na_by_cols <- function(base  ){
-library(dplyr)
-library(purrr)
-library(tidyr)
+  library(dplyr)
+  library(purrr)
+  library(tidyr)
   filas = nrow(base)
-  base <- base %>%
-  map_df(function(x) sum(is.na(x))/filas) # %>%
-  # gather(feature, num_nulls) #%>%   print(n = 208)
+  base <- base %>% map_df(function(x) sum(is.na(x))/filas)
+  # %>% # gather(feature, num_nulls) #%>%   print(n = 208)
   return(base)
 }
 
