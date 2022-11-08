@@ -364,8 +364,8 @@ library(purrr)
 library(tidyr)
   filas = nrow(base)
   base <- base %>%
-  map_df(function(x) sum(is.na(x))/filas) %>%
-  gather(feature, num_nulls) #%>%   print(n = 208)
+  map_df(function(x) sum(is.na(x))/filas) # %>%
+  # gather(feature, num_nulls) #%>%   print(n = 208)
   return(base)
 }
 
