@@ -22,6 +22,7 @@ path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 
  
 ##############                           
 library(readxl)
+if(1==1){
 asegurados_Tipo_regimen <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
                                          sheet = "Tipo_regimen")
 asegurados_com_indigena <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
@@ -38,6 +39,21 @@ asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ),
                                        "numeric", "numeric", "numeric", 
                                        "numeric", "numeric", "numeric", 
                                        "skip", "skip", "skip", "skip"))
+
+library(readxl)
+fecha_inicio <- read_excel(paste0(path_output, "fecha_inicio_actividades_administradoras.xlsx" ) ,
+                                                       sheet = "eapb", col_types = c("text", 
+                                                                              "text", "numeric", "text", "numeric", 
+                                                                                     "numeric", "date", "text"))
+
+fecha_inicio = eps_homog (Tabla =  fecha_inicio[, c(7,8)] , CODIGO__EPS = "codigo_supersalud" ) 
+fecha_inicio$fec_inact = as.character(fecha_inicio$fec_inact)
+fecha_inicio$fec_inact = as.numeric(substring(as.character(fecha_inicio$fec_inact), 1, 4))
+fecha_inicio = aggregate_function(aggregate = 'min',
+                                cols_to_agg = colnames(fecha_inicio)[1]  ,
+                                group_by = colnames(fecha_inicio)[3] ,
+                                Tabla = fecha_inicio)
+
 library(tidyr)
 
 asegurados = asegurados %>% tidyr::pivot_longer(!eps, names_to = "Years", values_to = "Asegurados")         
@@ -46,9 +62,9 @@ asegurados_genero$year = as.character(asegurados_genero$year)
 asegurados_com_indigena$year = as.character(asegurados_com_indigena$year)
 asegurados_etarios$year= as.character(asegurados_etarios$year)
 colnames(asegurados_etarios)
-
+ 
 asegurados = sqldf::sqldf("
-             SELECT A.*,B.TOTAL,  CONTRIBUTIVO , EXCEPCION , SUBSIDIADO   ,
+             SELECT  A.*,B.TOTAL,  CONTRIBUTIVO , EXCEPCION , SUBSIDIADO   ,
              FEMENINO, MASCULINO , COMUNIDADES_INDIGENAS,
              De_0_a_9 , De_10_a_19 , De_20_a_29 , De_30_a_39, 
              De_40_a_49 , De_50_a_59 , De_60_a_69 ,
@@ -62,26 +78,58 @@ asegurados = sqldf::sqldf("
              ON TRIM(EPS)  = TRIM(D.COD_ENT)  AND TRIM(YEARS) = TRIM(D.YEAR)
              LEFT JOIN asegurados_etarios E
              ON TRIM(EPS)  = TRIM(E.Cod_entidad)  AND TRIM(YEARS) = TRIM(E.YEAR)
+ 
              ")
 
 asegurados = eps_homog (Tabla = asegurados , CODIGO__EPS = "eps" )
 
-
- 
-
-asegurados = aggregate_function(aggregate = 'sum',
-                                 cols_to_agg = colnames(asegurados)[4:19]  ,
-                                 group_by = colnames(asegurados[,c(2, 20)]) ,
-                                 Tabla = asegurados)
-
+asegurados$Asegurados = as.integer(asegurados$Asegurados)
 asegurados = subset(asegurados, asegurados$Years != '2009')
 asegurados = subset(asegurados, asegurados$Years != '2010')
 asegurados = subset(asegurados, asegurados$Years != '2011')
+asegurados = subset(asegurados, asegurados$Years != '2021')
 asegurados = subset(asegurados, asegurados$Years != '2022')
-# segun la informacion suministrada por SISPRO, los missing value entre 2012 a 2021 son 0
-for (i in colnames(asegurados)[3:18] ) {
-  asegurados[[i]] = ifelse(is.na(asegurados[[i]]) ==T,  0 , asegurados[[i]] )
+asegurados = aggregate_function(aggregate = 'sum',
+                                cols_to_agg = colnames(asegurados)[3:19]  ,
+                                group_by = colnames(asegurados[,c(2, 20)]) ,
+                                Tabla = asegurados)
+
+#RES006
+# CCF010
+#EPS044 
+asegurados = sqldf::sqldf("
+             SELECT fec_inact, A.* 
+             FROM asegurados A 
+             LEFT JOIN fecha_inicio F
+             ON TRIM(A.homo_code_eps)  = TRIM(F.homo_code_eps)   
+             ")
+glimpse(asegurados)
+for (i in colnames(asegurados)[5:20]) {
+  asegurados[[i]] = ifelse(is.na(asegurados[[4]] )  ==T & asegurados[[2]] <= asegurados[[1]] , 0,   asegurados[[i]]    )
 }
+for (i in colnames(asegurados)[5:20] ) {
+  asegurados[[i]] = ifelse(is.na(asegurados[[4]] )  ==F & is.na(asegurados[[i]]) ==T,  0 , asegurados[[i]] )
+}
+
+for (i in colnames(asegurados)[6:20]) {
+  asegurados[[i]] =  asegurados[[i]]  / asegurados[[5]] 
+}
+# segun la informacion suministrada por SISPRO, los missing value entre 2012 a 2021 son 0
+asegurados_ = data.frame()
+eps_ = unique(asegurados$homo_code_eps)
+
+for (i in eps_) {
+  temp = subset(asegurados, asegurados$homo_code_eps == i)
+  temp = (na_by_cols(temp))
+  temp$homo_code_eps = i
+  asegurados_ = rbind(asegurados_, temp)
+}
+### EPS con suficiente informacion de asegurados.
+unique(subset(asegurados_, asegurados_$Asegurados <= 0.5))$homo_code_eps
+}
+
+
+
 ######################################################################
 
 
@@ -93,14 +141,46 @@ Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 for (i in colnames(Table_index[,c(2:32)])) {
   Table_index[[i]] =  as.numeric(Table_index[[i]])
 }
+Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
+Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
+Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
+Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
+Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
 Table_index = aggregate_function(aggregate = 'sum',
                                  cols_to_agg = colnames(Table_index[,c(2:32)]) ,
                                  group_by = colnames(Table_index[,c(35,36,1)]) ,
                                  Tabla = Table_index)
 
 
+Table_index = sqldf::sqldf("
+             SELECT fec_inact, A.* 
+             FROM Table_index A 
+             LEFT JOIN fecha_inicio F
+             ON TRIM(A.homo_code_eps)  = TRIM(F.homo_code_eps)   
+             ")
+
+#EPS044
+for (i in colnames(Table_index)[5:35]) {
+  Table_index[[i]] = ifelse( Table_index[[1]] >= Table_index[[4]] , 0,   Table_index[[i]]    )
+}
+
+Table_index_ = data.frame()
+eps_ = unique(Table_index$homo_code_eps)
+ 
+for (i in eps_) {
+  temp = subset(Table_index, Table_index$homo_code_eps == i)
+  temp = (na_by_cols(temp))
+  Table_index_ = rbind(Table_index_, temp)
+}
+
+
+
+
+
+
+
 #####
-colnames(asegurados)
+
 Table_index = sqldf::sqldf("
              SELECT A.* , Asegurados FROM Table_index A
              LEFT JOIN asegurados B
