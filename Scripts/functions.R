@@ -781,7 +781,4 @@ aggregate_function = function(Tabla,
 
 
 }
-aggregate_function(aggregate = 'sum',
-                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
-                   group_by = colnames(Table_index[,c(35,36,1)]) ,
-                   Tabla = Table_index)
+ 
