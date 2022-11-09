@@ -245,7 +245,7 @@ for (i in eps_) {
 ############################################
 ######################################################################
 ############################################
-
+# sE AJUSTA LA TABLA A NIVEL MUNICIPIO
 if (1==1) {
   Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
   Table_index =  Table_index[ c(3:30, 32:37)]
@@ -271,7 +271,7 @@ if (1==1) {
   eps_ = unique(Table_index$homo_code_eps)
   # de las 72 eps contenidas en asegurados. 68 de ellas coinciden. 
   # Se debe eliminar los no definidos.
-  
+   
   ###############################################################################
   
   glimpse(asegurados)
@@ -289,63 +289,68 @@ if (1==1) {
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
              ")
   
-  
+  # Table_index_ = Table_index
+  # Table_index = Table_index_
+  ### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
+  for (i in colnames(Table_index)[8:29]) {
+    
+    Table_index[[i]] = as.numeric(Table_index[[i]])*100000 / as.numeric(Table_index[[34]])
+  }
+  for (i in colnames(Table_index)[30:33]) {
+    
+    Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[34]]))/10000
+  }
+  Table_index = subset(Table_index, Table_index$homo_code_eps %in% eps_asegurados) 
 }
-# Table_index_ = Table_index
-# Table_index = Table_index_
-### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
-for (i in colnames(Table_index)[8:29]) {
-  
-  Table_index[[i]] = as.numeric(Table_index[[i]])*100000 / as.numeric(Table_index[[34]])
-}
-for (i in colnames(Table_index)[30:33]) {
-  
-  Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[34]]))/10000
-}
+
+
 
 ############################################################################ 
- 
-#####
-OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
- 
-OP_MED_ODO = eps_homog (Tabla = OP_MED_ODO , CODIGO__EPS = "COD_EPS" )
-
-OP_MED_ODO = aggregate_function(aggregate = 'sum',
-                                 cols_to_agg = colnames(OP_MED_ODO[,c(3,4)]) ,
-                                 group_by = colnames(OP_MED_ODO[,c(2,5)]) ,
-                                 Tabla = OP_MED_ODO)
-OP_MED_ODO$YEAR = as.integer(OP_MED_ODO$YEAR)
-OP_MED_ODO = sqldf::sqldf("SELECT * FROM OP_MED_ODO WHERE YEAR BETWEEN 2012 AND 2020")
-Table_index$homo_code_eps
-OP_MED_ODO$homo_code_eps
-Table_index = sqldf::sqldf("
+#SE UNEN LAS DEMAS TABLAS
+if (1==1) {
+   OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
+   
+   OP_MED_ODO = eps_homog (Tabla = OP_MED_ODO , CODIGO__EPS = "COD_EPS" )
+   
+   OP_MED_ODO = aggregate_function(aggregate = 'sum',
+                                   cols_to_agg = colnames(OP_MED_ODO[,c(3,4)]) ,
+                                   group_by = colnames(OP_MED_ODO[,c(2,5)]) ,
+                                   Tabla = OP_MED_ODO)
+   OP_MED_ODO$YEAR = as.integer(OP_MED_ODO$YEAR)
+   OP_MED_ODO = sqldf::sqldf("SELECT * FROM OP_MED_ODO WHERE YEAR BETWEEN 2012 AND 2020")
+   
+   
+   OP_MED_ODO = subset(OP_MED_ODO, OP_MED_ODO$homo_code_eps %in% eps_asegurados) 
+   
+   Table_index = sqldf::sqldf("
              SELECT A.*,OP_MEDI_GENERAL, OP_ODO_GENERAL
              FROM Table_index A
              LEFT JOIN OP_MED_ODO B
              ON ANIO_ = YEAR
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
              ")
-
-########### RIPS Atenciones
-
-RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
-RIPS <- sqldf::sqldf("
+   
+   ########### RIPS Atenciones
+   
+   RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+   RIPS <- sqldf::sqldf("
              SELECT  * , substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE FROM RIPS
              ")
-RIPS = eps_homog (Tabla = RIPS , CODIGO__EPS = "EPS_CODE" )
-
-RIPS = aggregate_function(aggregate = 'sum',
-                                cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
-                                group_by = colnames(RIPS[,c(9,18)]) ,
-                                Tabla = RIPS)
-
-RIPS$ANIO_ = as.integer(RIPS$ANIO_)
-glimpse(RIPS)
-RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
-
-
-colnames(RIPS)
-Table_index = sqldf::sqldf("
+   RIPS = eps_homog (Tabla = RIPS , CODIGO__EPS = "EPS_CODE" )
+   
+   RIPS = aggregate_function(aggregate = 'sum',
+                             cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
+                             group_by = colnames(RIPS[,c(9,18)]) ,
+                             Tabla = RIPS)
+   
+   RIPS$ANIO_ = as.integer(RIPS$ANIO_)
+   glimpse(RIPS)
+   RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
+   
+   RIPS = subset(RIPS, RIPS$homo_code_eps %in% eps_asegurados) 
+   
+   colnames(RIPS)
+   Table_index = sqldf::sqldf("
              SELECT A.*,
               Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
               Numero_de_Atenciones , Numero_Dias_Estancia , Valor_Cuota_Moderadora , 
@@ -359,16 +364,48 @@ Table_index = sqldf::sqldf("
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
             
              ")
+   
+   for (i in colnames(Table_index)[52:58]) {
+     
+     Table_index[[i]] = as.numeric(Table_index[[i]]) / as.numeric(Table_index[[34]])
+   }
+   
+   
+   #####
+   library(haven)
+   time_sensitive_death_rate <- read_dta(paste0(path_output, "New/time_sensitive_death_rate.dta" ) )
+   time_sensitive_death_rate = eps_homog (Tabla = time_sensitive_death_rate , CODIGO__EPS = "cod_eapb" )
+   
+   time_sensitive_death_rate = aggregate_function(aggregate = 'AVG',
+                                                  cols_to_agg = colnames(time_sensitive_death_rate)[4] ,
+                                                  group_by = colnames(time_sensitive_death_rate[,c(2,5)]) ,
+                                                  Tabla = time_sensitive_death_rate)
+   
+   
+   
+   time_sensitive_death_rate = sqldf::sqldf("SELECT * FROM time_sensitive_death_rate WHERE YEAR BETWEEN 2012 AND 2020")
+   time_sensitive_death_rate = subset(time_sensitive_death_rate, time_sensitive_death_rate$homo_code_eps %in% eps_asegurados) 
+   time_sensitive_death_rate$year = as.integer(time_sensitive_death_rate$year)
+   time_sensitive_death_rate$deaths_percentage_group
+   
+   Table_index = sqldf::sqldf("
+             SELECT A.*, deaths_percentage_group
+             
+             FROM Table_index A
+             LEFT JOIN time_sensitive_death_rate B
+             ON B.YEAR = A.ANIO_
+             AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
+            
+             ")
+ }
 
-for (i in colnames(Table_index)[52:58]) {
-  
-  Table_index[[i]] = as.numeric(Table_index[[i]]) / as.numeric(Table_index[[34]])
-}
+
 
 summary(Table_index)
 ###############################################
 ### Missing treatment
 
+# Table_index1 = Table_index
 
 Table_index_ = data.frame()
 eps_ = unique(Table_index$homo_code_eps)
@@ -380,7 +417,65 @@ for (i in eps_) {
   Table_index_ = rbind(Table_index_, temp)
 }
 
+
+# a este punto tenemos 68 eps
+# 6 eps presentan mas de 50% de missing
+#
+row.names(Table_index) = NULL
+less_35pnulls = c(
+    'UT-001' , 'EPS010', 'CCF035' , 'EPS025' , 'EPS013', 
+    'EPS001' ,'EPS016', 'EPS037', 'EPS022',
+    'EPS039', 'EPS023' , 'EPS012', 'EPS005'
+)
+# EPS005
+Table_index[107, c(3:33)] =  Table_index[ 108 , c(3:33)]
+Table_index[106, c(3:33)] =  Table_index[ 108 , c(3:33)]
+##  EPS012
+Table_index[123, c(3:33)] =  Table_index[ 125 , c(3:33)]
+Table_index[124, c(3:33)] =  Table_index[ 125 , c(3:33)]
+##  EPS023
+Table_index[177, c(3:33)] =  Table_index[ 178 , c(3:33)]
+Table_index[176, c(3:33)] =  Table_index[ 178 , c(3:33)]
+##  EPS039
+Table_index[213, c(3:33)] =  Table_index[ 214 , c(3:33)]
+Table_index[212, c(3:33)] =  Table_index[ 214 , c(3:33)]
+# EPS022
+Table_index[170, c(3:33)] =  Table_index[ 171 , c(3:33)]
+Table_index[169, c(3:33)] =  Table_index[ 171 , c(3:33)]
+#EPS037
+Table_index[205, c(3:33)] =  Table_index[ 207 , c(3:33)]
+Table_index[206, c(3:33)] =  Table_index[ 207 , c(3:33)]
+#EPS016
+Table_index[144, c(3:33)] =  Table_index[ 146 , c(3:33)]
+Table_index[145, c(3:33)] =  Table_index[ 146 , c(3:33)]
+#EPS001
+Table_index[82, c(3:33)] =  Table_index[ 84 , c(3:33)]
+Table_index[83, c(3:33)] =  Table_index[ 84 , c(3:33)]
+#EPS013
+Table_index[129, c(3:33)] =  Table_index[ 130 , c(3:33)]
+Table_index = rbind(Table_index, c(  'EPS013', 2013,    as.numeric(Table_index[ 130 , c(3:65)])))
+Table_index = rbind(Table_index, c(  'EPS013', 2014,    as.numeric(Table_index[ 130 , c(3:65)])))
+#EPS025
+Table_index[182, c(3:33)] =  Table_index[ 183 , c(3:33)]
+Table_index = rbind(Table_index, c(  'EPS025', 2013,    as.numeric(Table_index[ 183 , c(3:65)])))
+Table_index = rbind(Table_index, c(  'EPS025', 2014,    as.numeric(Table_index[ 183 , c(3:65)])))
+
+#CCF035
+Table_index[69, c(3:33)] =  Table_index[ 68 , c(3:33)]
+Table_index = rbind(Table_index, c(  'CCF035', 2013,    as.numeric(Table_index[ 64 , c(3:65)]))) 
+
+######      ######
+Table_index = subset(Table_index, 
+                     ! Table_index$homo_code_eps %in% c('CCF029', 'EPS046', 'EPS018', 'ESS068', 'EPS020', 'EPSS40') )
+
+# RES013, RES012, RES011, RES010,RES009, RES007, RES006, RES005, RES004, RES002, EPS044
+
+# CCF029, EPS046, EPS018 no tiene registros
+row.names(Table_index) = NULL
 # FILLING MISSING VALUES BY CHARACTERISTICS
+#CCF035 no tiene datos de 2013 y presenta nulos del 2020
+Table_index[431, c(3:33)] =  Table_index[ 430 , c(3:33)]
+
 # UT-001 HAS DATA JUST TILL 2019, I FILLED 2020 WITH 2019
 rownames(Table_index) <- NULL   
 Table_index[431, c(3:33)] =  Table_index[ 430 , c(3:33)]
