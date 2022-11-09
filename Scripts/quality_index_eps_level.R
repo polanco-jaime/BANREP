@@ -580,14 +580,21 @@ Table_index$OP_ODO_GENERAL_hat = predict(mod_OP_ODO_GENERAL  , Table_index)
 pca2=prcomp(Table_index[, c(66:74)]  ,   scale. = T,  rank. =1)
 summary(pca2)
 
-Table_index   = cbind(Table_index , predict(pca1, Table_index) )
+# Table_index   = cbind(Table_index , predict(pca1, Table_index) )
 colnames(Table_index)[73] = 'PCA_main_var'
-hist(Table_index[[73]])
+
 Table_index   = cbind(Table_index , predict(pca2, Table_index) )
 colnames(Table_index)[74] = 'PCA_main_hat_var'
-hist(Table_index[[74]])
-cor(Table_index[[73]],Table_index[[74]] )
+######################################################
 
+hist(Table_index[[73]], main = colnames(Table_index)[73] )
+hist(Table_index[[74]], main = colnames(Table_index)[74] )
+cor(Table_index[[73]],Table_index[[74]] )
+tabla = na.omit(Table_index)
+cor(tabla[[65]],tabla[[74]] )
+cor(tabla[[65]],tabla[[73]] )
+ 
+ 
 
 # Table_index= Table_index[, -33]
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
