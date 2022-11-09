@@ -182,13 +182,16 @@ if(1==1){
     eps_ = unique(asegurados$homo_code_eps)
     length(eps_)
     ####### A este punto tenemos 91 EPS, 5 eps se pierden pues tienen mas del 80% de nulos.    
+    # Si tengo valores de asegurados totales pero no tengo valor en ese campo, entonces es 0
     for (i in colnames(asegurados)[5:20] ) {
       asegurados[[i]] = ifelse(is.na(asegurados[[5]] )  ==F & is.na(asegurados[[i]]) ==T,  0 , asegurados[[i]] )
     }
+    # Acá dejo todo en fracciones segun el total de datos
     for (i in colnames(asegurados)[7:21]) {
       asegurados[[i]] = as.numeric( as.numeric(asegurados[[i]] ) / as.numeric( asegurados[[6]]) )
     }
 }    
+### Reviso la proporcion de nulos que tiene cada una de las 91 EPS
 
 asegurados_ = data.frame()
 eps_ = unique(asegurados$homo_code_eps)
@@ -203,11 +206,32 @@ for (i in eps_) {
   asegurados_ = rbind(asegurados_, temp)
 }
 
+# 18 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
 
-# segun la informacion suministrada por SISPRO, los missing value entre 2012 a 2021 son 0
+eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados  > 0 ))$homo_code_eps
+dropped  =  subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
+asegurados  =  subset(asegurados,  !asegurados$homo_code_eps   %in%  eps_nulls  )
+eps_asegurados = unique(asegurados$homo_code_eps)
 
-### EPS con suficiente informacion de asegurados.
- 
+
+#################################
+# EN 1995 BAJO UNA ALIANZA ESTRATEGIA ENTRE CAFAM Y COLSUBSIDIO SE CREA FAMISANAR EPS 
+# EPS COLSUBSIDIO CCF010,CCFC10, CAFAM CCF018, CCFC18  -> PERTENECEN A EPS017 , EPSS17 , EPS017
+#################################
+# En 1995 se fundó EPS SERVICIO OCCIDENTAL DE SALUD S.O.S. (EPSS18 y EPS018), con el esfuerzo conjunto de Comfandi,
+# Comfamiliar Caldas, Comfamiliar Pereira, Comfaunión Palmira, 
+# Comfamiliar Tuluá, Comfamiliar Cartago  CCF040, 
+# Comfamiliar Buga, Comsocial, Comfamar Buenaventura y Comfamiliar La Dorada. 
+# Estas entidades aportaron no sólo los recursos económicos necesarios para la creación de S.O.S, 
+# sino también toda su experiencia, conocimiento, vocación de servicio, 
+# además de las IPS que en cada región atenderían a los afiliados y familiares.
+
+################################# ¿UNIMOS MEDIMAS Y CAFESALUD? NO TIENE SENTIDO TENERLAS JUNTAS PERO TAMPOCO SEPARADAS
+# MEDIMAS EPS044 EMPEZO OPERACIONES EN EL AÑO 2017 CON PACIENTES HEREDADOS DE CAFESALUD 
+################################
+
+
+
 for (i in colnames(asegurados)[5:20]) {
   asegurados[[i]] = ifelse(is.na(asegurados[[5]] )  ==T & asegurados[[3]] <= asegurados[[2]] , 0,   asegurados[[i]]    )
 }
