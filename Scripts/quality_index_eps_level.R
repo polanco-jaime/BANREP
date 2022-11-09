@@ -463,153 +463,131 @@ Table_index = rbind(Table_index, c(  'EPS025', 2014,    as.numeric(Table_index[ 
 #CCF035
 Table_index[69, c(3:33)] =  Table_index[ 68 , c(3:33)]
 Table_index = rbind(Table_index, c(  'CCF035', 2013,    as.numeric(Table_index[ 64 , c(3:65)]))) 
+#EPS010
+Table_index[116, c(3:33)] =  Table_index[ 117 , c(3:33)]
+Table_index = rbind(Table_index, c(  'EPS010', 2013,    as.numeric(Table_index[ 117 , c(3:65)]))) 
 
-######      ######
-Table_index = subset(Table_index, 
-                     ! Table_index$homo_code_eps %in% c('CCF029', 'EPS046', 'EPS018', 'ESS068', 'EPS020', 'EPSS40') )
+#UT-001
+Table_index[329, c(3:33)] =  Table_index[ 328 , c(3:33)]
 
-# RES013, RES012, RES011, RES010,RES009, RES007, RES006, RES005, RES004, RES002, EPS044
+Table_index = rbind(Table_index, c(  'UT-001', 2013,    as.numeric(Table_index[ 323 , c(3:65)]))) 
+Table_index = rbind(Table_index, c(  'UT-001', 2012,    as.numeric(Table_index[ 323 , c(3:65)]))) 
+#######
+write.csv2(Table_index, 'quality_eps_data.csv')
+Table_index <- read.csv(paste0(path_output, "quality_eps_data.csv" ), sep = ';' )
+Table_index= Table_index[,c(2:66)]
+#######################################################
+Table_index_ = data.frame()
+eps_ = unique(Table_index$homo_code_eps)
 
-# CCF029, EPS046, EPS018 no tiene registros
-row.names(Table_index) = NULL
-# FILLING MISSING VALUES BY CHARACTERISTICS
-#CCF035 no tiene datos de 2013 y presenta nulos del 2020
-Table_index[431, c(3:33)] =  Table_index[ 430 , c(3:33)]
-
-# UT-001 HAS DATA JUST TILL 2019, I FILLED 2020 WITH 2019
-rownames(Table_index) <- NULL   
-Table_index[431, c(3:33)] =  Table_index[ 430 , c(3:33)]
-# EPS010
-Table_index[124, c(3:33)] =  Table_index[ 125 , c(3:33)]
-glimpse(Table_index)
-##########################
-Table_index = rbind(Table_index, c(  'EPS010', 2013,    as.numeric(Table_index[ 125 , c(3:33)])))
-####### CCF035
-Table_index[77, c(3:33)] =  Table_index[ 76 , c(3:33)]
-table(Table_index$ANIO_)
-#EPS001
-Table_index[91, c(3:33)] =  Table_index[ 92 , c(3:33)]
-Table_index[90, c(3:33)] =  Table_index[ 90 , c(3:33)]
-
-
-
-
-NUMERICAS = c(7:32)
-for (i  in NUMERICAS) {
-   
-  Table_index[[i]]  = Table_index[[i]] / (Table_index[[35]]/10000)
-  
+for (i in eps_) {
+  temp = subset(Table_index, Table_index$homo_code_eps == i)
+  temp = (na_by_cols(temp))
+  temp$homo_code_eps = i
+  Table_index_ = rbind(Table_index_, temp)
 }
 
-Table_index[[5]]  = 100*Table_index[[5]] / ( Table_index[[5]] + Table_index[[4]]  )
-Table_index[[6]]  = 100*Table_index[[6]] / ( Table_index[[6]] + Table_index[[4]]  )
+
+##########################################
+Table_index = subset(Table_index, 
+                     ! Table_index$homo_code_eps %in% c('EPS018', 'ESS068', 'EPS020') )
+
+
+
+
+
+NUMERICAS = c(3:65)
+for (i  in NUMERICAS) {
+   
+  Table_index[[i]]  = as.numeric(Table_index[[i]]  )
+  
+}
 
 
 # }  
 ###########################################################################
-# Crear de las variables de RIPS la proporcion segun numero de afiliados ( Columna 33 de Table_index)
+# PCA 1
+data.frame(colnames(Table_index))
+columnas_salud = c(4,5,9,15,19,20,23,50,51)
+table_1 <- table_wo_na (base = Table_index, cols_number = columnas_salud)
 
-for(i in c(7:32,37:42)){
-  Table_index[[i]] <- Table_index[[i]]/Table_index$Asegurados
-}
-#Crear tasas de la informacion de RIPS agregada  (No la que esta con atx)
-# Eliminar la variable 33
-# Usar backward elimination para tomar las variables que sean mas significativas a la hora de que una eps quiebre
-# Crear un pca solo con las variables significativas
-# De cada buen PCA crear una tabla de correlaciones
+pca1=prcomp(table_1  ,   scale. = T,  rank. =1)
+summary(pca1)
 
-# 1-  considerando tasas por asegurados
-table_ =  Table_index[ , c(2,5,6,8,9:15,17,18,19,20,21,22,23,25,26,27,36:42)]
-colnames(Table_index)
- 
-be = backwardElimination(  tabla= table_ , 
-                           Y = 'eps_status' , 
-                           sl = 0.1 ) 
-be[["columnas"]]
+# PCA 2
+# Las mismas variables asociadas estan regresadas por las caracteristicas de la eps
+colnames(table_1)
+columnas_modelos = c(4,5,9,15,19,22,23,50,51, 35:49 )
+# ,5,9,15,19,22,23
+####
+Tabla =   Table_index[,c(4, 35:49 ) ]
+mod_def_mat_42d_si = lm(data = Tabla,  def_mat_42d_si ~ .)
+Table_index$def_mat_42d_si_hat = predict(mod_def_mat_42d_si , Table_index)
+####
+Tabla =   Table_index[,c(5, 35:49 ) ]
+colnames(Tabla)
+mod_def_mat_1y_si = lm(data = Tabla,  def_mat_1y_si ~ .)
+Table_index$mod_def_mat_1y_si_hat = predict(mod_def_mat_1y_si , Table_index)
+####
+Tabla =   Table_index[,c(9, 35:49 ) ]
+colnames(Tabla)
+mod_M_Anomalias_congenitas = lm(data = Tabla,  M_Anomalias_congenitas ~ .)
+Table_index$mod_M_Anomalias_congenitas_hat = predict(mod_M_Anomalias_congenitas , Table_index)
 
-table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
-pca4=prcomp(table_  ,   scale. = T,  rank. =1)
-summary(pca4)
-summary(pca4$x)
-hist(pca4$x)
-
-# 2-  considerando tasas por atenciones
-table_ =  Table_index[ , c(2,5,6,8,9:15,17,18,19,20,21,22,23,25,26,27,43:48)]
-
-
-be = backwardElimination(  tabla= table_ , 
-                           Y = 'eps_status' , 
-                           sl = 0.1 ) 
-be[["columnas"]]
-
-table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
-pca5=prcomp(table_  ,   scale. = T,  rank. =1)
-summary(pca5)
-summary(pca5$x)
-hist(pca5$x)
-
-# 3-  considerando tasas por mas registros
-colnames(Table_index)
-table_ =  Table_index[ , c(2,8,14,18,22,25,26,43:48)]
-
-be = backwardElimination(  tabla= table_ , 
-                           Y = 'eps_status' , 
-                           sl = 0.15 ) 
+####
+Tabla =   Table_index[,c(15, 35:49 ) ]
+colnames(Tabla)
+mod_G_Enfermedades_cardiovasculares = lm(data = Tabla,  G_Enfermedades_cardiovasculares ~ .)
+Table_index$G_Enfermedades_cardiovasculares_hat = predict( mod_G_Enfermedades_cardiovasculares , Table_index)
+####
+Tabla =   Table_index[,c(19, 35:49 ) ]
+colnames(Tabla)
+mod_E_Deficiencias_de_la_nutricion = lm(data = Tabla,  E_Deficiencias_de_la_nutricion ~ .)
+Table_index$E_Deficiencias_de_la_nutricion_hat = predict( mod_E_Deficiencias_de_la_nutricion , Table_index)
 
 
-table_ = na.omit(Table_index[, colnames(table_)])
-# table_ = na.omit(Table_index[, c(  be[["columnas"]] )])
-colnames(table_)
+####
+Tabla =   Table_index[,c(22, 35:49 ) ]
+colnames(Tabla)
+mod_C_Diabetes_mellitus = lm(data = Tabla,  C_Diabetes_mellitus ~ .)
+Table_index$C_Diabetes_mellitus_hat = predict(mod_C_Diabetes_mellitus  , Table_index)
 
-pca6=prcomp(table_  ,   scale. = T,  rank. =1)
-summary(pca6)
-summary(pca6$x)
-hist(pca6$x)
+####
+Tabla =   Table_index[,c(23, 35:49 ) ]
+colnames(Tabla)
+
+mod_C_Causas_maternas = lm(data = Tabla,  C_Causas_maternas ~ .)
+Table_index$C_Causas_maternas_hat = predict(mod_C_Causas_maternas  , Table_index)
+
+####
+Tabla =   Table_index[,c(50, 35:49 ) ]
+colnames(Tabla)
+
+mod_OP_MEDI_GENERAL = lm(data = Tabla,  OP_MEDI_GENERAL ~ .)
+Table_index$OP_MEDI_GENERAL_hat = predict(mod_OP_MEDI_GENERAL  , Table_index)
+
+####
+Tabla =   Table_index[,c(51, 35:49 ) ]
+colnames(Tabla)
+
+mod_OP_ODO_GENERAL = lm(data = Tabla,  OP_ODO_GENERAL ~ .)
+Table_index$OP_ODO_GENERAL_hat = predict(mod_OP_ODO_GENERAL  , Table_index)
 
 
-#################################################################
 
+###################################################################
+### PCA2 
+pca2=prcomp(Table_index[, c(66:74)]  ,   scale. = T,  rank. =1)
+summary(pca2)
 
+Table_index   = cbind(Table_index , predict(pca1, Table_index) )
+colnames(Table_index)[73] = 'PCA_main_var'
+hist(Table_index[[73]])
+Table_index   = cbind(Table_index , predict(pca2, Table_index) )
+colnames(Table_index)[74] = 'PCA_main_hat_var'
+hist(Table_index[[74]])
+cor(Table_index[[73]],Table_index[[74]] )
 
-
-# Eliminar columna de Nodefinido.
-# Anexar la tabla tipo long de asegurados
-# Dividir desde la col 4 a la 28 todos los valroes por asegruados
-# hacer el PCA
-# Documentar el PCA. 
-#1- prueba pooled- tasas por afiliado
-cols_number = c(2,5:41)
-#2- prueba pooled tasas por ipc
-cols_number= c(5:34,42:47)
-#3- backward elimination                          (PC4)
-cols_number4= c(17,20,21,26,28,29,30)
-cols_number= c(17,20,21,26,28,29,30)
-#4- backward elimination                          (PC5)
-cols_number5= c(10,13,18,20,21,26,29,30,42)
-cols_number= c(10,13,18,20,21,26,29,30,42)
-#5 - backward elimination                         (pooled-PC6)
-cols_number6= c(17,13,18,20,21,26,29,30,46,38,36,40)
-cols_number= c(17,13,18,20,21,26,29,30,46,38,36,40)
-#,8:28, 31
-# PCA
-
-table_4 <- table_wo_na (base = Table_index, cols_number = cols_number4)
-table_4 <- subset(table_4, table_4[[3]]!=Inf )
-pca_eps4 <- prcomp(table_4,   scale. = T,  rank. =1)
-Table_index  = cbind(Table_index , predict(pca_eps4, Table_index) )
-colnames(Table_index)[ncol(Table_index)] = "PCA4"
-
-table_5 <- table_wo_na (base = Table_index, cols_number = cols_number5)
-table_5 <- subset(table_5, table_5[[3]]!=Inf )
-pca_eps5 <- prcomp(table_5,   scale. = T,  rank. =1)
-Table_index  = cbind(Table_index , predict(pca_eps5, Table_index) )
-colnames(Table_index)[ncol(Table_index)] = "PCA5"
-
-table_6 <- table_wo_na (base = Table_index, cols_number = cols_number6)
-table_6 <- subset(table_6, table_6[[3]]!=Inf )
-pca_eps6 <- prcomp(table_6,   scale. = T,  rank. =1)
-Table_index   = cbind(Table_index , predict(pca_eps5, Table_index))
-colnames(Table_index)[ncol(Table_index)] = "PCA6"
 
 # Table_index= Table_index[, -33]
 ## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
