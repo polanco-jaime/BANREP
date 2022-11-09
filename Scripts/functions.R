@@ -472,7 +472,7 @@ eps_homog <- function(Tabla , CODIGO__EPS ){
               WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCF018'	THEN 'EPS017' 
               WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC18'	THEN 'EPS017' 
               
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS018'	THEN 'EPS018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS18'	THEN 'EPS018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS018' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS018'	THEN 'EPS018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS18'	THEN 'EPS018' 	  WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'CCF040'	THEN 'EPS018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS018' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS020'	THEN 'EPS020'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC20'	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS020' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS022'	THEN 'EPS022'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC22'	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS022' 
         WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS023'	THEN 'EPS023'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS23'	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS023' 

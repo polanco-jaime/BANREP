@@ -206,7 +206,7 @@ for (i in eps_) {
   asegurados_ = rbind(asegurados_, temp)
 }
 
-# 18 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
+# 17 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
 
 eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados  > 0 ))$homo_code_eps
 dropped  =  subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
@@ -229,8 +229,20 @@ eps_asegurados = unique(asegurados$homo_code_eps)
 ################################# ¿UNIMOS MEDIMAS Y CAFESALUD? NO TIENE SENTIDO TENERLAS JUNTAS PERO TAMPOCO SEPARADAS
 # MEDIMAS EPS044 EMPEZO OPERACIONES EN EL AÑO 2017 CON PACIENTES HEREDADOS DE CAFESALUD 
 ################################
+asegurados_ = data.frame()
+eps_ = unique(asegurados$homo_code_eps)
 
+####### A este punto tenemos 72 EPS.
+length(eps_)
 
+for (i in eps_) {
+  temp = subset(asegurados, asegurados$homo_code_eps == i)
+  temp = (na_by_cols(temp))
+  temp$homo_code_eps = i
+  asegurados_ = rbind(asegurados_, temp)
+}
+
+############################################
 
 for (i in colnames(asegurados)[5:20]) {
   asegurados[[i]] = ifelse(is.na(asegurados[[5]] )  ==T & asegurados[[3]] <= asegurados[[2]] , 0,   asegurados[[i]]    )
