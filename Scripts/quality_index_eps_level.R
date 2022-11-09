@@ -190,7 +190,7 @@ if(1==1){
     for (i in colnames(asegurados)[7:21]) {
       asegurados[[i]] = as.numeric( as.numeric(asegurados[[i]] ) / as.numeric( asegurados[[6]]) )
     }
-}    
+
 ### Reviso la proporcion de nulos que tiene cada una de las 91 EPS
 
 asegurados_ = data.frame()
@@ -241,18 +241,10 @@ for (i in eps_) {
   temp$homo_code_eps = i
   asegurados_ = rbind(asegurados_, temp)
 }
-
+}    
 ############################################
-
-for (i in colnames(asegurados)[5:20]) {
-  asegurados[[i]] = ifelse(is.na(asegurados[[5]] )  ==T & asegurados[[3]] <= asegurados[[2]] , 0,   asegurados[[i]]    )
-}
-
-asegurados = subset(asegurados,  asegurados$homo_code_eps   %in%   unique(subset(asegurados_, asegurados_$Asegurados <= 0.5))$homo_code_eps )
-#CCF029
-asegurados$homo_code_eps   %in%   unique(subset(asegurados_, asegurados_$Asegurados <= 0.5))$homo_code_eps
 ######################################################################
-
+############################################
 
 
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
@@ -267,18 +259,27 @@ Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
 Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
 Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
 Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
+
 Table_index = aggregate_function(aggregate = 'sum',
                                  cols_to_agg = colnames(Table_index[,c(2:32)]) ,
                                  group_by = colnames(Table_index[,c(35,36,1)]) ,
                                  Tabla = Table_index)
+#Hasta este punto tengo 69 EPS
+Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
+eps_ = unique(Table_index$homo_code_eps)
+###############################################################################
 
+Table_index_ = data.frame()
+eps_ = unique(Table_index$homo_code_eps)
 
-Table_index = sqldf::sqldf("
-             SELECT fec_inact, A.* 
-             FROM Table_index A 
-             LEFT JOIN fecha_inicio F
-             ON TRIM(A.homo_code_eps)  = TRIM(F.homo_code_eps)   
-             ")
+for (i in eps_) {
+  temp = subset(Table_index, Table_index$homo_code_eps == i)
+  temp = (na_by_cols(temp))
+  temp$homo_code_eps = i
+  Table_index_ = rbind(Table_index_, temp)
+}
+
+#######
 
 #EPS044
 for (i in colnames(Table_index)[5:35]) {
