@@ -246,33 +246,129 @@ for (i in eps_) {
 ######################################################################
 ############################################
 
-
-Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
-Table_index =  Table_index[ c(3:30, 32:37)]
-Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-# Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-for (i in colnames(Table_index[,c(2:32)])) {
-  Table_index[[i]] =  as.numeric(Table_index[[i]])
+if (1==1) {
+  Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
+  Table_index =  Table_index[ c(3:30, 32:37)]
+  Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+  # Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+  for (i in colnames(Table_index[,c(2:32)])) {
+    Table_index[[i]] =  as.numeric(Table_index[[i]])
+  }
+  Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
+  Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
+  Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
+  Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
+  Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
+  
+  Table_index = aggregate_function(aggregate = 'sum',
+                                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
+                                   group_by = colnames(Table_index[,c(35,1)]) ,
+                                   Tabla = Table_index)
+  eps_ = unique(Table_index$homo_code_eps)
+  #Hasta este punto tengo 68 EPS
+  # Seleccionamos las eps que poseen informacion de sus caracteristicas. 
+  Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
+  eps_ = unique(Table_index$homo_code_eps)
+  # de las 72 eps contenidas en asegurados. 68 de ellas coinciden. 
+  # Se debe eliminar los no definidos.
+  
+  ###############################################################################
+  
+  glimpse(asegurados)
+  #####
+  
+  Table_index = sqldf::sqldf("
+             SELECT A.* , 
+             Total as Asegurados ,  CONTRIBUTIVO, 
+             EXCEPCION , SUBSIDIADO, FEMENINO , MASCULINO ,
+             COMUNIDADES_INDIGENAS , De_0_a_9 , De_10_a_19  , De_20_a_29 , De_30_a_39  ,
+              De_40_a_49 , De_50_a_59 , De_60_a_69 , De_70_a_79  , Mayor_De_80 
+             FROM Table_index A
+             LEFT JOIN asegurados B
+             ON Years = ANIO_
+             AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
+             ")
+  
+  
 }
-Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
-Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
-Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
-Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
-Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
+# Table_index_ = Table_index
+# Table_index = Table_index_
+### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
+for (i in colnames(Table_index)[8:29]) {
+  
+  Table_index[[i]] = as.numeric(Table_index[[i]])*100000 / as.numeric(Table_index[[34]])
+}
+for (i in colnames(Table_index)[30:33]) {
+  
+  Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[34]]))/10000
+}
 
-Table_index = aggregate_function(aggregate = 'sum',
-                                 cols_to_agg = colnames(Table_index[,c(2:32)]) ,
-                                 group_by = colnames(Table_index[,c(35,1)]) ,
-                                 Tabla = Table_index)
-eps_ = unique(Table_index$homo_code_eps)
-#Hasta este punto tengo 68 EPS
-# Seleccionamos las eps que poseen informacion de sus caracteristicas. 
-Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
-eps_ = unique(Table_index$homo_code_eps)
-# de las 72 eps contenidas en asegurados. 68 de ellas coinciden. 
-# Se debe eliminar los no definidos.
+############################################################################ 
+ 
+#####
+OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
+ 
+OP_MED_ODO = eps_homog (Tabla = OP_MED_ODO , CODIGO__EPS = "COD_EPS" )
 
-###############################################################################
+OP_MED_ODO = aggregate_function(aggregate = 'sum',
+                                 cols_to_agg = colnames(OP_MED_ODO[,c(3,4)]) ,
+                                 group_by = colnames(OP_MED_ODO[,c(2,5)]) ,
+                                 Tabla = OP_MED_ODO)
+OP_MED_ODO$YEAR = as.integer(OP_MED_ODO$YEAR)
+OP_MED_ODO = sqldf::sqldf("SELECT * FROM OP_MED_ODO WHERE YEAR BETWEEN 2012 AND 2020")
+Table_index$homo_code_eps
+OP_MED_ODO$homo_code_eps
+Table_index = sqldf::sqldf("
+             SELECT A.*,OP_MEDI_GENERAL, OP_ODO_GENERAL
+             FROM Table_index A
+             LEFT JOIN OP_MED_ODO B
+             ON ANIO_ = YEAR
+             AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
+             ")
+
+########### RIPS Atenciones
+
+RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+RIPS <- sqldf::sqldf("
+             SELECT  * , substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE FROM RIPS
+             ")
+RIPS = eps_homog (Tabla = RIPS , CODIGO__EPS = "EPS_CODE" )
+
+RIPS = aggregate_function(aggregate = 'sum',
+                                cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
+                                group_by = colnames(RIPS[,c(9,18)]) ,
+                                Tabla = RIPS)
+
+RIPS$ANIO_ = as.integer(RIPS$ANIO_)
+glimpse(RIPS)
+RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
+
+
+colnames(RIPS)
+Table_index = sqldf::sqldf("
+             SELECT A.*,
+              Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
+              Numero_de_Atenciones , Numero_Dias_Estancia , Valor_Cuota_Moderadora , 
+             Atx_Conteo_de_Prestadores , Costo_Consulta_xAt , Costo_Procedimiento_xAt ,
+             Neto_A_Pagar_Consulta_xAt, -- Numero_de_Atenciones_xAt, 
+             Numero_Dias_Estancia_xAt, Valor_Cuota_Moderadora_xAt
+             
+             FROM Table_index A
+             LEFT JOIN RIPS B
+             ON B.ANIO_ = A.ANIO_
+             AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
+            
+             ")
+
+for (i in colnames(Table_index)[52:58]) {
+  
+  Table_index[[i]] = as.numeric(Table_index[[i]]) / as.numeric(Table_index[[34]])
+}
+
+summary(Table_index)
+###############################################
+### Missing treatment
+
 
 Table_index_ = data.frame()
 eps_ = unique(Table_index$homo_code_eps)
@@ -296,71 +392,12 @@ Table_index = rbind(Table_index, c(  'EPS010', 2013,    as.numeric(Table_index[ 
 ####### CCF035
 Table_index[77, c(3:33)] =  Table_index[ 76 , c(3:33)]
 table(Table_index$ANIO_)
-#CCF035
-for (i in colnames(Table_index)[5:35]) {
-  Table_index[[i]] = ifelse( Table_index[[1]] >= Table_index[[4]] , 0,   Table_index[[i]]    )
-}
-
-Table_index_ = data.frame()
-eps_ = unique(Table_index$homo_code_eps)
- 
-for (i in eps_) {
-  temp = subset(Table_index, Table_index$homo_code_eps == i)
-  temp = (na_by_cols(temp))
-  Table_index_ = rbind(Table_index_, temp)
-}
+#EPS001
+Table_index[91, c(3:33)] =  Table_index[ 92 , c(3:33)]
+Table_index[90, c(3:33)] =  Table_index[ 90 , c(3:33)]
 
 
 
-
-
-
-
-#####
-
-Table_index = sqldf::sqldf("
-             SELECT A.* , Asegurados FROM Table_index A
-             LEFT JOIN asegurados B
-             ON Years = ANIO_
-             AND TRIM(eps)   = TRIM(EPS_CODE_)
-             ")
-#####
-OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
-colnames(OP_MED_ODO)
-Table_index = sqldf::sqldf("
-             SELECT A.*,OP_MEDI_GENERAL, OP_ODO_GENERAL
-             FROM Table_index A
-             LEFT JOIN OP_MED_ODO B
-             ON ANIO_ = YEAR
-             AND TRIM(EPS_CODE_)   = TRIM(COD_EPS)
-             ")
-########### RIPS Atenciones
-
-RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
-#
-
-RIPS <- sqldf::sqldf("
-             SELECT  * , substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE FROM RIPS
-             ")
-
-colnames(RIPS)
-Table_index = sqldf::sqldf("
-             SELECT A.*,
-              Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
-              Numero_de_Atenciones , Numero_Dias_Estancia , Valor_Cuota_Moderadora , 
-             Atx_Conteo_de_Prestadores , Costo_Consulta_xAt , Costo_Procedimiento_xAt ,
-             Neto_A_Pagar_Consulta_xAt, -- Numero_de_Atenciones_xAt, 
-             Numero_Dias_Estancia_xAt, Valor_Cuota_Moderadora_xAt
-             
-             FROM Table_index A
-             LEFT JOIN RIPS B
-             ON B.ANIO_ = A.ANIO_
-             AND TRIM(EPS_CODE_)   = TRIM(EPS_CODE)
-            
-             ")
-
- 
-###############################################
 
 NUMERICAS = c(7:32)
 for (i  in NUMERICAS) {
