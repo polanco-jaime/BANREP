@@ -196,7 +196,7 @@ if(1==1){
 asegurados_ = data.frame()
 eps_ = unique(asegurados$homo_code_eps)
 
-####### A este punto tenemos 96 EPS.
+####### A este punto tenemos 88 EPS.
 length(eps_)
 
 for (i in eps_) {
@@ -206,7 +206,7 @@ for (i in eps_) {
   asegurados_ = rbind(asegurados_, temp)
 }
 
-# 17 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
+# 16 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
 
 eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados  > 0 ))$homo_code_eps
 dropped  =  subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
@@ -250,7 +250,7 @@ for (i in eps_) {
 Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
 Table_index =  Table_index[ c(3:30, 32:37)]
 Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+# Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
 for (i in colnames(Table_index[,c(2:32)])) {
   Table_index[[i]] =  as.numeric(Table_index[[i]])
 }
@@ -262,11 +262,16 @@ Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
 
 Table_index = aggregate_function(aggregate = 'sum',
                                  cols_to_agg = colnames(Table_index[,c(2:32)]) ,
-                                 group_by = colnames(Table_index[,c(35,36,1)]) ,
+                                 group_by = colnames(Table_index[,c(35,1)]) ,
                                  Tabla = Table_index)
-#Hasta este punto tengo 69 EPS
+eps_ = unique(Table_index$homo_code_eps)
+#Hasta este punto tengo 68 EPS
+# Seleccionamos las eps que poseen informacion de sus caracteristicas. 
 Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
 eps_ = unique(Table_index$homo_code_eps)
+# de las 72 eps contenidas en asegurados. 68 de ellas coinciden. 
+# Se debe eliminar los no definidos.
+
 ###############################################################################
 
 Table_index_ = data.frame()
@@ -279,9 +284,19 @@ for (i in eps_) {
   Table_index_ = rbind(Table_index_, temp)
 }
 
-#######
-
-#EPS044
+# FILLING MISSING VALUES BY CHARACTERISTICS
+# UT-001 HAS DATA JUST TILL 2019, I FILLED 2020 WITH 2019
+rownames(Table_index) <- NULL   
+Table_index[431, c(3:33)] =  Table_index[ 430 , c(3:33)]
+# EPS010
+Table_index[124, c(3:33)] =  Table_index[ 125 , c(3:33)]
+glimpse(Table_index)
+##########################
+Table_index = rbind(Table_index, c(  'EPS010', 2013,    as.numeric(Table_index[ 125 , c(3:33)])))
+####### CCF035
+Table_index[77, c(3:33)] =  Table_index[ 76 , c(3:33)]
+table(Table_index$ANIO_)
+#CCF035
 for (i in colnames(Table_index)[5:35]) {
   Table_index[[i]] = ifelse( Table_index[[1]] >= Table_index[[4]] , 0,   Table_index[[i]]    )
 }
