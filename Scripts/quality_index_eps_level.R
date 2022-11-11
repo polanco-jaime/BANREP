@@ -2,7 +2,7 @@
 options(scipen=999)
 packageList<-c("readxl", "readr", "tidyverse", "sqldf", 'tidyr',
                "beepr", 'dplyr', 'readr', 'devtools', 'haven',
-               'reshape2')
+               'reshape2', 'rlist')
 for (i in 1:length(packageList) ) {
   if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
     install.packages(packageList[i])
@@ -248,17 +248,20 @@ for (i in eps_) {
 # sE AJUSTA LA TABLA A NIVEL MUNICIPIO
 if (1==1) {
   Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
+  
   Table_index =  Table_index[ c(3:30, 32:37)]
   Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
   # Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
   for (i in colnames(Table_index[,c(2:32)])) {
     Table_index[[i]] =  as.numeric(Table_index[[i]])
   }
+  get_inf(Table_index)
   Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
   Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
   Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
   Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
   Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
+  get_inf(Table_index)
   
   Table_index = aggregate_function(aggregate = 'sum',
                                    cols_to_agg = colnames(Table_index[,c(2:32)]) ,
@@ -269,42 +272,66 @@ if (1==1) {
   # Seleccionamos las eps que poseen informacion de sus caracteristicas. 
   Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
   eps_ = unique(Table_index$homo_code_eps)
-  # de las 72 eps contenidas en asegurados. 68 de ellas coinciden. 
-  # Se debe eliminar los no definidos.
-   
+ 
+  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+  # "Las eps a este punto son: 68"
   ###############################################################################
-  
-  glimpse(asegurados)
+  # glimpse(asegurados$Years)
+  asegurados$Years = as.integer(asegurados$Years)
   #####
   
   Table_index = sqldf::sqldf("
-             SELECT A.* , 
+             SELECT B.years, B.homo_code_eps as code_eps , A.* , 
              Total as Asegurados ,  CONTRIBUTIVO, 
              EXCEPCION , SUBSIDIADO, FEMENINO , MASCULINO ,
              COMUNIDADES_INDIGENAS , De_0_a_9 , De_10_a_19  , De_20_a_29 , De_30_a_39  ,
               De_40_a_49 , De_50_a_59 , De_60_a_69 , De_70_a_79  , Mayor_De_80 
-             FROM Table_index A
-             LEFT JOIN asegurados B
+             FROM asegurados B 
+             LEFT JOIN Table_index A
              ON Years = ANIO_
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
              ")
+  eps_ = unique(Table_index$code_eps)
+  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+  #  "Las eps a este punto son: 54"
+  Table_index$homo_code_eps = ifelse( is.na(Table_index$homo_code_eps), Table_index$code_eps, Table_index$homo_code_eps )
+  Table_index$ANIO_ = ifelse( is.na(Table_index$ANIO_), Table_index$Years, Table_index$ANIO_ )
+  Table_index = Table_index[ , c(3:51)]
   
-  # Table_index_ = Table_index
+  Table_index[[4]] = 1000*Table_index[[4]]/ (Table_index[[4]] + Table_index[[3]] )
+  Table_index[[5]] = 1000*Table_index[[5]]/ (Table_index[[5]] + Table_index[[6]] )
+  Table_index = Table_index[, c(1,2,4,5,8:49)]
+    # Table_index_ = Table_index
   # Table_index = Table_index_
   ### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
-  for (i in colnames(Table_index)[8:29]) {
+  for (i in colnames(Table_index)[5:26]) {
     
     Table_index[[i]] = as.numeric(Table_index[[i]])*100000 / as.numeric(Table_index[[34]])
   }
-  for (i in colnames(Table_index)[30:33]) {
+  for (i in colnames(Table_index)[27:30]) {
     
     Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[34]]))/10000
   }
   Table_index = subset(Table_index, Table_index$homo_code_eps %in% eps_asegurados) 
+  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+  #  "Las eps a este punto son: 54"
 }
 
 
 
+ 
+ 
+
+
+table(is.infinite( Table_index[[i]]   ))
+
+print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+"Las eps a este punto son: 72"
+# git status
+# git add .
+# git commit -m "2022-11-09"
+# git push
+# git status
 ############################################################################ 
 #SE UNEN LAS DEMAS TABLAS
 if (1==1) {
@@ -342,14 +369,19 @@ if (1==1) {
                              cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
                              group_by = colnames(RIPS[,c(9,18)]) ,
                              Tabla = RIPS)
-   
+   #EPS001, EPS002
    RIPS$ANIO_ = as.integer(RIPS$ANIO_)
    glimpse(RIPS)
    RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
    
    RIPS = subset(RIPS, RIPS$homo_code_eps %in% eps_asegurados) 
    
-   colnames(RIPS)
+   
+   for (i in 1:length(colnames(RIPS))) {
+     print(table(is.infinite( RIPS[[i]]   )))
+   }
+   
+   
    Table_index = sqldf::sqldf("
              SELECT A.*,
               Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
@@ -364,6 +396,9 @@ if (1==1) {
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
             
              ")
+   #
+   0.2420089862
+   15739867384.3895
    
    for (i in colnames(Table_index)[52:58]) {
      
@@ -398,10 +433,10 @@ if (1==1) {
             
              ")
  }
+print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+"Las eps a este punto son: 72"
 
 
-
-summary(Table_index)
 ###############################################
 ### Missing treatment
 
@@ -417,65 +452,50 @@ for (i in eps_) {
   Table_index_ = rbind(Table_index_, temp)
 }
 
+Table_index = subset(Table_index, 
+                     ! Table_index$homo_code_eps %in% eps_qual_full_null )
 
-# a este punto tenemos 68 eps
+summary(Table_index)
+eps_qual_full_null = Table_index_ %>% subset(def_mat_42d_si==1)
+eps_qual_full_null = unique(eps_qual_full_null$homo_code_eps)
+
+Table_index = subset(Table_index, ! Table_index$homo_code_eps %in% eps_qual_full_null )
+print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+# >> "Las eps a este punto son: 53"
 # 6 eps presentan mas de 50% de missing
-#
-row.names(Table_index) = NULL
-less_35pnulls = c(
-    'UT-001' , 'EPS010', 'CCF035' , 'EPS025' , 'EPS013', 
-    'EPS001' ,'EPS016', 'EPS037', 'EPS022',
-    'EPS039', 'EPS023' , 'EPS012', 'EPS005'
-)
-# EPS005
-Table_index[107, c(3:33)] =  Table_index[ 108 , c(3:33)]
-Table_index[106, c(3:33)] =  Table_index[ 108 , c(3:33)]
-##  EPS012
-Table_index[123, c(3:33)] =  Table_index[ 125 , c(3:33)]
-Table_index[124, c(3:33)] =  Table_index[ 125 , c(3:33)]
-##  EPS023
-Table_index[177, c(3:33)] =  Table_index[ 178 , c(3:33)]
-Table_index[176, c(3:33)] =  Table_index[ 178 , c(3:33)]
-##  EPS039
-Table_index[213, c(3:33)] =  Table_index[ 214 , c(3:33)]
-Table_index[212, c(3:33)] =  Table_index[ 214 , c(3:33)]
-# EPS022
-Table_index[170, c(3:33)] =  Table_index[ 171 , c(3:33)]
-Table_index[169, c(3:33)] =  Table_index[ 171 , c(3:33)]
-#EPS037
-Table_index[205, c(3:33)] =  Table_index[ 207 , c(3:33)]
-Table_index[206, c(3:33)] =  Table_index[ 207 , c(3:33)]
-#EPS016
-Table_index[144, c(3:33)] =  Table_index[ 146 , c(3:33)]
-Table_index[145, c(3:33)] =  Table_index[ 146 , c(3:33)]
-#EPS001
-Table_index[82, c(3:33)] =  Table_index[ 84 , c(3:33)]
-Table_index[83, c(3:33)] =  Table_index[ 84 , c(3:33)]
-#EPS013
-Table_index[129, c(3:33)] =  Table_index[ 130 , c(3:33)]
-Table_index = rbind(Table_index, c(  'EPS013', 2013,    as.numeric(Table_index[ 130 , c(3:65)])))
-Table_index = rbind(Table_index, c(  'EPS013', 2014,    as.numeric(Table_index[ 130 , c(3:65)])))
-#EPS025
-Table_index[182, c(3:33)] =  Table_index[ 183 , c(3:33)]
-Table_index = rbind(Table_index, c(  'EPS025', 2013,    as.numeric(Table_index[ 183 , c(3:65)])))
-Table_index = rbind(Table_index, c(  'EPS025', 2014,    as.numeric(Table_index[ 183 , c(3:65)])))
+# 
+ 
+Table_index = Table_index[, c(1:62)]
+var_calidad = c(62,3:30, 47:48,60)
+colnames(Table_index) [c(32,34:46,56)] 
+summary(Table_index[[56]]) 
+for (i in var_calidad) {
+  print("/------------------------------------------/")
+  
+  Y_var = colnames(Table_index)[i]
+  print(paste0("El modelo de la variable " , Y_var, " se creara"))
+  X =  Table_index[,c(i,32,34:46,56 )] #,57,58,59,61
+  X[[1]] = ifelse(X[[1]] == Inf, NA, X[[1]])
+  X[[17]] = ifelse(X[[17]] == Inf, NA, X[[17]])
+  X[[18]] = ifelse(X[[18]] == Inf, NA, X[[18]])
+  X[[19]] = ifelse(X[[19]] == Inf, NA, X[[19]])
+  
+  X= na.omit(X)
+  
+  colnames(X)[1] = 'Y'
+  
+  tryCatch( {
+    mod = lm(data = X , Y~.)
+    Table_index$Pred= predict(mod, Table_index)
+    colnames(Table_index)[ncol(Table_index)] = paste0(Y_var,'_hat')
+  
+  },
+    error=function(e){ cat("ERROR CATCH: ",conditionMessage(e), "\n")}
+  )
 
-#CCF035
-Table_index[69, c(3:33)] =  Table_index[ 68 , c(3:33)]
-Table_index = rbind(Table_index, c(  'CCF035', 2013,    as.numeric(Table_index[ 64 , c(3:65)]))) 
-#EPS010
-Table_index[116, c(3:33)] =  Table_index[ 117 , c(3:33)]
-Table_index = rbind(Table_index, c(  'EPS010', 2013,    as.numeric(Table_index[ 117 , c(3:65)]))) 
+}
 
-#UT-001
-Table_index[329, c(3:33)] =  Table_index[ 328 , c(3:33)]
-
-Table_index = rbind(Table_index, c(  'UT-001', 2013,    as.numeric(Table_index[ 323 , c(3:65)]))) 
-Table_index = rbind(Table_index, c(  'UT-001', 2012,    as.numeric(Table_index[ 323 , c(3:65)]))) 
-#######
-write.csv2(Table_index, 'quality_eps_data.csv')
-Table_index <- read.csv(paste0(path_output, "quality_eps_data.csv" ), sep = ';' )
-Table_index= Table_index[,c(2:66)]
+    
 #######################################################
 Table_index_ = data.frame()
 eps_ = unique(Table_index$homo_code_eps)
@@ -488,15 +508,9 @@ for (i in eps_) {
 }
 
 
-##########################################
-Table_index = subset(Table_index, 
-                     ! Table_index$homo_code_eps %in% c('EPS018', 'ESS068', 'EPS020') )
 
 
-
-
-
-NUMERICAS = c(3:65)
+NUMERICAS = c(3:93)
 for (i  in NUMERICAS) {
    
   Table_index[[i]]  = as.numeric(Table_index[[i]]  )
@@ -508,181 +522,45 @@ for (i  in NUMERICAS) {
 ###########################################################################
 # PCA 1
 data.frame(colnames(Table_index))
-columnas_salud = c(4,5,9,15,19,20,23,50,51)
+columnas_salud = c(62,3:30, 47:48,61)
 table_1 <- table_wo_na (base = Table_index, cols_number = columnas_salud)
-
+colnames(na.omit(Table_index[, columnas_salud ] ))
 pca1=prcomp(table_1  ,   scale. = T,  rank. =1)
 summary(pca1)
 
-# PCA 2
-# Las mismas variables asociadas estan regresadas por las caracteristicas de la eps
-colnames(table_1)
-columnas_modelos = c(4,5,9,15,19,22,23,50,51, 35:49 )
-# ,5,9,15,19,22,23
-####
-Tabla =   Table_index[,c(4, 35:49 ) ]
-mod_def_mat_42d_si = lm(data = Tabla,  def_mat_42d_si ~ .)
-Table_index$def_mat_42d_si_hat = predict(mod_def_mat_42d_si , Table_index)
-####
-Tabla =   Table_index[,c(5, 35:49 ) ]
-colnames(Tabla)
-mod_def_mat_1y_si = lm(data = Tabla,  def_mat_1y_si ~ .)
-Table_index$mod_def_mat_1y_si_hat = predict(mod_def_mat_1y_si , Table_index)
-####
-Tabla =   Table_index[,c(9, 35:49 ) ]
-colnames(Tabla)
-mod_M_Anomalias_congenitas = lm(data = Tabla,  M_Anomalias_congenitas ~ .)
-Table_index$mod_M_Anomalias_congenitas_hat = predict(mod_M_Anomalias_congenitas , Table_index)
-
-####
-Tabla =   Table_index[,c(15, 35:49 ) ]
-colnames(Tabla)
-mod_G_Enfermedades_cardiovasculares = lm(data = Tabla,  G_Enfermedades_cardiovasculares ~ .)
-Table_index$G_Enfermedades_cardiovasculares_hat = predict( mod_G_Enfermedades_cardiovasculares , Table_index)
-####
-Tabla =   Table_index[,c(19, 35:49 ) ]
-colnames(Tabla)
-mod_E_Deficiencias_de_la_nutricion = lm(data = Tabla,  E_Deficiencias_de_la_nutricion ~ .)
-Table_index$E_Deficiencias_de_la_nutricion_hat = predict( mod_E_Deficiencias_de_la_nutricion , Table_index)
-
-
-####
-Tabla =   Table_index[,c(22, 35:49 ) ]
-colnames(Tabla)
-mod_C_Diabetes_mellitus = lm(data = Tabla,  C_Diabetes_mellitus ~ .)
-Table_index$C_Diabetes_mellitus_hat = predict(mod_C_Diabetes_mellitus  , Table_index)
-
-####
-Tabla =   Table_index[,c(23, 35:49 ) ]
-colnames(Tabla)
-
-mod_C_Causas_maternas = lm(data = Tabla,  C_Causas_maternas ~ .)
-Table_index$C_Causas_maternas_hat = predict(mod_C_Causas_maternas  , Table_index)
-
-####
-Tabla =   Table_index[,c(50, 35:49 ) ]
-colnames(Tabla)
-
-mod_OP_MEDI_GENERAL = lm(data = Tabla,  OP_MEDI_GENERAL ~ .)
-Table_index$OP_MEDI_GENERAL_hat = predict(mod_OP_MEDI_GENERAL  , Table_index)
-
-####
-Tabla =   Table_index[,c(51, 35:49 ) ]
-colnames(Tabla)
-
-mod_OP_ODO_GENERAL = lm(data = Tabla,  OP_ODO_GENERAL ~ .)
-Table_index$OP_ODO_GENERAL_hat = predict(mod_OP_ODO_GENERAL  , Table_index)
-
-
+Table_index   = cbind(Table_index , predict(pca1, Table_index) )
+colnames(Table_index)[ncol(Table_index)] = 'PCA_main_var'
 
 ###################################################################
-### PCA2 
-pca2=prcomp(Table_index[, c(66:74)]  ,   scale. = T,  rank. =1)
+# PCA 2
+# Las mismas variables asociadas estan regresadas por las caracteristicas de la eps
+
+columnas_modelos = c(61, 63:93 )
+pca2=prcomp( na.omit(Table_index[, columnas_modelos ] ) ,   scale. = T,  rank. =1)
+colnames(na.omit(Table_index[, columnas_modelos ] ))
 summary(pca2)
-
-# Table_index   = cbind(Table_index , predict(pca1, Table_index) )
-colnames(Table_index)[73] = 'PCA_main_var'
-
 Table_index   = cbind(Table_index , predict(pca2, Table_index) )
-colnames(Table_index)[74] = 'PCA_main_hat_var'
+colnames(Table_index)[ncol(Table_index)] = 'PCA_main_hat_var'
+
 ######################################################
 
-hist(Table_index[[73]], main = colnames(Table_index)[73] )
-hist(Table_index[[74]], main = colnames(Table_index)[74] )
-cor(Table_index[[73]],Table_index[[74]] )
-tabla = na.omit(Table_index)
-cor(tabla[[65]],tabla[[74]] )
-cor(tabla[[65]],tabla[[73]] )
- 
- 
+hist(Table_index[['PCA_main_var']], main = colnames(Table_index)['PCA_main_var'] )
+hist(Table_index[['PCA_main_hat_var']], main = colnames(Table_index)['PCA_main_hat_var'] )
+Tabla_corr = na.omit(Table_index[,c(63,62,94,95)])
 
-# Table_index= Table_index[, -33]
-## Columns used for the pca,   literature: https://docs.google.com/spreadsheets/d/1d4cK0EHsyxfNxbTv0aeLw4pjaOdkpbivb0A8rtjLAVY/edit?usp=sharing
-# technical accuracy of the medical diagnoses and procedures, or the conformance to professional specification
-## maternal mortality 
-
-# frac_nulls_eps(df = Table_index, column_name = 'EPS_CODE_')
+cor(Tabla_corr[['PCA_main_var']],Tabla_corr[['PCA_main_hat_var']] )
+colnames(Tabla_corr)
+corr = cor(Tabla_corr[['deaths_percentage_group']],Tabla_corr[['PCA_main_hat_var']] )
+print(paste0( " la relacion entre muertes y PCA2 es: ", corr ))
+corr = cor(Tabla_corr[['PCA_main_var']],Tabla_corr[['deaths_percentage_group']] )
+print(paste0( " la relacion entre muertes y PCA1 es: ", corr ))
  
-# Eliminar columna de Nodefinido.
-# Anexar la tabla tipo long de asegurados
-# Dividir desde la col 4 a la 28 todos los valroes por asegruados
-# hacer el PCA
-# Documentar el PCA. 
-# # 
-# cols_number = c(   5:34 ) 
-#  #,8:28, 31
-#  # PCA
-#  if(1==1){
-#    # table_ <- subset(table_, Table_index$ANIO_==2013 )
-#    # table_ <- table_wo_na (base = table_, cols_number = cols_number )
-#    table_ <- table_wo_na (base = Table_index, cols_number = cols_number )
-#    table_ <- subset(table_, table_[[3]]!=Inf )
-#    print('---------------------------------------------')
-#    print(  data.frame( colnames(table_ ) )      )
-#    print('---------------------------------------------')
-#    print( paste0('filas ' , nrow((table_ ) ))  )
-#    print('---------------------------------------------')
-#    pca_eps <- prcomp(table_ ,   scale. = T,  rank. =1)
-#    
-#    print('---------------------------------------------')
-#    print(summary(pca_eps))
-#    
-#    Table_1   = cbind(Table_index , predict(pca_eps, Table_index) )
-#    Table_1 <- subset(Table_1, Table_1[[29]]!=Inf )
-#    # P(EPS_Quiebre = 1| PC1 ) ~ Pvallue < 0.05
-#    A = summary(lm(data = Table_1,  eps_status ~ PC1  ))
-#    rm(Table_1)
-#    print(A)
-#    
-#  }
-# 
-# hist(pca_eps$x)
-# 
-# 
-# ####################################### backwardElimination
-# be = backwardElimination(  tabla=  ,  sl = 0.5 ) 
-# be[["columnas"]]
-# Y = 'eps_status' 
-# 
-# table_ = dplyr::select(table_, -Y)
-# 
-# if(1==1){
-#   table_ <- Table_index # table_wo_na (base = Table_index, cols_number = c(2, cols_number) )
-#   table_ = table_[, c('eps_status', be[["columnas"]] )]
-#   
-#   table_ <- table_wo_na (base = table_, cols_number = c(1:16,36:49) )
-#   
-#   be = backwardElimination(  tabla= table_[ , c(2, 4:ncol(table_))] , Y = 'eps_status' ,  sl = 0.5 ) 
-#    
-#   
-#   table_ = table_[, c(  be[["columnas"]] )]
-#   pca=prcomp(table_  ,   scale. = T,  rank. =1)
-#   summary(pca)
-#   summary(pca$x)
-#   hist(pca$x)
-#   # A
-#   print(A)
-#   # print(B)
-#   # hist(pca$x,10)
-# }
-# 
-# 
-# summary((pca_eps$x))
-# pca_eps$x[1:10,]
-# var_explained <- pca_eps$sdev^2/sum(pca_eps$sdev^2)*100
-# var_explained
-# ############### Tiene sentido
-# 
-# eps_from_code_to_name_n_status(Tabla = Table_index,eps_code = 'EPS_CODE_' )
-# 
-# ####### Writing
-# 
-# Table_index   = cbind(Table_index , predict(pca_eps, Table_index) )
-# 
-# write.csv2(Table_index  , paste0(path_output, "Table_index_eps.csv" ) , row.names = F) 
-# colnames(Table_index)[36] = 'quality_index'
-# final = Table_index[, c(1:3,36) ]
-# write.csv2(final  , paste0(path_output, "Index_eps.csv" ) , row.names = F) 
-# 
-# # It may be useful to normalize observations by the number of affiliates, 
-# # in itself, each column would show an indicator per capita
+corr = cor(Tabla_corr[['deaths_percentage_group_hat']],Tabla_corr[['deaths_percentage_group']] )
+print(paste0( " la relacion entre muertes y PCA1 es: ", corr ))
+
+colnames(Table_index)
+
+#######
+write.csv2(Table_index, paste0(path_output, "quality_eps_data.csv" ) , row.names = F)
+#Table_index <- read.csv(paste0(path_output, "quality_eps_data.csv" ), sep = ';' )
+

@@ -769,7 +769,7 @@ aggregate_function = function(Tabla,
   
   Body = ''
   for (i in cols_to_agg) {
-    Body =  paste0(Body, aggregate,'(',i, ') as ', i , ' , '  )
+    Body =  paste0(Body,   aggregate,'( round( ',i, ' ,1) ) as ', i , ' , '  )
   }
   Body =  substr(Body,1,  nchar(Body)-2 )
   
@@ -785,6 +785,32 @@ aggregate_function = function(Tabla,
 
 
 }
+
+get_inf = function(Table_index){
+  print('/-------------------------/')
+ 
+  Lista = list()
+  for (i in 1:length(colnames(Table_index))) {
+    
+    A = as.data.frame(table( is.infinite( Table_index[[i]]   )  ))  
+    
+    if (TRUE %in% A[,1] == FALSE ) {
+      L = 'Esta todo ok'
+      
+    }else{
+      L = 'Tiene inf'
+      Lista_temp = list(paste0('La variable: ', colnames(Table_index)[i], ' ', L) )
+      Lista = append(Lista,Lista_temp)
+    }
+    print(L)
+     
+      return( Lista )
+    
+    
+  }
+}
+
+
 
 ## Last contribution
 warning("The functions created for Banrep have been loaded")
