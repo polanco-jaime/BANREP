@@ -24,7 +24,7 @@ SEGREGATION_VAR_INTERES = '[Causas de Morbilidad].[Gran Causa]'
 AXIS0 <- '[Measures].[ValorIndicador], [Measures].[Número de Personas] ,[Measures].[Número de Atenciones]'
 AXIS1 <- '[Tiempo].[Año - Semestre - Trimestre - Mes].[Mes]'
 AXIS2 <- '[Municipio Residencia - RIPS].[Municipio]'
-
+# [Administradoras].[Codigo de Administradora].&[05000]
 # [Tiempo].[Año - Semestre - Trimestre - Mes].[Año]&[%s] 
 
 # Step 1 Make query filter by 

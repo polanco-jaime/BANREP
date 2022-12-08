@@ -321,20 +321,28 @@ homogenizacion_eps <- function(tabla,Nombre_eps,Regimen_salud  ) {
 
 
 query_olap <- function(AXIS0,AXIS1, AXIS2,from_olap_catalog,where_filter   ){
-  
-  mdx<- "SELECT  {%s} ON AXIS(0),
+  if (AXIS2=="") {
+    mdx<- "SELECT  {%s} ON AXIS(0),
+                               {%s.MEMBERS} ON AXIS(1)  
+                        FROM [%s]
+                        WHERE (%s) "
+    mdx<- sprintf(mdx, AXIS0, AXIS1,  AXIS2, from_olap_catalog, where_filter )  
+  }else{
+    mdx<- "SELECT  {%s} ON AXIS(0),
                                {%s.MEMBERS} ON AXIS(1) , 
                                {%s.MEMBERS} ON AXIS(2) 
                         FROM [%s]
                         WHERE (%s) "
-  mdx<- sprintf(mdx, AXIS0, AXIS1,  AXIS2, from_olap_catalog, where_filter )
+    mdx<- sprintf(mdx, AXIS0, AXIS1,  AXIS2, from_olap_catalog, where_filter )
+  }
+ 
   return(mdx)
 }
 
 run_query_olap <- function(cnnstr, mdx,var1,  var2 ){
   olapCnn<-olapR::OlapConnection(cnnstr)
   temp <- olapR::execute2D(olapCnn, mdx)
-  temp <- subset(temp, is.na(temp[[3]])==F  )
+  # temp <- subset(temp, is.na(temp[[3]])==F  )
   temp$var1 = var1
   temp$var2 = var2
   return(temp)
@@ -787,27 +795,26 @@ aggregate_function = function(Tabla,
 }
 
 get_inf = function(Table_index){
-  print('/-------------------------/')
- 
-  Lista = list()
+  Lista = data.frame()
   for (i in 1:length(colnames(Table_index))) {
     
     A = as.data.frame(table( is.infinite( Table_index[[i]]   )  ))  
     
     if (TRUE %in% A[,1] == FALSE ) {
-      L = 'Esta todo ok'
+      L = 'NO'
       
     }else{
-      L = 'Tiene inf'
-      Lista_temp = list(paste0('La variable: ', colnames(Table_index)[i], ' ', L) )
-      Lista = append(Lista,Lista_temp)
+      L = 'YES'
+      
     }
-    print(L)
-     
-      return( Lista )
+    Lista_temp =data.frame('variable' = substr(colnames(Table_index)[i], 1, 10), 
+                           'col_number' = i,
+                           'Tiene Inf' = L) 
     
-    
+    Lista = rbind(Lista,Lista_temp)
   }
+  return( subset(Lista, Lista$Tiene.Inf == 'YES') )
+  
 }
 
 

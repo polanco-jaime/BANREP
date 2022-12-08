@@ -1,37 +1,39 @@
 # Calling libraries
 options(scipen=999)
-packageList<-c("readxl", "readr", "tidyverse", "sqldf", 'tidyr',
-               "beepr", 'dplyr', 'readr', 'devtools', 'haven',
-               'reshape2', 'rlist')
-for (i in 1:length(packageList) ) {
-  if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
-    install.packages(packageList[i])
-  }
-  lapply(packageList[i], library, character.only = TRUE)
-}
-
-devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scripts/functions.R") 
-#################################################
-# Reading tables used for index
-#################################################
-path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
-
-# if(1==1){
-#####################################################################
-## CARACTERISTICAS ASEGURADOS
- 
-##############                           
-library(readxl)
 if(1==1){
+  
+  packageList<-c("readxl", "readr", "tidyverse", "sqldf", 'tidyr',
+                 "beepr", 'dplyr', 'readr', 'devtools', 'haven',
+                 'reshape2', 'rlist')
+  for (i in 1:length(packageList) ) {
+    if(packageList[i] %in% rownames(installed.packages()) == FALSE) {
+      install.packages(packageList[i])
+    }
+    lapply(packageList[i], library, character.only = TRUE)
+  }
+  
+  devtools::source_url("https://raw.githubusercontent.com/JAPJ182/BANREP/main/Scripts/functions.R") 
+  #################################################
+  # Reading tables used for index
+  #################################################
+  path_output = "C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Output/"
+  
+  # if(1==1){
+  #####################################################################
+  ## CARACTERISTICAS ASEGURADOS
+  
+  ##############                           
+  library(readxl)
+  if(1==1){
     asegurados_Tipo_regimen <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
-                                             sheet = "Tipo_regimen")
+                                          sheet = "Tipo_regimen")
     asegurados_com_indigena <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
-                                             sheet = "com_indigena")
+                                          sheet = "com_indigena")
     
     asegurados_genero <- read_excel(paste0(path_output, "asegurados_caracteristicas.xlsx" ) , 
-                                             sheet = "genero")
+                                    sheet = "genero")
     asegurados_etarios <- read_excel(paste0(path_output, "asegurados_etarios.xlsx" ) )  
-                                     
+    
     asegurados <- read_excel(paste0(path_output, "asegurados.xlsx" ), 
                              col_types = c("text", "numeric", "numeric", 
                                            "numeric", "numeric", "numeric", 
@@ -42,10 +44,10 @@ if(1==1){
     
     library(readxl)
     fecha_inicio <- read_excel(paste0(path_output, "fecha_inicio_actividades_administradoras.xlsx" ) ,
-                                                           sheet = "eapb", col_types = c("text", 
-                                                                                  "text", "numeric", "text", "numeric", 
-                                                                                         "numeric", "date", "text"))
-
+                               sheet = "eapb", col_types = c("text", 
+                                                             "text", "numeric", "text", "numeric", 
+                                                             "numeric", "date", "text"))
+    
     fecha_inicio = data.frame('fec_inact' = c(
       '2016' ,  '2014' , '2014' , '2014' , '2014' , '2014' , '2014' , '2015' , '2015' , '2014' , '2016' , '2014' , '2014' , '2014' , 
       '2014' , '2014' , '2014' , '2016' , '2017' , '2014' , '2016' , '2016' , '2014' , '2014' , '2014' , '2014' , '2016' , '2014' , 
@@ -90,19 +92,19 @@ if(1==1){
     fecha_inicio = eps_homog (Tabla =  fecha_inicio  , CODIGO__EPS = "eps" ) 
     fecha_inicio$fec_inact = as.integer(fecha_inicio$fec_inact)
     fecha_inicio = aggregate_function(aggregate = 'min',
-                                    cols_to_agg = colnames(fecha_inicio)[1]  ,
-                                    group_by = colnames(fecha_inicio)[3] ,
-                                    Tabla = fecha_inicio)
-     
+                                      cols_to_agg = colnames(fecha_inicio)[1]  ,
+                                      group_by = colnames(fecha_inicio)[3] ,
+                                      Tabla = fecha_inicio)
+    
     fech_liqui = data.frame( "EPS" = c('EPS003', 'EPS013'	,  'EPS020' ,  'EPS024' , 'EPS035' ,  'EPS015' ,   'EPS014' ,   'EPS009' ,  'EPSC03' ,  'CCFC10' , 'CCFC18'),
-      	"fec_liqu" = c('2017' , '2015', '2015' , '2009' , '2011' , '2013' , '2013' ,  '2015' , '2017' , '2015' , '2015')
+                             "fec_liqu" = c('2017' , '2015', '2015' , '2009' , '2011' , '2013' , '2013' ,  '2015' , '2017' , '2015' , '2015')
     )
     fech_liqui = eps_homog (Tabla =  fech_liqui  , CODIGO__EPS = "EPS" ) 
     fech_liqui$fec_liqu = as.integer(fech_liqui$fec_liqu)
     fech_liqui = aggregate_function(aggregate = 'min',
-                                      cols_to_agg = colnames(fech_liqui)[2]  ,
-                                      group_by = colnames(fech_liqui)[3] ,
-                                      Tabla = fech_liqui)
+                                    cols_to_agg = colnames(fech_liqui)[2]  ,
+                                    group_by = colnames(fech_liqui)[3] ,
+                                    Tabla = fech_liqui)
     
     fecha_inicio$fec_inact = as.character(fecha_inicio$fec_inact)
     fech_liqui$fec_liqu = as.character(fech_liqui$fec_liqu)
@@ -114,7 +116,7 @@ if(1==1){
     asegurados_com_indigena$year = as.character(asegurados_com_indigena$year)
     asegurados_etarios$year= as.character(asegurados_etarios$year)
     
-     
+    
     asegurados = sqldf::sqldf("
                  SELECT  A.*,B.TOTAL,  CONTRIBUTIVO , EXCEPCION , SUBSIDIADO   ,
                  FEMENINO, MASCULINO , COMUNIDADES_INDIGENAS,
@@ -160,7 +162,7 @@ if(1==1){
                  ")
     
     ## Dropping full nulls
-        
+    
     # EPS ppara omitir RES011 , FMS001 , POL001  ,ESS115 
     asegurados_ = data.frame()
     eps_ = unique(asegurados$homo_code_eps)
@@ -176,8 +178,8 @@ if(1==1){
     }
     eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados <= 0.8))$homo_code_eps
     asegurados = subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
-
-
+    
+    
     
     eps_ = unique(asegurados$homo_code_eps)
     length(eps_)
@@ -190,97 +192,99 @@ if(1==1){
     for (i in colnames(asegurados)[7:21]) {
       asegurados[[i]] = as.numeric( as.numeric(asegurados[[i]] ) / as.numeric( asegurados[[6]]) )
     }
-
-### Reviso la proporcion de nulos que tiene cada una de las 91 EPS
-
-asegurados_ = data.frame()
-eps_ = unique(asegurados$homo_code_eps)
-
-####### A este punto tenemos 88 EPS.
-length(eps_)
-
-for (i in eps_) {
-  temp = subset(asegurados, asegurados$homo_code_eps == i)
-  temp = (na_by_cols(temp))
-  temp$homo_code_eps = i
-  asegurados_ = rbind(asegurados_, temp)
-}
-
-# 16 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
-
-eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados  > 0 ))$homo_code_eps
-dropped  =  subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
-asegurados  =  subset(asegurados,  !asegurados$homo_code_eps   %in%  eps_nulls  )
-eps_asegurados = unique(asegurados$homo_code_eps)
-
-
-#################################
-# EN 1995 BAJO UNA ALIANZA ESTRATEGIA ENTRE CAFAM Y COLSUBSIDIO SE CREA FAMISANAR EPS 
-# EPS COLSUBSIDIO CCF010,CCFC10, CAFAM CCF018, CCFC18  -> PERTENECEN A EPS017 , EPSS17 , EPS017
-#################################
-# En 1995 se fundó EPS SERVICIO OCCIDENTAL DE SALUD S.O.S. (EPSS18 y EPS018), con el esfuerzo conjunto de Comfandi,
-# Comfamiliar Caldas, Comfamiliar Pereira, Comfaunión Palmira, 
-# Comfamiliar Tuluá, Comfamiliar Cartago  CCF040, 
-# Comfamiliar Buga, Comsocial, Comfamar Buenaventura y Comfamiliar La Dorada. 
-# Estas entidades aportaron no sólo los recursos económicos necesarios para la creación de S.O.S, 
-# sino también toda su experiencia, conocimiento, vocación de servicio, 
-# además de las IPS que en cada región atenderían a los afiliados y familiares.
-
-################################# ¿UNIMOS MEDIMAS Y CAFESALUD? NO TIENE SENTIDO TENERLAS JUNTAS PERO TAMPOCO SEPARADAS
-# MEDIMAS EPS044 EMPEZO OPERACIONES EN EL AÑO 2017 CON PACIENTES HEREDADOS DE CAFESALUD 
-################################
-asegurados_ = data.frame()
-eps_ = unique(asegurados$homo_code_eps)
-
-####### A este punto tenemos 72 EPS.
-length(eps_)
-
-for (i in eps_) {
-  temp = subset(asegurados, asegurados$homo_code_eps == i)
-  temp = (na_by_cols(temp))
-  temp$homo_code_eps = i
-  asegurados_ = rbind(asegurados_, temp)
-}
-}    
-############################################
-######################################################################
-############################################
-# sE AJUSTA LA TABLA A NIVEL MUNICIPIO
-if (1==1) {
-  Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
-  
-  Table_index =  Table_index[ c(3:30, 32:37)]
-  Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-  # Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
-  for (i in colnames(Table_index[,c(2:32)])) {
-    Table_index[[i]] =  as.numeric(Table_index[[i]])
-  }
-  get_inf(Table_index)
-  Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
-  Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
-  Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
-  Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
-  Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
-  get_inf(Table_index)
-  
-  Table_index = aggregate_function(aggregate = 'sum',
-                                   cols_to_agg = colnames(Table_index[,c(2:32)]) ,
-                                   group_by = colnames(Table_index[,c(35,1)]) ,
-                                   Tabla = Table_index)
-  eps_ = unique(Table_index$homo_code_eps)
-  #Hasta este punto tengo 68 EPS
-  # Seleccionamos las eps que poseen informacion de sus caracteristicas. 
-  Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
-  eps_ = unique(Table_index$homo_code_eps)
- 
-  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-  # "Las eps a este punto son: 68"
-  ###############################################################################
-  # glimpse(asegurados$Years)
-  asegurados$Years = as.integer(asegurados$Years)
-  #####
-  
-  Table_index = sqldf::sqldf("
+    
+    ### Reviso la proporcion de nulos que tiene cada una de las 91 EPS
+    
+    asegurados_ = data.frame()
+    eps_ = unique(asegurados$homo_code_eps)
+    
+    ####### A este punto tenemos 88 EPS.
+    length(eps_)
+    
+    for (i in eps_) {
+      temp = subset(asegurados, asegurados$homo_code_eps == i)
+      temp = (na_by_cols(temp))
+      temp$homo_code_eps = i
+      asegurados_ = rbind(asegurados_, temp)
+    }
+    
+    # 16 EPSs presentan mas del 22% de los registros nulos, de los cuales los mas criticos son 12 que presentan valores nulos dificiles de imputar
+    
+    eps_nulls =  unique(subset(asegurados_, asegurados_$Asegurados  > 0 ))$homo_code_eps
+    dropped  =  subset(asegurados,  asegurados$homo_code_eps   %in%  eps_nulls  )
+    asegurados  =  subset(asegurados,  !asegurados$homo_code_eps   %in%  eps_nulls  )
+    eps_asegurados = unique(asegurados$homo_code_eps)
+    
+    get_inf(asegurados)
+    
+    #################################
+    # EN 1995 BAJO UNA ALIANZA ESTRATEGIA ENTRE CAFAM Y COLSUBSIDIO SE CREA FAMISANAR EPS 
+    # EPS COLSUBSIDIO CCF010,CCFC10, CAFAM CCF018, CCFC18  -> PERTENECEN A EPS017 , EPSS17 , EPS017
+    #################################
+    # En 1995 se fundó EPS SERVICIO OCCIDENTAL DE SALUD S.O.S. (EPSS18 y EPS018), con el esfuerzo conjunto de Comfandi,
+    # Comfamiliar Caldas, Comfamiliar Pereira, Comfaunión Palmira, 
+    # Comfamiliar Tuluá, Comfamiliar Cartago  CCF040, 
+    # Comfamiliar Buga, Comsocial, Comfamar Buenaventura y Comfamiliar La Dorada. 
+    # Estas entidades aportaron no sólo los recursos económicos necesarios para la creación de S.O.S, 
+    # sino también toda su experiencia, conocimiento, vocación de servicio, 
+    # además de las IPS que en cada región atenderían a los afiliados y familiares.
+    
+    ################################# ¿UNIMOS MEDIMAS Y CAFESALUD? NO TIENE SENTIDO TENERLAS JUNTAS PERO TAMPOCO SEPARADAS
+    # MEDIMAS EPS044 EMPEZO OPERACIONES EN EL AÑO 2017 CON PACIENTES HEREDADOS DE CAFESALUD 
+    ################################
+    asegurados_ = data.frame()
+    eps_ = unique(asegurados$homo_code_eps)
+    
+    ####### A este punto tenemos 72 EPS.
+    length(eps_)
+    
+    for (i in eps_) {
+      temp = subset(asegurados, asegurados$homo_code_eps == i)
+      temp = (na_by_cols(temp))
+      temp$homo_code_eps = i
+      asegurados_ = rbind(asegurados_, temp)
+    }
+  }    
+  ############################################
+  ######################################################################
+  ############################################
+  # sE AJUSTA LA TABLA A NIVEL MUNICIPIO
+  if (1==1) {
+    Table_index = read.csv2(paste0(path_output, "Table_index.csv" ) )
+    
+    Table_index =  Table_index[ c(3:30, 32:37)]
+    Table_index = eps_homog (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+    # Table_index = eps_quiebra (Tabla = Table_index , CODIGO__EPS = "EPS_CODE_" )
+    for (i in colnames(Table_index[,c(2:32)])) {
+      Table_index[[i]] =  as.numeric(Table_index[[i]])
+    }
+    
+    Table_index = subset(Table_index, Table_index$ANIO_ != '2009')
+    Table_index = subset(Table_index, Table_index$ANIO_ != '2010')
+    Table_index = subset(Table_index, Table_index$ANIO_ != '2011')
+    Table_index = subset(Table_index, Table_index$ANIO_ != '2021')
+    Table_index = subset(Table_index, Table_index$ANIO_ != '2022')
+    
+    
+    Table_index = aggregate_function(aggregate = 'sum',
+                                     cols_to_agg = colnames(Table_index[,c(2:32)]) ,
+                                     group_by = colnames(Table_index[,c(35,1)]) ,
+                                     Tabla = Table_index)
+    eps_ = unique(Table_index$homo_code_eps)
+    #Hasta este punto tengo 68 EPS
+    # Seleccionamos las eps que poseen informacion de sus caracteristicas. 
+    Table_index = subset(Table_index, eps_asegurados  %in% Table_index$homo_code_eps)
+    eps_ = unique(Table_index$homo_code_eps)
+    
+    print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+    # "Las eps a este punto son: 68"
+    ###############################################################################
+    # glimpse(asegurados$Years)
+    asegurados$Years = as.integer(asegurados$Years)
+    
+    #####
+    
+    Table_index = sqldf::sqldf("
              SELECT B.years, B.homo_code_eps as code_eps , A.* , 
              Total as Asegurados ,  CONTRIBUTIVO, 
              EXCEPCION , SUBSIDIADO, FEMENINO , MASCULINO ,
@@ -291,98 +295,96 @@ if (1==1) {
              ON Years = ANIO_
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
              ")
-  eps_ = unique(Table_index$code_eps)
-  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-  #  "Las eps a este punto son: 54"
-  Table_index$homo_code_eps = ifelse( is.na(Table_index$homo_code_eps), Table_index$code_eps, Table_index$homo_code_eps )
-  Table_index$ANIO_ = ifelse( is.na(Table_index$ANIO_), Table_index$Years, Table_index$ANIO_ )
-  Table_index = Table_index[ , c(3:51)]
-  
-  Table_index[[4]] = 1000*Table_index[[4]]/ (Table_index[[4]] + Table_index[[3]] )
-  Table_index[[5]] = 1000*Table_index[[5]]/ (Table_index[[5]] + Table_index[[6]] )
-  Table_index = Table_index[, c(1,2,4,5,8:49)]
+    
+    eps_ = unique(Table_index$code_eps)
+    print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+    #  "Las eps a este punto son: 54"
+    Table_index$homo_code_eps = ifelse( is.na(Table_index$homo_code_eps), Table_index$code_eps, Table_index$homo_code_eps )
+    Table_index$ANIO_ = ifelse( is.na(Table_index$ANIO_), Table_index$Years, Table_index$ANIO_ )
+    Table_index = Table_index[ , c(3:51)]
+    
+    Table_index[[4]] = 1000*Table_index[[4]]/ (Table_index[[4]] + Table_index[[3]] )
+    Table_index[[5]] = 1000*Table_index[[5]]/ (Table_index[[5]] + Table_index[[6]] )
+    Table_index = Table_index[, c(1,2,4,5,8:49)]
+    get_inf(Table_index)
+    
     # Table_index_ = Table_index
-  # Table_index = Table_index_
-  ### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
-  for (i in colnames(Table_index)[5:26]) {
+    # Table_index = Table_index_
+    ### De la base original sacamos la fraccion por numero de afiliados y de esto empezamos a hacer el fill
+    for (i in colnames(Table_index)[5:26]) {
+      
+      Table_index[[i]] = as.numeric(Table_index[[i]])*100000 /  as.integer(Table_index[[31]])
+    }
     
-    Table_index[[i]] = as.numeric(Table_index[[i]])*100000 / as.numeric(Table_index[[34]])
-  }
-  for (i in colnames(Table_index)[27:30]) {
+    for (i in colnames(Table_index)[27:30]) {
+      
+      Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[31]]))/10000
+    }
     
-    Table_index[[i]] = (as.numeric(Table_index[[i]]/12)  / as.numeric(Table_index[[34]]))/10000
+    get_inf(Table_index)
+    Table_index = subset(Table_index, Table_index$homo_code_eps %in% eps_asegurados) 
+    print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+    #  "Las eps a este punto son: 54"
   }
-  Table_index = subset(Table_index, Table_index$homo_code_eps %in% eps_asegurados) 
+  get_inf(Table_index)
+  
+  
+  
   print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-  #  "Las eps a este punto son: 54"
-}
-
-
-
- 
- 
-
-
-table(is.infinite( Table_index[[i]]   ))
-
-print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-"Las eps a este punto son: 72"
-# git status
-# git add .
-# git commit -m "2022-11-09"
-# git push
-# git status
-############################################################################ 
-#SE UNEN LAS DEMAS TABLAS
-if (1==1) {
-   OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
-   
-   OP_MED_ODO = eps_homog (Tabla = OP_MED_ODO , CODIGO__EPS = "COD_EPS" )
-   
-   OP_MED_ODO = aggregate_function(aggregate = 'sum',
-                                   cols_to_agg = colnames(OP_MED_ODO[,c(3,4)]) ,
-                                   group_by = colnames(OP_MED_ODO[,c(2,5)]) ,
-                                   Tabla = OP_MED_ODO)
-   OP_MED_ODO$YEAR = as.integer(OP_MED_ODO$YEAR)
-   OP_MED_ODO = sqldf::sqldf("SELECT * FROM OP_MED_ODO WHERE YEAR BETWEEN 2012 AND 2020")
-   
-   
-   OP_MED_ODO = subset(OP_MED_ODO, OP_MED_ODO$homo_code_eps %in% eps_asegurados) 
-   
-   Table_index = sqldf::sqldf("
+  "Las eps a este punto son: 72"
+  # git status
+  # git add .
+  # git commit -m "2022-11-09"
+  # git push
+  # git status
+  ############################################################################ 
+  #SE UNEN LAS DEMAS TABLAS
+  if (1==1) {
+    OP_MED_ODO <- read_csv(paste0(path_output, "OP_MED_ODO.csv" ) )
+    
+    OP_MED_ODO = eps_homog (Tabla = OP_MED_ODO , CODIGO__EPS = "COD_EPS" )
+    
+    OP_MED_ODO = aggregate_function(aggregate = 'sum',
+                                    cols_to_agg = colnames(OP_MED_ODO[,c(3,4)]) ,
+                                    group_by = colnames(OP_MED_ODO[,c(2,5)]) ,
+                                    Tabla = OP_MED_ODO)
+    OP_MED_ODO$YEAR = as.integer(OP_MED_ODO$YEAR)
+    OP_MED_ODO = sqldf::sqldf("SELECT * FROM OP_MED_ODO WHERE YEAR BETWEEN 2012 AND 2020")
+    
+    
+    OP_MED_ODO = subset(OP_MED_ODO, OP_MED_ODO$homo_code_eps %in% eps_asegurados) 
+    
+    Table_index = sqldf::sqldf("
              SELECT A.*,OP_MEDI_GENERAL, OP_ODO_GENERAL
              FROM Table_index A
              LEFT JOIN OP_MED_ODO B
              ON ANIO_ = YEAR
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
              ")
-   
-   ########### RIPS Atenciones
-   
-   RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
-   RIPS <- sqldf::sqldf("
+    
+    ########### RIPS Atenciones
+    
+    RIPS <- read_excel(paste0(path_output, "RIPS.xlsx" ) )
+    RIPS <- sqldf::sqldf("
              SELECT  * , substr(EPS, 0, instr(EPS,' - ') ) AS EPS_CODE FROM RIPS
              ")
-   RIPS = eps_homog (Tabla = RIPS , CODIGO__EPS = "EPS_CODE" )
-   
-   RIPS = aggregate_function(aggregate = 'sum',
-                             cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
-                             group_by = colnames(RIPS[,c(9,18)]) ,
-                             Tabla = RIPS)
-   #EPS001, EPS002
-   RIPS$ANIO_ = as.integer(RIPS$ANIO_)
-   glimpse(RIPS)
-   RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
-   
-   RIPS = subset(RIPS, RIPS$homo_code_eps %in% eps_asegurados) 
-   
-   
-   for (i in 1:length(colnames(RIPS))) {
-     print(table(is.infinite( RIPS[[i]]   )))
-   }
-   
-   
-   Table_index = sqldf::sqldf("
+    RIPS = eps_homog (Tabla = RIPS , CODIGO__EPS = "EPS_CODE" )
+    
+    RIPS = aggregate_function(aggregate = 'sum',
+                              cols_to_agg = colnames(RIPS[,c(2:8,10:16)]) ,
+                              group_by = colnames(RIPS[,c(9,18)]) ,
+                              Tabla = RIPS)
+    #EPS001, EPS002
+    RIPS$ANIO_ = as.integer(RIPS$ANIO_)
+    glimpse(RIPS)
+    RIPS = sqldf::sqldf("SELECT * FROM RIPS WHERE anio_ BETWEEN 2012 AND 2020")
+    
+    RIPS = subset(RIPS, RIPS$homo_code_eps %in% eps_asegurados) 
+    
+    
+    get_inf(RIPS)
+    
+    Table_index = sqldf::sqldf("
              SELECT A.*,
               Conteo_de_Prestadores, Costo_Consulta, Costo_Procedimiento, Neto_A_Pagar_Consulta, 
               Numero_de_Atenciones , Numero_Dias_Estancia , Valor_Cuota_Moderadora , 
@@ -396,34 +398,33 @@ if (1==1) {
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
             
              ")
-   #
-   0.2420089862
-   15739867384.3895
-   
-   for (i in colnames(Table_index)[52:58]) {
-     
-     Table_index[[i]] = as.numeric(Table_index[[i]]) / as.numeric(Table_index[[34]])
-   }
-   
-   
-   #####
-   library(haven)
-   time_sensitive_death_rate <- read_dta(paste0(path_output, "New/time_sensitive_death_rate.dta" ) )
-   time_sensitive_death_rate = eps_homog (Tabla = time_sensitive_death_rate , CODIGO__EPS = "cod_eapb" )
-   
-   time_sensitive_death_rate = aggregate_function(aggregate = 'AVG',
-                                                  cols_to_agg = colnames(time_sensitive_death_rate)[4] ,
-                                                  group_by = colnames(time_sensitive_death_rate[,c(2,5)]) ,
-                                                  Tabla = time_sensitive_death_rate)
-   
-   
-   
-   time_sensitive_death_rate = sqldf::sqldf("SELECT * FROM time_sensitive_death_rate WHERE YEAR BETWEEN 2012 AND 2020")
-   time_sensitive_death_rate = subset(time_sensitive_death_rate, time_sensitive_death_rate$homo_code_eps %in% eps_asegurados) 
-   time_sensitive_death_rate$year = as.integer(time_sensitive_death_rate$year)
-   time_sensitive_death_rate$deaths_percentage_group
-   
-   Table_index = sqldf::sqldf("
+    
+    #
+    
+    colnames(Table_index)[49:55]
+    for (i in colnames(Table_index)[49:55]) {
+      Table_index[[i]] = as.numeric(Table_index[[i]]) / as.numeric(Table_index[[31]])
+    }
+    get_inf(Table_index)
+    
+    #####
+    library(haven)
+    time_sensitive_death_rate <- read_dta(paste0(path_output, "New/time_sensitive_death_rate.dta" ) )
+    time_sensitive_death_rate = eps_homog (Tabla = time_sensitive_death_rate , CODIGO__EPS = "cod_eapb" )
+    
+    time_sensitive_death_rate = aggregate_function(aggregate = 'AVG',
+                                                   cols_to_agg = colnames(time_sensitive_death_rate)[4] ,
+                                                   group_by = colnames(time_sensitive_death_rate[,c(2,5)]) ,
+                                                   Tabla = time_sensitive_death_rate)
+    
+    
+    
+    time_sensitive_death_rate = sqldf::sqldf("SELECT * FROM time_sensitive_death_rate WHERE YEAR BETWEEN 2012 AND 2020")
+    time_sensitive_death_rate = subset(time_sensitive_death_rate, time_sensitive_death_rate$homo_code_eps %in% eps_asegurados) 
+    time_sensitive_death_rate$year = as.integer(time_sensitive_death_rate$year)
+    time_sensitive_death_rate$deaths_percentage_group
+    hist(na.omit(time_sensitive_death_rate$deaths_percentage_group))
+    Table_index = sqldf::sqldf("
              SELECT A.*, deaths_percentage_group
              
              FROM Table_index A
@@ -432,70 +433,147 @@ if (1==1) {
              AND TRIM(A.homo_code_eps)   = TRIM(B.homo_code_eps)
             
              ")
- }
-print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-"Las eps a este punto son: 72"
-
-
-###############################################
-### Missing treatment
-
-# Table_index1 = Table_index
-
-Table_index_ = data.frame()
-eps_ = unique(Table_index$homo_code_eps)
-
-for (i in eps_) {
-  temp = subset(Table_index, Table_index$homo_code_eps == i)
-  temp = (na_by_cols(temp))
-  temp$homo_code_eps = i
-  Table_index_ = rbind(Table_index_, temp)
+    get_inf(Table_index)
+    
+  }
+  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+  "Las eps a este punto son: 72"
+  
+  
+  ###############################################
+  ### Missing treatment
+  
+  # Table_index1 = Table_index
+  
+  Table_index_ = data.frame()
+  eps_ = unique(Table_index$homo_code_eps)
+  
+  for (i in eps_) {
+    temp = subset(Table_index, Table_index$homo_code_eps == i)
+    temp = (na_by_cols(temp))
+    temp$homo_code_eps = i
+    Table_index_ = rbind(Table_index_, temp)
+  }
+  summary(Table_index)
+  eps_qual_full_null = Table_index_ %>% subset(def_mat_42d_si==1)
+  eps_qual_full_null = unique(eps_qual_full_null$homo_code_eps)
+  
+  Table_index = subset(Table_index, 
+                       ! Table_index$homo_code_eps %in% eps_qual_full_null )
+  
+  
+  
+  Table_index = subset(Table_index, ! Table_index$homo_code_eps %in% eps_qual_full_null )
+  print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
+  # >> "Las eps a este punto son: 53"
+  # 6 eps presentan mas de 50% de missing
+  # 
+  
 }
-
-Table_index = subset(Table_index, 
-                     ! Table_index$homo_code_eps %in% eps_qual_full_null )
-
-summary(Table_index)
-eps_qual_full_null = Table_index_ %>% subset(def_mat_42d_si==1)
-eps_qual_full_null = unique(eps_qual_full_null$homo_code_eps)
-
-Table_index = subset(Table_index, ! Table_index$homo_code_eps %in% eps_qual_full_null )
-print(paste0("Las eps a este punto son: ", length(unique(Table_index$homo_code_eps))))
-# >> "Las eps a este punto son: 53"
-# 6 eps presentan mas de 50% de missing
-# 
- 
 Table_index = Table_index[, c(1:62)]
-var_calidad = c(62,3:30, 47:48,60)
+var_calidad = c(62,3:30, 47:48,53,60)
 colnames(Table_index) [c(32,34:46,56)] 
 summary(Table_index[[56]]) 
+
+# Table_index[[2]] = as.character(Table_index[[2]] ) 
+
 for (i in var_calidad) {
   print("/------------------------------------------/")
   
   Y_var = colnames(Table_index)[i]
   print(paste0("El modelo de la variable " , Y_var, " se creara"))
-  X =  Table_index[,c(i,32,34:46,56 )] #,57,58,59,61
+  X =  Table_index[,c(i, 32,34:46 )]  # 56,57,58,59,61 
   X[[1]] = ifelse(X[[1]] == Inf, NA, X[[1]])
-  X[[17]] = ifelse(X[[17]] == Inf, NA, X[[17]])
-  X[[18]] = ifelse(X[[18]] == Inf, NA, X[[18]])
-  X[[19]] = ifelse(X[[19]] == Inf, NA, X[[19]])
   
   X= na.omit(X)
-  
   colnames(X)[1] = 'Y'
   
   tryCatch( {
     mod = lm(data = X , Y~.)
+    print(summary(mod))
     Table_index$Pred= predict(mod, Table_index)
     colnames(Table_index)[ncol(Table_index)] = paste0(Y_var,'_hat')
-  
-  },
+    },
     error=function(e){ cat("ERROR CATCH: ",conditionMessage(e), "\n")}
   )
 
 }
 
-    
+library(corrplot)
+################################################3
+
+hist(Table_index[[62]])
+
+Y_var = colnames(Table_index)[62]
+X =  Table_index[,c(62,2,32,35, 37:46)]
+colnames(X)[1] = 'Y'
+
+X =  Table_index[,c(2,62,32,34:46)]
+
+mod = lm(data = X , log(  100*(Y +1) )~
+           CONTRIBUTIVO + COMUNIDADES_INDIGENAS
+         +FEMENINO + De_0_a_9 + De_10_a_19 + 
+           De_20_a_29 + De_30_a_39 + 
+           De_40_a_49 + De_50_a_59 + 
+           De_60_a_69+ De_70_a_79
+         #+ factor(ANIO_)
+         )
+summary(mod)
+
+summary(X)
+hist(X$SUBSIDIADO)
+colnames(X)[1] = 'Y'
+mod = lm(data = X , 100*Y~.)
+summary(mod)
+# # Transforming 
+# X$De_0_a_29 = X$De_0_a_9 + X$De_10_a_19 + X$De_20_a_29
+# X$De_30_a_59 = X$De_30_a_39 + X$De_40_a_49 + X$De_50_a_59
+# X$De_60_a_79 = X$De_60_a_69 + X$De_70_a_79 
+# X=  X[,-c(5:11)]
+# X = X[, c(1,2,3,4,7,8,9,5,6)]
+# mod = lm(data = X , log(  100*(Y +1) )~.)
+# summary(mod)
+# 
+# library(modelsummary)
+# modelsummary(mod, statistic = c("t = {statistic}",
+#                                 "se = {std.error}",
+#                                 "conf.int"))
+# # ?modelsummary
+# avg_table = aggregate_function(aggregate = 'avg',
+#                                 cols_to_agg = colnames(fech_liqui)[2]  ,
+#                                 group_by = colnames(fech_liqui)[3] ,
+#                                 Tabla = fech_liqui)
+##################################################
+Table_index[[2]] = as.numeric(Table_index[[2]])
+colnames(Table_index)[c(31,32,34:46)]
+cols_asegurados = colnames(Table_index[,c(32,34:46)]) # 31 ,50,51,55
+under_sampling = subset(Table_index, is.na(Table_index$deaths_percentage_group)==  F)
+pc1_avg_table = aggregate_function(aggregate = 'avg',
+                                               cols_to_agg = cols_asegurados  ,
+                                               group_by =  colnames(Table_index)[c(1)],
+                                               Tabla = under_sampling  )
+
+
+table_1 <- table_wo_na (base = pc1_avg_table, cols_number = c(2:ncol(pc1_avg_table) ))
+PCA_asegurados=prcomp(table_1  ,   scale. = T,  rank. =1)
+summary(PCA_asegurados)
+
+
+
+Table_index   = cbind(Table_index , predict(PCA_asegurados, Table_index) )
+colnames(Table_index)[ncol(Table_index)] = 'PCA_caract_aseg'
+
+### Analisis
+summary((Table_index$PCA_caract_aseg))
+hist(Table_index$PCA_caract_aseg)
+# Table_index$PCA_caract_aseg =Table_index$PCA_caract_aseg*-1
+
+# Eps arriba del percentil 75
+unique(subset(Table_index,Table_index$PCA_caract_aseg >= quantile(na.omit(Table_index$PCA_caract_aseg), 0.95))$homo_code_eps)
+# EPS top segun caracteristicas de la poblacion
+# "EPS018" "EPS010" "EPS012" "EPS023"
+
+
 #######################################################
 Table_index_ = data.frame()
 eps_ = unique(Table_index$homo_code_eps)
@@ -521,33 +599,108 @@ for (i  in NUMERICAS) {
 # }  
 ###########################################################################
 # PCA 1
-data.frame(colnames(Table_index))
-columnas_salud = c(62,3:30, 47:48,61)
-table_1 <- table_wo_na (base = Table_index, cols_number = columnas_salud)
-colnames(na.omit(Table_index[, columnas_salud ] ))
+
+Table_index = Table_index[, c(1:96)]
+# columnas_salud = c(62,3,4,6:10,13:18,20,22,23,25,26,60,56,95)
+columnas_salud =  c(3, 4,47,53,62) # 48
+colnames(Table_index )[columnas_salud ]
+
+pc2_avg_table = aggregate_function(aggregate = 'AVG',
+                                   cols_to_agg = colnames(Table_index[,columnas_salud]) ,
+                                   group_by =  colnames(Table_index)[1],
+                                   Tabla = under_sampling)
+
+
+table_1 <- table_wo_na (base = pc2_avg_table, cols_number = c(2:ncol(pc2_avg_table) ))
+
 pca1=prcomp(table_1  ,   scale. = T,  rank. =1)
 summary(pca1)
 
 Table_index   = cbind(Table_index , predict(pca1, Table_index) )
 colnames(Table_index)[ncol(Table_index)] = 'PCA_main_var'
+hist(Table_index$PCA_main_var)
+summary(Table_index$PCA_main_var)
+### max 5 min 5
+# Table_index$PCA_main_var =Table_index$PCA_main_var*-1
+Table_index$PCA_main_var = ifelse(Table_index$PCA_main_var  <=- 3,-3, Table_index$PCA_main_var)
+Table_index$PCA_main_var = ifelse(Table_index$PCA_main_var  >= 3,3, Table_index$PCA_main_var)
+
+hist(Table_index$PCA_main_var)
+### Analisis
+
+p90 = quantile(na.omit(Table_index$PCA_main_var), 0.95)
+p10 = quantile(na.omit(Table_index$PCA_main_var), 0.05)
+# Eps arriba del percentil 75
+unique(subset(Table_index,Table_index$PCA_main_var >= p90)$homo_code_eps)
+unique(subset(Table_index,Table_index$PCA_main_var <= p10)$homo_code_eps)
+#
+# EPS top segun caracteristicas de las morbilidades
+#  "EPS010" "EPS016" "EPS023" "EPS012"  "EPS008" "EPS002"
+# EPS Tail segun las caracteristicas de las morbilidades
+# "CCF037" "EPS014" "EPS026" "CCF007" "EPS003" "EPSI04" "CCF015" "EPS033" "EPSS34" "ESS118"
+#
+#
 
 ###################################################################
 # PCA 2
 # Las mismas variables asociadas estan regresadas por las caracteristicas de la eps
 
-columnas_modelos = c(61, 63:93 )
-pca2=prcomp( na.omit(Table_index[, columnas_modelos ] ) ,   scale. = T,  rank. =1)
-colnames(na.omit(Table_index[, columnas_modelos ] ))
+columnas_modelos = c(64,65,92,94,63) # c( 63:65,67:71,74,76:79,81,83,84,86,87,56, 61, 94 ) #75,16
+colnames(Table_index )[columnas_modelos ]
+
+
+pc3_avg_table = aggregate_function(aggregate = 'AVG',
+                                   cols_to_agg = colnames(Table_index[,columnas_modelos]) ,
+                                   group_by =  colnames(Table_index)[1],
+                                   Tabla = under_sampling)
+
+
+table_1 <- table_wo_na (base = pc3_avg_table, cols_number = c(2:ncol(pc3_avg_table) ))
+
+pca2=prcomp(table_1  ,   scale. = T,  rank. =1)
 summary(pca2)
+
+
 Table_index   = cbind(Table_index , predict(pca2, Table_index) )
 colnames(Table_index)[ncol(Table_index)] = 'PCA_main_hat_var'
+#Analisis
+hist(Table_index$PCA_main_hat_var)
+summary(Table_index$PCA_main_hat_var)
+# Table_index$PCA_main_hat_var = Table_index$PCA_main_hat_var*-1
+Table_index$PCA_main_hat_var = ifelse(Table_index$PCA_main_hat_var <= -4,-4,Table_index$PCA_main_hat_var)
+Table_index$PCA_main_hat_var = ifelse(Table_index$PCA_main_hat_var >= 4,4,Table_index$PCA_main_hat_var)
+hist(Table_index$PCA_main_hat_var)
+p90 = quantile(na.omit(Table_index$PCA_main_hat_var), 0.95)
+p10 = quantile(na.omit(Table_index$PCA_main_hat_var), 0.05)
+# Eps arriba del percentil 75
+unique(subset(Table_index,Table_index$PCA_main_hat_var >= p90)$homo_code_eps)
+unique(subset(Table_index,Table_index$PCA_main_hat_var <= p10)$homo_code_eps)
+# EPS top segun caracteristicas de las morbilidades
+#  "EPS010" "EPS016" "EPS023" "EPS012"  "EPS008" "EPS002"
+# EPS Tail segun las caracteristicas de las morbilidades
+# "CCF037" "EPS014" "EPS026" "CCF007" "EPS003" "EPSI04" "CCF015" "EPS033" "EPSS34" "ESS118"
+
+                          
+                                      
 
 ######################################################
+library(ggplot2)
+library(corrplot)
+Table_index$PCA_main_hat_var = Table_index$PCA_main_hat_var*-1
+Table_index$PCA_main_var = Table_index$PCA_main_var*-1
 
 hist(Table_index[['PCA_main_var']], main = colnames(Table_index)['PCA_main_var'] )
 hist(Table_index[['PCA_main_hat_var']], main = colnames(Table_index)['PCA_main_hat_var'] )
-Tabla_corr = na.omit(Table_index[,c(63,62,94,95)])
+hist(Table_index[['PCA_caract_aseg']], main = colnames(Table_index)['PCA_main_hat_var'] )
 
+Tabla_corr = na.omit(Table_index[,c(63,98,62,96,97)])
+
+M3 = cor(na.omit(Tabla_corr))
+m3= data.frame(M3) 
+
+corrplot(M3, method = 'number') 
+summary(m3$PCA_caract_aseg)
+ 
 cor(Tabla_corr[['PCA_main_var']],Tabla_corr[['PCA_main_hat_var']] )
 colnames(Tabla_corr)
 corr = cor(Tabla_corr[['deaths_percentage_group']],Tabla_corr[['PCA_main_hat_var']] )
@@ -559,8 +712,22 @@ corr = cor(Tabla_corr[['deaths_percentage_group_hat']],Tabla_corr[['deaths_perce
 print(paste0( " la relacion entre muertes y PCA1 es: ", corr ))
 
 colnames(Table_index)
-
+# Table_index$PCA_caract_aseg = -1*Table_index$PCA_caract_aseg 
 #######
 write.csv2(Table_index, paste0(path_output, "quality_eps_data.csv" ) , row.names = F)
 #Table_index <- read.csv(paste0(path_output, "quality_eps_data.csv" ), sep = ';' )
 
+####################
+M = cor(na.omit(Table_index[,c(62,95,97,96, 3:26)]))
+m= data.frame(M) 
+# corrplot(M, method = 'number') # colorful number
+
+M2 = cor(na.omit(Table_index[,c(62,63,95, 97,96 ,64:94)]))
+m2= data.frame(M2) 
+
+# corrplot(M2, method = 'number') # colorful number
+
+hist(Table_index$PCA_main_var)
+
+# Eps arriba del percentil 75
+unique(subset(Table_index,Table_index$PCA_main_var >= quantile(na.omit(Table_index$PCA_main_var), 0.9))$homo_code_eps)
