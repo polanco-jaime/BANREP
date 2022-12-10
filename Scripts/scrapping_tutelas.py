@@ -1,4 +1,4 @@
-!pip install html-table-parser-python3
+#!pip install html-table-parser-python3
 # Library for opening url and creating 
 # requests
 import requests
