@@ -1,18 +1,28 @@
-#!pip install html-table-parser-python3
-# Library for opening url and creating 
-# requests
+# !pip install html-table-parser-python3
 import requests
 import lxml.html as lh
 import pandas as pd
 
-def scrap_tutelas( keyword, anio, mes , Demandado =True):
+def scrap_tutelas( keyword, anio=None, mes = None , Demandado =True):
   import urllib.request
   from pprint import pprint
   from html_table_parser.parser import HTMLTableParser
   import pandas as pd
+  if mes is None:
+    if anio is None:
+      fec_in = '{}-{}-01'.format('1900', '01') 
+      fec_fin=  '{}-{}-31'.format('2022', '12')
+    else:
+      fec_in = '{}-{}-01'.format(anio, '01') 
+      fec_fin=  '{}-{}-31'.format(anio, '12')
+  else:
+    if anio is None:
+      fec_in = '{}-{}-01'.format('1900', mes) 
+      fec_fin=  '{}-{}-31'.format('2022', mes)
+    else:
+      fec_in = '{}-{}-01'.format(anio, mes) 
+      fec_fin=  '{}-{}-31'.format(anio, mes)
 
-  fec_in = '{}-{}-01'.format(anio, mes) 
-  fec_fin=  '{}-{}-31'.format(anio, mes)
   # pagina = 2
   # keyword = ('EPS', 'E.P.S')[0] 
   if Demandado == True:
