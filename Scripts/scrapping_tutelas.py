@@ -42,7 +42,7 @@ def scrap_tutelas( keyword, anio=None, mes = None , Demandado =True):
       #reading contents of the website
       return f.read()
   # defining the html contents of a URL.
-  xhtml = url_get_contents(url).decode('utf-8')
+  xhtml = url_get_contents(url).decode('latin-1')
   # Defining the HTMLTableParser object
   p = HTMLTableParser()
   # feeding the html contents in the # HTMLTableParser object
