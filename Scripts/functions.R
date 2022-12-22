@@ -777,7 +777,11 @@ aggregate_function = function(Tabla,
   
   Body = ''
   for (i in cols_to_agg) {
-    Body =  paste0(Body,   aggregate,'( round( ',i, ' ,1) ) as ', i , ' , '  )
+    if (aggregate == 'COUNT' | aggregate == 'count' ) {
+      Body =  paste0(Body,   aggregate,'( DISTINCT ',i, ' ) as ', i , ' , '  )  
+    }else{
+      Body =  paste0(Body,   aggregate,'( round( ',i, ' ,1) ) as ', i , ' , '  )
+    }
   }
   Body =  substr(Body,1,  nchar(Body)-2 )
   
