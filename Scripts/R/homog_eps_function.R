@@ -6,7 +6,7 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
 # rm(lista)
-eps_validator <- function(Tabla , eps_nombre ){
+eps_validator = function(Tabla , eps_nombre ){
   
   if ('eps_nombre' %in% colnames(Tabla)) {
     colnames(Tabla['eps_nombre'] ) = 'eps_nombre_'
@@ -83,13 +83,13 @@ FROM Tabla
 ) 
 WHERE IS_EPS = 1
   "
-Tabla <- sqldf::sqldf(query)
-Tabla <- dplyr::select(Tabla, -'eps_nombre')
+Tabla = sqldf::sqldf(query)
+Tabla = dplyr::select(Tabla, -'eps_nombre')
 print(nrow(Tabla))
 return( Tabla )
 }
 
-eps_homog_nombre <- function(Tabla , eps_nombre ){
+eps_homog_nombre = function(Tabla , eps_nombre ){
   
   if ('eps_nombre' %in% colnames(Tabla)) {
     colnames(Tabla['eps_nombre'] ) = 'eps_nombre_'
@@ -268,13 +268,13 @@ FROM Tabla
 )
 WHERE  homo_code_eps IS NOT NULL
   "
-  Tabla <- sqldf::sqldf(query)
-  Tabla <- dplyr::select(Tabla, -'eps_nombre')
+  Tabla = sqldf::sqldf(query)
+  Tabla = dplyr::select(Tabla, -'eps_nombre')
   print(nrow(Tabla))
   return( Tabla )
 }
 
-eps_homog <- function(Tabla , CODIGO__EPS ){
+eps_homog = function(Tabla , CODIGO__EPS ){
   
   if ('CODIGO__EPS' %in% colnames(Tabla)) {
     colnames(Tabla['CODIGO__EPS'] ) = 'CODIGO__EPS_'
@@ -400,7 +400,7 @@ eps_homog <- function(Tabla , CODIGO__EPS ){
              
 FROM Tabla
   "
-  Tabla <- sqldf::sqldf(query)
-  Tabla <- dplyr::select(Tabla, -'CODIGO__EPS')
+  Tabla = sqldf::sqldf(query)
+  Tabla = dplyr::select(Tabla, -'CODIGO__EPS')
   return( Tabla )
 }
