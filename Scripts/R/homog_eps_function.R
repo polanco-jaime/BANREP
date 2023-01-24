@@ -5,7 +5,7 @@ for (i in 1:length(lista) ) {
   }
   lapply(lista[i], library, character.only = TRUE)
 }
-rm(lista)
+# rm(lista)
 eps_validator <- function(Tabla , eps_nombre ){
   
   if ('eps_nombre' %in% colnames(Tabla)) {
