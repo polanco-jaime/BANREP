@@ -1,10 +1,10 @@
-lista = c('sqldf','plyr', 'dplyr')
-for (i in 1:length(lista) ) {
-  if(lista[i] %in% rownames(installed.packages()) == FALSE) {
-    install.packages(lista[i])
-  }
-  lapply(lista[i], library, character.only = TRUE)
-}
+# lista = c('sqldf','plyr', 'dplyr')
+# for (i in 1:length(lista) ) {
+#   if(lista[i] %in% rownames(installed.packages()) == FALSE) {
+#     install.packages(lista[i])
+#   }
+#   lapply(lista[i], library, character.only = TRUE)
+# }
 # rm(lista)
 eps_validator = function(Tabla , eps_nombre ){
   
