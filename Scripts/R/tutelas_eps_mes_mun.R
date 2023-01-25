@@ -22,6 +22,7 @@ for (i in 1:length(lista) ) {
 temp = list.files('./',pattern="*.parquet")
 tutelas = data.frame()
 temp= temp[temp != "Tutelas_clean.parquet"]
+temp= temp[temp != "Tutelas_mun_eps_date_full.parquet"]
 temp= temp[temp != "Tutelas_mun_eps_date.parquet"]
 for (i in temp) {
   tempo= arrow::read_parquet(i)
@@ -49,8 +50,11 @@ source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Se
 source("C:/Users/USER/OneDrive - Pontificia Universidad Javeriana/02_UPJ 2020/Semestre 5/banrep/Code/BANREP/Scripts/R/homoge_mun_nombre.R")
 
 Tabla = eps_homog_nombre(Tabla = tutelas , eps_nombre = 'Demandado' )
+colnames(Tabla)[12] = "code_eps"
+Tabla = eps_homog(Tabla = Tabla, CODIGO__EPS = "code_eps" )
 
 Tabla = eps_validator(Tabla = Tabla , eps_nombre = "Demandado")
+Tabla = Tabla %>% dplyr::select(-'code_eps')
 
 Tabla= sqldf("SELECT *, 
               case  
@@ -79,10 +83,24 @@ gc()
 
 Tabla = homoge_mun_nombre(Tabla = Tabla[ , 1:14],  nombre_mun = 'Primera_Instancia')
 table( is.na(Tabla$DIVIPOLA_) )
-arrow::write_parquet(Tabla, 'Tutelas_mun_eps_date_full.parquet')
-Tabla =  arrow::read_parquet('Tutelas_mun_eps_date.parquet')
-colnames(Tabla)
 
+colnames(Tabla)[7] = 'Segunda_Instancia'
+Tabla = Tabla[ , c(2,4:7,12:15)]
+colnames(Tabla) = c("rad_expediente" , "Demandante",
+                    "Demandado" , "Primera_Instancia" ,
+                    "Segunda_Instancia" ,  "year" ,
+                    "new_code_eps" , "new_Fecha_corte" , "new_DIVIPOLA_"    )
+arrow::write_parquet(Tabla, 'Tutelas_mun_eps_date_full.parquet')
+haven::write_dta(Tabla, 'Tutelas_mun_eps_date_full.dta')
+###################################################################
+#
+# Join the master base of health insurance affiliates with tutelas data bases, 
+#
+###################################################################
+Tabla =  arrow::read_parquet('Tutelas_mun_eps_date.parquet')
+
+colnames(Tabla)
+temp
 Tabla_ = sqldf("
               SELECT COUNT(DISTINCT rad_expediente) TOTAL_TUTELAS,
               homo_code_eps as code_eps_, 
@@ -134,8 +152,8 @@ if(1==1){
   # Tabla_ = Tabla_ %>% subset(is.na(code_eps_) == F)
   
   Tabla_$COD_ = paste0(Tabla_$cod_mpio,'-' ,Tabla_$cod_eapb) 
-  Control = Tabla_ %>% subset(date == '201805')
-  sum(Control$Defunciones)
+  # Control = Tabla_ %>% subset(date == '201805')
+  # sum(Control$Defunciones)
 }
 
 Tabla_ = sqldf::sqldf("SELECT * FROM ( SELECT  * FROM Tabla_ ) order by  DATE , COD_ " )
