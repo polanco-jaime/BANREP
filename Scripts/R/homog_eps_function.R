@@ -6,6 +6,7 @@ for (i in 1:length(lista) ) {
   lapply(lista[i], library, character.only = TRUE)
 }
 rm(lista)
+####################################
 eps_validator = function(Tabla , eps_nombre ){
   
   if ('eps_nombre' %in% colnames(Tabla)) {
@@ -88,7 +89,138 @@ Tabla = dplyr::select(Tabla, -'eps_nombre')
 print(nrow(Tabla))
 return( Tabla )
 }
-
+#############################################
+eps_homog = function(Tabla , CODIGO__EPS ){
+  
+  if ('CODIGO__EPS' %in% colnames(Tabla)) {
+    colnames(Tabla['CODIGO__EPS'] ) = 'CODIGO__EPS_'
+    Tabla$CODIGO__EPS = Tabla[[CODIGO__EPS]]
+  }else{
+    Tabla$CODIGO__EPS = Tabla[[CODIGO__EPS]]
+  }
+  
+  
+  library(sqldf)
+  
+  if ('eps_status' %in% colnames(Tabla)) {
+    colnames(Tabla['eps_status'] ) = 'eps__status'
+  }
+  if ('homo_code_eps' %in% colnames(Tabla)) {
+    colnames(Tabla['homo_code_eps'] ) = 'homo__code_eps'
+  }
+  
+  query =  "
+  SELECT * , 
+  CASE WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF001'	THEN 'CCF001'	 									
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF002'	THEN 'CCF002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC02'	THEN 'CCF002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF002' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF007'	THEN 'CCF007'	WHEN   REPLACE(CODIGO__EPS, ' ', '') = 	'CCFC07'	THEN 'CCF007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF007' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF009'	THEN 'CCF009'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC09'	THEN 'CCF009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF009' 
+       -- WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF010'	THEN 'CCF010'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC10'	THEN 'CCF010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF010' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF015'	THEN 'CCF015'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC15'	THEN 'CCF015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF015' 
+       -- WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF018'	THEN 'CCF018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC18'	THEN 'CCF018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF018' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF023'	THEN 'CCF023'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC23'	THEN 'CCF023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF023' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF024'	THEN 'CCF024'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC24'	THEN 'CCF024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF024' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF027'	THEN 'CCF027'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC27'	THEN 'CCF027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF027' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF028'	THEN 'CCF028'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF028' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF029'	THEN 'CCF029'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF029' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF029' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF029' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF031'	THEN 'CCF031'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF031' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF032'	THEN 'CCF032'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF032' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF032' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF032' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF033'	THEN 'CCF033'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC33'	THEN 'CCF033' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF033' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF033' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF035'	THEN 'CCF035'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF035' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF037'	THEN 'CCF037'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF037' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF037' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF037' 
+        --WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF040'	THEN 'CCF040'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF040' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF040' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF040' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF045'	THEN 'CCF045'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF045' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF045' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF045' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF050'	THEN 'CCF050'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC50'	THEN 'CCF050' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF050' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF050' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF053'	THEN 'CCF053'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC53'	THEN 'CCF053' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF053' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF053' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF054'	THEN 'CCF054'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF054' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF054' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF054' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF055'	THEN 'CCF055'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC55'	THEN 'CCF055' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF055' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF055' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF102'	THEN 'CCF102'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC20'	THEN 'CCF102' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF102' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF102' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF103'	THEN 'CCF103'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF103' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF103' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF103' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EAS016'	THEN 'EAS016'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EAS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS016' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EAS027'	THEN 'EAS027'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EAS027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS027' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS001'	THEN 'EPS001'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS01'	THEN 'EPS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS001' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS002'	THEN 'EPS002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS02'	THEN 'EPS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS002' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS003'	THEN 'EPS003'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS03'	THEN 'EPS003' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPSM03'	THEN 'EPS003' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC03'	THEN 'EPS003' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS005'	THEN 'EPS005'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS05'	THEN 'EPS005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS005' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS006'	THEN 'EPS006'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS006' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS008'	THEN 'EPS008'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS08'	THEN 'EPS008' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS008' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS008' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS009'	THEN 'EPS009'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS009' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS010'	THEN 'EPS010'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS10'	THEN 'EPS010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS010' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS012'	THEN 'EPS012'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS12'	THEN 'EPS012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS012' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS013'	THEN 'EPS013'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS13'	THEN 'EPS013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS013' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS014'	THEN 'EPS014'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS14'	THEN 'EPS014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS014' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS015'	THEN 'EPS015'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS015' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS016'	THEN 'EPS016'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS16'	THEN 'EPS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS016' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS017'	THEN 'EPS017'	
+              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS17'	THEN 'EPS017' 	
+              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCF010'	THEN 'EPS017' 
+              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC10'	THEN 'EPS017' 
+              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCF018'	THEN 'EPS017' 
+              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC18'	THEN 'EPS017' 
+              
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS018'	THEN 'EPS018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS18'	THEN 'EPS018' 	  WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'CCF040'	THEN 'EPS018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS018' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS020'	THEN 'EPS020'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC20'	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS020' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS022'	THEN 'EPS022'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC22'	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS022' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS023'	THEN 'EPS023'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS23'	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS023' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS025'	THEN 'EPS025'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC25'	THEN 'EPS025' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS025' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS025' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS026'	THEN 'EPS026'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS26'	THEN 'EPS026' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS026' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS026' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS028'	THEN 'EPS028'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS028' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS030'	THEN 'EPS030'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS030' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS030' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS030' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS031'	THEN 'EPS031'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS031' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS033'	THEN 'EPS033'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC33'	THEN 'EPS033' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPSS33'	THEN 'EPS033' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSM33'	THEN 'EPS033' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS034'	THEN 'EPS034'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS034' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS034' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS034' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS035'	THEN 'EPS035'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS035' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS037'	THEN 'EPS037'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS37'	THEN 'EPS037' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPS041'	THEN 'EPS037' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS41'	THEN 'EPS037' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS038'	THEN 'EPS038'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS038' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS038' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS038' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS039'	THEN 'EPS039'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS39'	THEN 'EPS039' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS039' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS039' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS042'	THEN 'EPS042'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS42'	THEN 'EPS042' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS042' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS042' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS044'	THEN 'EPS044'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS44'	THEN 'EPS044' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPS045'	THEN 'EPS044' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS45'	THEN 'EPS044' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS046'	THEN 'EPS046'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS46'	THEN 'EPS046' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS046' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS046' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS048'	THEN 'EPS048'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS48'	THEN 'EPS048' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS048' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS048' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI01'	THEN 'EPSI01'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC1'	THEN 'EPSI01' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI01' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI01' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI02'	THEN 'EPSI02'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC2'	THEN 'EPSI02' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI02' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI02' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI03'	THEN 'EPSI03'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC3'	THEN 'EPSI03' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI03' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI03' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI04'	THEN 'EPSI04'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC4'	THEN 'EPSI04' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI04' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI04' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI05'	THEN 'EPSI05'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC5'	THEN 'EPSI05' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI05' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI05' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI06'	THEN 'EPSI06'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC6'	THEN 'EPSI06' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI06' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI06' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSS34'	THEN 'EPSS34'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC34'	THEN 'EPSS34' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSS34' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSS34' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSS40'	THEN 'EPSS40'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPS040'	THEN 'EPSS40' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSS40' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSS40' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS002'	THEN 'ESS002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC02'	THEN 'ESS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS002' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS024'	THEN 'ESS024'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC24'	THEN 'ESS024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS024' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS062'	THEN 'ESS062'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC62'	THEN 'ESS062' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS062' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS062' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS068'	THEN 'ESS068'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS068' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS068' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS068' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS076'	THEN 'ESS076'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC76'	THEN 'ESS076' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS076' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS076' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS091'	THEN 'ESS091'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC91'	THEN 'ESS091' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS091' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS091' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS115'	THEN 'ESS115'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS115' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS115' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS115' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS118'	THEN 'ESS118'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC18'	THEN 'ESS118' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS118' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS118' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS133'	THEN 'ESS133'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC33'	THEN 'ESS133' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS133' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS133' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS207'	THEN 'ESS207'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC07'	THEN 'ESS207' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS207' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS207' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'FMS001'	THEN 'FMS001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'POL001'	THEN 'POL001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES002'	THEN 'RES002'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES004'	THEN 'RES004'	 WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'REMG01'	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES004' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES005'	THEN 'RES005'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES006'	THEN 'RES006'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES007'	THEN 'RES007'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES009'	THEN 'RES009'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES009' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES010'	THEN 'RES010'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES010' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES011'	THEN 'RES011'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES011' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES011' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES011' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES012'	THEN 'RES012'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES012' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES013'	THEN 'RES013'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES013' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES014'	THEN 'RES014'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES014' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-001'	THEN 'UT-001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-001' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-002'	THEN 'UT-002'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-002' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-003'	THEN 'UT-003'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-003' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-003' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-003' 
+        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-004'	THEN 'UT-004'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-004' 
+        ELSE 'NO DEFINIDO' END  AS homo_code_eps 
+             
+FROM Tabla
+  "
+  Tabla = sqldf::sqldf(query)
+  Tabla = dplyr::select(Tabla, -'CODIGO__EPS')
+  return( Tabla )
+}
+#####################################3
 eps_homog_nombre = function(Tabla , eps_nombre ){
   
   if ('eps_nombre' %in% colnames(Tabla)) {
@@ -262,145 +394,16 @@ SELECT * ,
   WHEN UPPER(eps_nombre) like	'%CAFAM%' THEN 'CCF001'
   WHEN UPPER(eps_nombre) like	'%COMFAMILIAR GUAJIRA%' THEN 'CCF001'
   WHEN UPPER(eps_nombre) like	'%CAJA DE COMPENSACION FAMILIAR DE FENALCO%' THEN 'CCF001'
-      ELSE null END  AS homo_code_eps 
+      ELSE null END  AS homo_code_eps_ 
              
 FROM Tabla
 )
-WHERE  homo_code_eps IS NOT NULL
+WHERE  homo_code_eps_ IS NOT NULL
   "
   Tabla = sqldf::sqldf(query)
   Tabla = dplyr::select(Tabla, -'eps_nombre')
+  Tabla = eps_homog(Tabla = Tabla , CODIGO__EPS = 'homo_code_eps_')
+  Tabla = dplyr::select(Tabla, -'homo_code_eps_')
   print(nrow(Tabla))
-  return( Tabla )
-}
-
-eps_homog = function(Tabla , CODIGO__EPS ){
-  
-  if ('CODIGO__EPS' %in% colnames(Tabla)) {
-    colnames(Tabla['CODIGO__EPS'] ) = 'CODIGO__EPS_'
-    Tabla$CODIGO__EPS = Tabla[[CODIGO__EPS]]
-  }else{
-    Tabla$CODIGO__EPS = Tabla[[CODIGO__EPS]]
-  }
-  
-  
-  library(sqldf)
-  
-  if ('eps_status' %in% colnames(Tabla)) {
-    colnames(Tabla['eps_status'] ) = 'eps__status'
-  }
-  if ('homo_code_eps' %in% colnames(Tabla)) {
-    colnames(Tabla['homo_code_eps'] ) = 'homo__code_eps'
-  }
-  
-  query =  "
-  SELECT * , 
-  CASE WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF001'	THEN 'CCF001'	 									
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF002'	THEN 'CCF002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC02'	THEN 'CCF002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF007'	THEN 'CCF007'	WHEN   REPLACE(CODIGO__EPS, ' ', '') = 	'CCFC07'	THEN 'CCF007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF007' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF009'	THEN 'CCF009'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC09'	THEN 'CCF009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF009' 
-       -- WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF010'	THEN 'CCF010'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC10'	THEN 'CCF010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF010' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF015'	THEN 'CCF015'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC15'	THEN 'CCF015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF015' 
-       -- WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF018'	THEN 'CCF018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC18'	THEN 'CCF018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF018' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF023'	THEN 'CCF023'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC23'	THEN 'CCF023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF023' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF024'	THEN 'CCF024'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC24'	THEN 'CCF024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF024' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF027'	THEN 'CCF027'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC27'	THEN 'CCF027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF027' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF028'	THEN 'CCF028'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF028' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF029'	THEN 'CCF029'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF029' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF029' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF029' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF031'	THEN 'CCF031'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF031' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF032'	THEN 'CCF032'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF032' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF032' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF032' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF033'	THEN 'CCF033'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC33'	THEN 'CCF033' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF033' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF033' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF035'	THEN 'CCF035'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF035' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF037'	THEN 'CCF037'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF037' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF037' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF037' 
-        --WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF040'	THEN 'CCF040'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF040' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF040' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF040' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF045'	THEN 'CCF045'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF045' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF045' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF045' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF050'	THEN 'CCF050'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC50'	THEN 'CCF050' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF050' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF050' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF053'	THEN 'CCF053'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC53'	THEN 'CCF053' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF053' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF053' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF054'	THEN 'CCF054'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF054' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF054' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF054' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF055'	THEN 'CCF055'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC55'	THEN 'CCF055' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF055' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF055' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF102'	THEN 'CCF102'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC20'	THEN 'CCF102' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF102' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF102' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'CCF103'	THEN 'CCF103'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF103' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'CCF103' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'CCF103' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EAS016'	THEN 'EAS016'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EAS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS016' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EAS027'	THEN 'EAS027'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EAS027' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EAS027' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS001'	THEN 'EPS001'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS01'	THEN 'EPS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS001' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS002'	THEN 'EPS002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS02'	THEN 'EPS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS003'	THEN 'EPS003'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS03'	THEN 'EPS003' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPSM03'	THEN 'EPS003' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC03'	THEN 'EPS003' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS005'	THEN 'EPS005'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS05'	THEN 'EPS005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS005' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS006'	THEN 'EPS006'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS006' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS008'	THEN 'EPS008'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS08'	THEN 'EPS008' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS008' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS008' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS009'	THEN 'EPS009'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS009' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS010'	THEN 'EPS010'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS10'	THEN 'EPS010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS010' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS012'	THEN 'EPS012'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS12'	THEN 'EPS012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS012' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS013'	THEN 'EPS013'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS13'	THEN 'EPS013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS013' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS014'	THEN 'EPS014'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS14'	THEN 'EPS014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS014' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS015'	THEN 'EPS015'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS015' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS015' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS016'	THEN 'EPS016'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS16'	THEN 'EPS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS016' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS016' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS017'	THEN 'EPS017'	
-              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS17'	THEN 'EPS017' 	
-              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCF010'	THEN 'EPS017' 
-              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC10'	THEN 'EPS017' 
-              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCF018'	THEN 'EPS017' 
-              WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'CCFC18'	THEN 'EPS017' 
-              
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS018'	THEN 'EPS018'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS18'	THEN 'EPS018' 	  WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'CCF040'	THEN 'EPS018' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS018' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS020'	THEN 'EPS020'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC20'	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS020' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS020' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS022'	THEN 'EPS022'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC22'	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS022' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS022' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS023'	THEN 'EPS023'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS23'	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS023' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS023' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS025'	THEN 'EPS025'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC25'	THEN 'EPS025' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS025' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS025' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS026'	THEN 'EPS026'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS26'	THEN 'EPS026' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS026' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS026' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS028'	THEN 'EPS028'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS028' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS028' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS030'	THEN 'EPS030'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS030' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS030' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS030' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS031'	THEN 'EPS031'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS031' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS031' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS033'	THEN 'EPS033'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC33'	THEN 'EPS033' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPSS33'	THEN 'EPS033' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSM33'	THEN 'EPS033' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS034'	THEN 'EPS034'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS034' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS034' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS034' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS035'	THEN 'EPS035'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS035' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS035' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS037'	THEN 'EPS037'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS37'	THEN 'EPS037' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPS041'	THEN 'EPS037' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS41'	THEN 'EPS037' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS038'	THEN 'EPS038'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS038' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS038' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS038' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS039'	THEN 'EPS039'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS39'	THEN 'EPS039' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS039' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS039' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS042'	THEN 'EPS042'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS42'	THEN 'EPS042' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS042' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS042' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS044'	THEN 'EPS044'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS44'	THEN 'EPS044' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =		'EPS045'	THEN 'EPS044' 	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS45'	THEN 'EPS044' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS046'	THEN 'EPS046'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS46'	THEN 'EPS046' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS046' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS046' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPS048'	THEN 'EPS048'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSS48'	THEN 'EPS048' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPS048' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPS048' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI01'	THEN 'EPSI01'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC1'	THEN 'EPSI01' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI01' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI01' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI02'	THEN 'EPSI02'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC2'	THEN 'EPSI02' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI02' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI02' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI03'	THEN 'EPSI03'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC3'	THEN 'EPSI03' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI03' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI03' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI04'	THEN 'EPSI04'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC4'	THEN 'EPSI04' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI04' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI04' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI05'	THEN 'EPSI05'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC5'	THEN 'EPSI05' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI05' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI05' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSI06'	THEN 'EPSI06'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSIC6'	THEN 'EPSI06' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSI06' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSI06' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSS34'	THEN 'EPSS34'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPSC34'	THEN 'EPSS34' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSS34' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSS34' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'EPSS40'	THEN 'EPSS40'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'EPS040'	THEN 'EPSS40' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'EPSS40' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'EPSS40' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS002'	THEN 'ESS002'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC02'	THEN 'ESS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS024'	THEN 'ESS024'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC24'	THEN 'ESS024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS024' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS024' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS062'	THEN 'ESS062'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC62'	THEN 'ESS062' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS062' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS062' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS068'	THEN 'ESS068'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS068' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS068' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS068' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS076'	THEN 'ESS076'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC76'	THEN 'ESS076' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS076' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS076' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS091'	THEN 'ESS091'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC91'	THEN 'ESS091' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS091' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS091' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS115'	THEN 'ESS115'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS115' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS115' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS115' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS118'	THEN 'ESS118'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC18'	THEN 'ESS118' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS118' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS118' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS133'	THEN 'ESS133'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC33'	THEN 'ESS133' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS133' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS133' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'ESS207'	THEN 'ESS207'	WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'ESSC07'	THEN 'ESS207' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'ESS207' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'ESS207' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'FMS001'	THEN 'FMS001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'FMS001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'FMS001' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'POL001'	THEN 'POL001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'POL001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'POL001' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES002'	THEN 'RES002'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES004'	THEN 'RES004'	 WHEN   REPLACE(CODIGO__EPS, ' ', '') =	'REMG01'	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES004' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES005'	THEN 'RES005'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES005' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES005' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES006'	THEN 'RES006'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES006' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES006' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES007'	THEN 'RES007'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES007' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES007' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES009'	THEN 'RES009'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES009' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES009' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES010'	THEN 'RES010'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES010' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES010' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES011'	THEN 'RES011'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES011' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES011' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES011' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES012'	THEN 'RES012'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES012' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES012' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES013'	THEN 'RES013'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES013' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES013' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'RES014'	THEN 'RES014'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'RES014' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'RES014' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-001'	THEN 'UT-001'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-001' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-001' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-002'	THEN 'UT-002'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-002' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-002' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-003'	THEN 'UT-003'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-003' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-003' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-003' 
-        WHEN  REPLACE(CODIGO__EPS, ' ', '') =	'UT-004'	THEN 'UT-004'	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =		''	THEN 'UT-004' 	-- WHEN   REPLACE(CODIGO__EPS, ' ', '') =	''	THEN 'UT-004' 
-        ELSE 'NO DEFINIDO' END  AS homo_code_eps 
-             
-FROM Tabla
-  "
-  Tabla = sqldf::sqldf(query)
-  Tabla = dplyr::select(Tabla, -'CODIGO__EPS')
   return( Tabla )
 }
