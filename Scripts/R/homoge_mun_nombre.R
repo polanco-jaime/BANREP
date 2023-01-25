@@ -506,7 +506,7 @@ homoge_mun_nombre = function(Tabla, nombre_mun = '' ){
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '%GACHALA%' THEN '25293'
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '%GACHANCIPA%' THEN '25295'
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '%GACHETA%' THEN '25297'
-                    WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '% GAMA%' THEN '25299'
+                    WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '% GAMA%' THEN '25299' 
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE 'GAMA %' THEN '25299'
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '%GIRARDOT%' THEN '25307'
                     WHEN (Municipio_divi) LIKE '%CUND%' AND (Municipio_divi) LIKE '%GRANADA%' THEN '25312'
